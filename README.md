@@ -6,8 +6,7 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 ####关于如何认领翻译？
 
-由于我们的志愿者来自五湖四海，
-为了避免冲突。请志愿者们先fork Geequlim/LearnOpenGL-CN。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的markdown文件并提交发布请求：
+由于我们的志愿者来自五湖四海，为了避免冲突。请志愿者们先fork Geequlim/LearnOpenGL-CN。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的markdown文件并提交发布请求：
     
     本文作者JoeyDeVries，由Geequlim翻译自http://learnopengl.com
 
