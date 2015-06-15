@@ -20,3 +20,4 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
         05 Advanced Lighting/03 Shadows/02 Point Shadows.md
         
 欢迎志愿者们加入翻译组交流QQ群：383745868
+---
