@@ -1,7 +1,3 @@
-<style>
-.centerHV{text-align:center}
-</style>
-
 本文作者JoeyDeVries，由Geequlim翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Colors)
 
 ## 颜色
@@ -14,9 +10,7 @@
 
 我们在现实生活中看到某一物体的颜色并不是这个物体的真实颜色而是它所反射的颜色。换句话说，那些不能被物体吸收的颜色（被反射的颜色）就是我们能够感知到的物体的颜色。例如,太阳光被认为是由许多不同的颜色组合成的白色光(如下图所示)。如果我们将白色的太阳光照在一个蓝色的玩具上，这个蓝色的玩具会吸收白色光中除了蓝色以外的所有颜色，不被吸收的蓝色光被反射到我们的眼中，使我们看到了一个蓝色的玩具。下图显示的是一个珊瑚红的玩具，它以不同强度的方式反射了几种不同的颜色。
 
-<div class="centerHV">
 <img src="http://learnopengl.com/img/lighting/light_reflection.png"/>
-</div>
 
 正如你所见，白色的阳光是一种所有可见颜色的集合，上面的物体吸收了其中的大部分颜色，它仅反射了那些代表这个物体颜色的部分，这些被反射颜色的组合就是我们感知到的颜色（此例中为珊瑚红）。
 
@@ -134,9 +128,8 @@
     glBindVertexArray(0);
 
 为了让你的程序简洁易读，请把上述的所有代码片段放在你程序中合适的位置。如果一切顺利，运行效果将会如下图所示：
-<div class="centerHV">
+
 <img src="http://learnopengl.com/img/lighting/colors_scene.png"/>
-</div>
 
 没什么好看的是吗？但我承诺接下来的教程中它会给你有趣的视觉效果。
 
