@@ -41,9 +41,19 @@
 
 这里我们列出一些编译Assimp时可能遇到的问题，以便大家参考和排除:
 
-- CMake在读取配置列表时，报出与DirectX库丢失相关的一些错误。报错如下：
+ - CMake在读取配置列表时，报出与DirectX库丢失相关的一些错误。报错如下：
      <pre> Could not locate DirecX
 	 CMake Error at cmake-modules/FindPkgMacros.cmake:110 (message):
 	 Required library DirectX not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake. </pre>
   这个问题的解决方案：如果你之前没有安装过DirectX SDK，那么请安装。下载地址：[DirectX SDK](http://www.microsoft.com/en-us/download/details.aspx?id=6812)
-- 
+ - 安装DirectX SDK时，可以遇到一个错误码为<b>S1023</b>的错误。遇到这个问题，请在安装DirectX SDK前，先安装C++ Redistributable package(s)。
+  问题解释：[已知问题：DirectX SDK (June 2010) 安装及S1023错误](Known Issue: DirectX SDK (June 2010) Setup and the S1023 error)
+ - 一旦配置完成，你就可以生成解决方案文件了，打开解决方案文件并编译Assimp库（编译为Debug版本还是Release版本，根据你的需要和心情来定吧）
+ - 使用默认配置构建的Assimp是一个动态库，所以我们需要把编译出来的assimp.dll文件拷贝到我们自己程序的可执行文件的同一目录里
+ - 编译出来的Assimp的LIB文件和DLL文件可以在code/Debug或者code/Release里找到
+ - 把编译好的LIB文件和DLL文件拷贝到工程的相应目录下，并链接到你的解决方案中。同时还好记得把Assimp的头文件也拷贝到工程里去（Assimp的头文件可以在include目录里找到）
+
+如果你还遇到了其他问题，可以在下面给出的链接里获取帮助。
+  >如果你想要让Assimp使用多线程支持来提高性能，你可以使用<b>Boost</b>库来编译 Assimp。在[Boost安装页面](http://assimp.sourceforge.net/lib_html/install.html)，你能找到关于Boost的完整安装介绍。
+
+现在，你应该已经能够编译Assimp库，并链接Assimp到你的工程里去了。下一节内容：[导入完美的3D物件！](http://www.learnopengl.com/#!Model-Loading/Mesh)
