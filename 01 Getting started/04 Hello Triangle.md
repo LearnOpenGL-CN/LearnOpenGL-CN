@@ -1,4 +1,4 @@
-本文作者JoeyDeVries，由Geequlim翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Hello-Triangle)
+本文作者JoeyDeVries，由Cocooshu翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Hello-Triangle)
 
 ##你好，三角形
 
