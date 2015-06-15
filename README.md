@@ -4,9 +4,9 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 ---
 ###翻译组成员请注意
 
-####关于如何认领翻译？
+####如何认领翻译？
 
-由于我们的志愿者来自五湖四海，为了避免冲突。请志愿者们先fork Geequlim/LearnOpenGL-CN。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的markdown文件并提交发布请求：
+由于我们的志愿者来自五湖四海，为了避免冲突。请志愿者们先clone这个Repository 。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的MarkDown文件：
     
     本文作者JoeyDeVries，由Geequlim翻译自http://learnopengl.com
 
@@ -18,4 +18,6 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
         05 Advanced Lighting/03 Shadows/02 Point Shadows.md
         
+加入LearnOpenGL-CN组织，然后提交并push您的文章。
+
 欢迎志愿者们加入翻译组交流QQ群：383745868
