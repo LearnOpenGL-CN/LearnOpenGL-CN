@@ -43,7 +43,7 @@ OpenGL的一大特性就是对扩展的支持，当一个显卡公司提出一�
 
 使用扩展的代码大多看上去如下：
 
-	```c++
+```c++
 	if(GL_ARB_extension_name)
 	{
     	// Do cool new and modern stuff supported by hardware
@@ -52,7 +52,7 @@ OpenGL的一大特性就是对扩展的支持，当一个显卡公司提出一�
 	{
 		// Extension not supported: do it the old way
 	}
-	```
+```
 
 使用OpenGL3.3时，我们很少需要使用扩展来完成大多数功能，但是掌握这种方式是必须的。
 
