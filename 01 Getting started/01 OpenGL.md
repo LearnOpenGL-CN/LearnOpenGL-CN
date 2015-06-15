@@ -70,3 +70,11 @@ OpenGL库是用C写的，同时也支持多种语言的派生，但是核心是�
 
 在OpenGL中一个对象是指一些选项的集合，代表OpenGL状态的一个子集。比如，我们可以有一个对象来代表绘图窗口的设置，可以设置它的大小、支持的颜色位数等等。可以把对象看做一个C风格的结构体：
 
+```c++
+	struct object_name {
+	    GLfloat  option1;
+	    GLuint   option2;
+	    GLchar[] name;
+	};
+```
+
