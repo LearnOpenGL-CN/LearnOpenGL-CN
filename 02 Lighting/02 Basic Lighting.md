@@ -1,6 +1,6 @@
 本文作者JoeyDeVries，由Geequlim翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Colors)
 
-##基本光源
+##基本光源（或者照明？）
 
 现实世界中，光源及其复杂，还取决于额很多因素，有时在我们仅有的处理能力下不能简单计算出。因此在OpenGL中光源是基于现实情况建立了简化模型，更容易处理，看上去（与真实情况）较为相似。这些光照模型是基于我们理解的光的物理特性建立的。其中一个模型被称为冯氏照明模式。冯氏模型
 的主要构成模块由3部分组成:环境光,漫射光和反射光。下面你将看到这些照明组件实际上是什么样子:
@@ -19,128 +19,19 @@
 因为我们不是一个复杂算法的big fan，我们使用一个全局照明的简单模型，叫做环境光照明。正如我们在上一章节中使用的一个小的颜色（光照）常数，将其添加到物体片段的最终生成的颜色上，尽管看起来没有直接光源，还是有一些分散的光线。
 
 在场景里增加环境光很容易。我们将光源的颜色，乘以一个小的环境因素常数，再将结果乘以物体的颜色，最终将他作为片元的颜色。
-```c++
-void main()
-{
-    float ambientStrength = 0.1f;
-    vec3 ambient = ambientStrength * lightColor;
 
-  	vec3 result = ambient * objectColor;
-    color = vec4(result, 1.0f);
-} 
-```
+	void main()
+	{
+	    float ambientStrength = 0.1f;
+	    vec3 ambient = ambientStrength * lightColor;
+	
+	  	vec3 result = ambient * objectColor;
+	    color = vec4(result, 1.0f);
+	} 
+
 如果你现在运行你的程序，你会发现到光照的第一阶段被成功应用到你的物体。这个物体比较暗，但并不是完全黑暗不可见因为应用了环境光照明（注意那个明亮的立方体是不受影响的，因为我们使用的是不同的着色），它应该看起来是这样：
-
 ![](http://www.learnopengl.com/img/lighting/ambient_lighting.png)
 
 ##漫反射光
-
-环境光本身不会产生最有效的结果，但漫反射光会给物体一个显著的视觉冲击。漫反射光使得物体靠近光源光线的片元部分更加明亮。为了有更好的理解，在下图中查看漫反射效果
-![](http://www.learnopengl.com/img/lighting/diffuse_light.png)
-
-在左边我们发现一个光源，其光线照射到我们物体的一个片元。我们需要测量光线与片元之间的夹角。为了测量该夹角我们引入`法向量`，即垂直于片元表面的向量（这里绘制为黄色箭头）；我们稍后会详细描述。那么两个向量间的夹角可以用点积计算得出。
-
-还记得[矩阵变换](http://www.learnopengl.com/#!Getting-started/Transformations)教程吗，两个单位向量间的角度越小，它们之间的点积会趋近于1。当角度为90度，点积为0.这同样适用于上图的θ：θ越大，光源对片元颜色的作用越小。
-
->注意我们只处理单位向量（向量长度为1）之间角度的余弦值，所以我们要确保每个向量都单位化了，否则向量的点积得到的不止是余弦（见[矩阵变换](http://www.learnopengl.com/#!Getting-started/Transformations)）
-
-点积的计算结果返回一个标量，我们用它计算出光源作用于片元的颜色，基于它们对光源不同的朝向，会得到不同颜色的片元。
-
-所以，如果我们要计算漫反射光需要有哪些因素？
-
-* 法向量：垂直于顶点表面的向量
-* 定向光线：一个方向向量，它可以表示光线位置和片元位置的不同。为了计算该光线我们需要光线位置向量和片元位置向量
-
-###法向量
-
-一个法向量是一个垂直于顶点表面的（单位）向量。一个顶点并没有表面（因为它只是空间中的一点），我们通过其周围的顶点计算出顶点的表面，从而获得法向量。我们可以使用一个小技巧，通过叉积计算所有立方体顶点的法向量，由于3D立方体不是复杂的形状，因而我们可以简单的将其人工添加顶点数据，更新的顶点数据阵列在[此](http://www.learnopengl.com/code_viewer.php?code=lighting/basic_lighting_vertex_data)。可以试着想象一下发现是垂直于立方体平面的向量（一个立方体有6个平面）。
-
-由于我们在顶点数组中添加的额外的数据，我们应该更新光源的顶点着色器。
-```c++			
-#version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 normal;
-...
-```
-现在我们增加了每个顶点的法向量，更新了需要更新的顶点着色器，也更新了顶点属性指针。注意灯光对象的定点数据使用相同的顶点数组，但是灯光着色器没有使用新增加的法向量。我们不必更新灯光的着色器或属性配置，但是我们至少需要修改顶点属性的指针，指向新的顶点数组的大小。
-```c++
-glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-glEnableVertexAttribArray(0);
-```
-
-我们只想使用每个顶点的前三个浮点数，忽略后三个浮点数，所以将递进参数调整为**GLfloat**的6倍即可。
-
->使用顶点数据看起来很低效，并不被灯光着色器完全使用，但顶点数据已经被储存在GPU的内存，所以我们不必储存新的数据。这样比为灯光专门分配一个新的VBO（顶点缓冲对象）会更高效。
-
-所有的照明计算在片元着色器中完成，所以我们要将法向量从顶点着色器提取到片元着色器。具体步骤如下：
-```c++
-out vec3 Normal;
-void main()
-{
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    Normal = normal;
-} 
-```
-
-###计算漫反射的颜色
-
-我们现在有每个顶点的法向量，我们还需要光位置向量和片元位置向量。因为光位置向量是一个单一静态变量，我们可以在片元着色器中将其声明为uniform变量。
-```c++
-uniform vec3 lightPos;
-```
-
-接着在游戏循环中更新uniform变量（或者在循环外，如果它不变化）。我们使用`lightPos`向量声明在之前教程中的光源位置。
-```c++
-GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "lightPos");
-glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z); 
-```
-最后我们需要的就是碎片的位置。我们将要处理世界空间里的所有照明计算。可以通过乘以顶点位置属性和模型矩阵（并非视图矩阵或投影矩阵）实现，其中模型矩阵必须变换到世界空间坐标系。这可以在顶点着色器中简单完成，所以可以简单声明一个输出变量并计算其世界坐标。
-```c++
-out vec3 FragPos;  
-out vec3 Normal;
-  
-void main()
-{
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    FragPos = vec3(model * vec4(position, 1.0f));
-    Normal = normal;
-}
-```
-最后将对应的输入变量添加到片元着色器。
-```c++	
-in vec3 FragPos;
-```
-现在所有需要的变量已经设置好，可以在片元着色器中开始照明计算。
-
-我们需要计算的首要有光源和片元位置之间的方向向量。我们提到的光的方向向量是光源位置向量和片元位置向量的差向量。正如[矩阵变换](http://www.learnopengl.com/#!Getting-started/Transformations)教程中，该差向量通过两个向量相减计算得出。同样我们需要保证所有相关向量都以单位化，所以我们规范所有的法向量和得到的方向向量。
-```c++
-vec3 norm = normalize(Normal);
-vec3 lightDir = normalize(lightPos - FragPos);  
-```
-
->在计算照明时我们一般不关心一个向量的大小或位置；我们只关心它的方向。因为我们只关心它们的方向所以基本所有的计算都使用方向向量以简化计算（如点积）。当我们进行光照计算时，你需要社科确保你已经标准化了相关向量以确保它们是真正的单位向量。忘记标准化向量是一个典型错误。
-
-接下来我们想通过`norm`向量和`lightDir`向量的点积计算真实的灯光对当前片元的漫反射影响。这个结果再与灯光颜色相乘就可以得到漫反射分量，两个向量间夹角越大，漫反射分量越暗。
-```c++
-float diff = max(dot(norm, lightDir), 0.0);
-vec3 diffuse = diff * lightColor;
-```
-如果两个向量间夹角大于90度，它们的点积值为负，我们最终只能得到一个为负值的漫反射分量。所以我们使用的`max`函数会返回两个参数中追打的那个，从而保证漫反射分量（和颜色）不会为负值。负值的灯光颜色还没有被定义，你最好远离它，除非你是脑洞比较大的艺术家。
-
-现在我们有环境光和漫反射分量，我们将这两种颜色彼此相加，将得到的结果与物体的颜色相乘最终得出片元的输出颜色：
-```c++
-vec3 result = (ambient + diffuse) * objectColor;
-color = vec4(result, 1.0f);
-```
-
-如果你的应用（或者着色器）成功编译，你会看到如下：
-![](http://www.learnopengl.com/img/lighting/basic_lighting_diffuse.png)
-
-
-
-
-
-  
-
 
 
