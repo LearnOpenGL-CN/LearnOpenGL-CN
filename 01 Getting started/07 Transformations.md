@@ -41,4 +41,30 @@
 
 ### 矢量的加与减(Addition and Subtraction)
 
+矢量的加法可以被定义为是分量的相加，即将一个矢量中的每一个分量加上另一个矢量的对应分量：
+
+![](http://latex2png.com/output//latex_3d5a8fd9db45ecfed81acdad2691caa8.png)
+
+在图像上v=(4,2)与k=(1,2)相加是这样的：
+
+![](http://learnopengl.com/img/getting-started/vectors_addition.png)
+
+就像数字的加减一样，矢量的减法等同于一个矢量加上取反的另一个矢量.
+
+![](http://latex2png.com/output//latex_aa68be1c1c3294bf4d931c39d9fe8ea1.png)
+
+两个矢量的相减会得到这两个矢量指向位置的差. 这在我们想要获取两点的差会非常有用.
+
+### 矢量的长度(Length)
+
+我们使用勾股定理(Pythagoras theorem)来获取矢量的长度(大小). 如果你把矢量的x与y分量画出来，该矢量会形成一个以x与y分量为边的三角形:
+
+![](http://learnopengl.com/img/getting-started/vectors_triangle.png)
+
+因为x与y已知，我们可以用勾股定理求出斜边![](http://latex2png.com/output//latex_e91010b29e958e4fbc824584145939c6.png)：
+
+![](http://latex2png.com/output//latex_25a4b63018e587812dd6625a075ec9dd.png)
+
+其中![](http://latex2png.com/output//latex_8f7bf6541904f09a5318814c6b03fe17.png)代表矢量![](http://latex2png.com/output//latex_e91010b29e958e4fbc824584145939c6.png)的大小. 我们也可以很容易加上![](http://latex2png.com/output//latex_a1049fd26252d4e0795dd75bd0bb8e12.png)把这个公式拓展到三维空间
+
 #WIP
