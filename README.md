@@ -3,7 +3,7 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 ###当前翻译进度：54% (31/57)
 
-###翻译组成员请注意：Advanced Lighting之前的教程已经翻译完成，请认领并Advanced Lighting及其以后的教程。
+###翻译组成员请注意：Advanced Lighting之前的教程已经翻译完成，请认领Advanced Lighting及其以后的教程。
 
 ---
 ####如何认领翻译？
