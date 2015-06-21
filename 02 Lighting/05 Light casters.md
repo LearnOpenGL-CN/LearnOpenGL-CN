@@ -1,4 +1,4 @@
-本文作者JoeyDeVries，由[Django(http://bullteacher.com/16-light-casters.html)]翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Light-casters)]
+本文作者JoeyDeVries，由[Django](http://bullteacher.com/16-light-casters.html)翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Light-casters)
 
 我们目前使用的所有光照都来自于一个单独的光源，这是空间中的一个点。它的效果不错，但是在真实世界，我们有多种类型的光，它们每个表现都不同。一个光源把光投射到物体上，叫做投光。这个教程里我们讨论几种不同的投光类型。学习模拟不同的光源是你未来丰富你的场景的另一个工具。
 

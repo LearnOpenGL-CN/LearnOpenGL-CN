@@ -1,4 +1,4 @@
-本文作者JoeyDeVries，由[Django(http://bullteacher.com/14-materials.html)]翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Materials)]
+本文作者JoeyDeVries，由[Django](http://bullteacher.com/14-materials.html)翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Materials)
 
 在真实世界里，每个物体会对光产生不同的反作用。钢比陶瓷花瓶更闪闪发光。比如一块木头不会和钢一样对光做出相同反作用。每个物体对specular高光也有不同的反应。有些物体不会散射很多光却会反射很多光，结果看起来就有一个较小的高光点，其他物体散射的更多，就会产生一个半径更大的高光。如果我们想要在OpenGL中模拟几种类型的物体，我们必须为每个物体定义材质属性。
 
