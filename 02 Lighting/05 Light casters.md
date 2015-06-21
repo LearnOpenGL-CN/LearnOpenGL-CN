@@ -64,7 +64,7 @@ if(lightVector.w == 0.0) // Note: be careful for floating point errors
  
 else if(lightVector.w == 1.0)
     // Do light calculations using the light’s position (like last tutorial)
-    ```
+```
 有趣的事实：这就是旧OpenGL（固定函数式）决定一个光源是一个定向光还是位置光源，更具这个修改它的光照。
 如果你现在编译应用，飞跃场景，它看起来像有一个太阳一样的光源，把光抛到物体身上。你可以看到diffuse和specular元素都反射了，就像天空上有一个光源吗？看起来就像这样：
 
