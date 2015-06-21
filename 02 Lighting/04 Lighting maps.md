@@ -1,4 +1,4 @@
-本文作者JoeyDeVries，由[Django(http://bullteacher.com/15-lighting-maps.html)翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Lighting-maps)
+本文作者JoeyDeVries，由[Django(http://bullteacher.com/15-lighting-maps.html)]翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Lighting-maps)]
 
 前面的教程，我们讨论了每个物体都拥有各自不同的材质，因而会对光做出不同的反应。在一个光照场景中，给每个物体和其他物体不同的外观很棒，但是这仍然不会对一个物体的图像输出提供很多的伸缩性。
 
