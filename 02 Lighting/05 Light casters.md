@@ -91,7 +91,52 @@ else if(lightVector.w == 1.0)
 随着光线穿越更远的距离相应地减少亮度，通常被称为衰减。一种随着距离减少亮度的方式是使用线性等式。这样的一个随着距离减少亮度的线性方程，可以使远处的物体更暗。然而，这样的线性方程效果会有点假。在真实世界，通常光在近处时非常亮，但是一个光源的亮度，开始的时候减少的非常快，之后随着距离的增加，减少的速度会慢下来。我们需要一种不同的方程来减少光的亮度。
 
 幸运的是一些聪明人已经早就把它想到了。下面的方程把一个片段的光的亮度除以一个已经计算出来的衰减值，这个值根据光源的远近得到：
-[math]
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mtable>
+    <mlabeledtr>
+      <mtd>
+        <mtext id="mjx-eqn-1">(1)</mtext>
+      </mtd>
+      <mtd>
+        <msub>
+          <mi>F</mi>
+          <mrow class="MJX-TeXAtom-ORD">
+            <mi>a</mi>
+            <mi>t</mi>
+            <mi>t</mi>
+          </mrow>
+        </msub>
+        <mo>=</mo>
+        <mfrac>
+          <mi>I</mi>
+          <mrow>
+            <msub>
+              <mi>K</mi>
+              <mi>c</mi>
+            </msub>
+            <mo>+</mo>
+            <msub>
+              <mi>K</mi>
+              <mi>l</mi>
+            </msub>
+            <mo>&#x2217;<!-- ? --></mo>
+            <mi>d</mi>
+            <mo>+</mo>
+            <msub>
+              <mi>K</mi>
+              <mi>q</mi>
+            </msub>
+            <mo>&#x2217;<!-- ? --></mo>
+            <msup>
+              <mi>d</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfrac>
+      </mtd>
+    </mlabeledtr>
+  </mtable>
+</math>
 在这里I是当前片段的光的亮度，d代表片段到光源的距离。为了计算衰减值，我们定义3个项：常数项Kc，一次项Kl和二次项Kq。
 
 常数项通常是1.0，它的作用是保证坟墓永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
