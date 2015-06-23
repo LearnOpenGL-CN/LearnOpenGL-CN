@@ -97,3 +97,68 @@ GLSL跟一般的编程语言一样，定义了一些常用的数据类型，基�
 
 可以看到在顶点着色器生命了一个向量：*vertexColor* 有out修饰，同时在片段着色器声明了一个*vertexColor* 使用in来修饰，这样片段着色器就可以获取顶点着色器处理的*vertexColor*的结果了。
 根据上面shader，可以得出下图的效果：
+
+![shader效果](https://github.com/codeman001/LearnOpenGL-CN/blob/master/01%20Getting%20started/pic1.jpg?raw=true)
+
+
+**常量**
+常量是另外一个中从CPU端向GPU传输数据的方式，常量方式跟顶点数据有非常明显的不同。常量有两个特性：
+
+1.具有全局性，可以在着色器不同阶段来获取同一个常量
+
+2.不变性，一旦设置了值，在渲染过程中就不能被改变，只有从新设置才能改变。
+
+声明常量非常简单使用uniform 放在类型和变量名前面即可。下面看一个例子：
+
+	#version 330 core
+	out vec4 color;
+	uniform vec4 ourColor; // 
+	code.
+	void main()
+	{
+	color = ourColor;
+	}
+声明了一个ourColor为常量类型，然后把它的值付给了输出变量color。
+
+	注意：如果声明了一个从来没用到常量，GLSL的编译器会默认删除这个常量，由此可能导致一些莫名的问题。
+现在这个常量还是个空值，接下来给ourColor在CPU端传递数据给它。思路：获取ourColor在索引位置，然后传递数据给这个位置。另外做一些小动作，不传递固定的这个，传递一个随时间变化的值，如下：
+
+	GLfloat timeValue = glfwGetTime();
+	GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+	GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+	glUseProgram(shaderProgram);
+	glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
+首先通过glfwGetTime函数获取程序运行时间（秒数）。然后使用sin函数将greenValue的值控制在0-1。
+
+然后使用glGetUniformLocation函数查询ourColor的索引位置。是一个参数是要查询的着色器程序，第二个参数是常量在着色器中声明的变量名。如果glGetUniformLocation函数返回-1，表明没找到对应的常量的索引位置。
+
+最合使用glUniform4f来完成赋值。
+
+注意：使用glGetUniformLocation 不需要在glUseProgram之后，但是glUniform4f一定要在lUseProgram之后，因为我们也只能对当前激活的着色器程序传递数据。
+到目前为止已经学会了这么给常量传递数据和渲染使用这些数据，如果我们想每帧改变常量的值，我们需要在主循环的不停的计算和更新常量的值。
+
+	while(!glfwWindowShouldClose(window))
+	{
+	// Check and call events
+	glfwPollEvents();
+	// Render
+	// Clear the colorbuffer
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	// Be sure to activate the shader
+	glUseProgram(shaderProgram);
+	// Update the uniform color
+	GLfloat timeValue = glfwGetTime();
+	GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+	GLint vertexColorLocation = glGetUniformLocation(
+	shaderProgram, "ourColor");
+	glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f,1.0f);
+	// Now draw the triangle
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glBindVertexArray(0);
+	}
+
+如果运行正常的话我们能看到一个绿色到黑色，黑色到绿色变化的三角形，
+可以查看完整的代码[实例](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-interpolated)
