@@ -162,3 +162,139 @@ GLSL跟一般的编程语言一样，定义了一些常用的数据类型，基�
 
 如果运行正常的话我们能看到一个绿色到黑色，黑色到绿色变化的三角形，
 可以查看完整的代码[实例](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-interpolated)
+
+
+**着色器程序管理程序**
+
+编写、编译和管理着色器程序是非常繁重的工作，为了减轻这个工作量我们自己定义一个着色器程序管理器，负责读取着色器程序文件，然后编译他们，链接并检查着色器程序有无错误发生。这也可以让我们把已经学到的知识封装到抽象的对象里。
+
+我们首先顶一个着色器程序的头文件，如下：
+
+	#ifndef SHADER_H
+	#define SHADER_H
+	#include <string>
+	#include <fstream>
+	#include <sstream>
+	#include <iostream>
+	using namespace std;
+	#include <GL/glew.h>; // Include glew to get all the required
+	OpenGL headers
+	class Shader
+	{
+	public:
+	// The program ID
+	GLuint Program;
+	// Constructor reads and builds the shader
+	Shader(const GLchar* vertexSourcePath, const GLchar*fragmentSourcePath);
+	// Use the program
+	void Use();
+	};
+	#endif
+
+着色器程序类包含一个着色器程序ID，有一个接受顶点和片段程序的接口，这个两个路径就是普通的文本文件就可以了。
+Use函数是一个工具属性的函数，主要是控制当前着色器程序是否激活。
+
+读取着色器程序文件
+ 
+	Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
+	{
+	// 1. Retrieve the vertex/fragment source code from
+	filePath
+	std::string vertexCode;
+	std::string fragmentCode;
+	try
+	{
+	// Open files
+	std::ifstream vShaderFile(vertexPath);
+	std::ifstream fShaderFile(fragmentPath);
+	std::stringstream vShaderStream, fShaderStream;
+	// Read file’s buffer contents into streams
+	vShaderStream << vShaderFile.rdbuf();
+	fShaderStream << fShaderFile.rdbuf();
+	// close file handlers
+	vShaderFile.close();
+	fShaderFile.close();
+	// Convert stream into GLchar array
+	vertexCode = vShaderStream.str();
+	fragmentCode = fShaderStream.str();
+	}
+	catch(std::exception e)
+	{
+	std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" <<
+	std::endl;
+	}
+
+
+接下来编译和链接这些程序，同时收集一些编译和链接的错误，来帮助我们调试。
+
+	// 2. Compile shaders
+	GLuint vertex, fragment;
+	GLint success;
+	GLchar infoLog[512];
+	// Vertex Shader
+	vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex, 1, &vShaderCode, NULL);
+	glCompileShader(vertex);
+	// Print compile errors if any
+	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+	if(!success)
+	{
+	glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+	<< infoLog << std::endl;
+	};
+	// Similiar for Fragment Shader
+	[...]
+	// Shader Program
+	this->Program = glCreateProgram();
+	glAttachShader(this->Program, vertex);
+	glAttachShader(this->Program, fragment);
+	glLinkProgram(this->Program);
+	// Print linking errors if any
+	glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
+	if(!success)
+	{
+	glGetProgramInfoLog(this->Program, 512, NULL, infoLog);
+	std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" <<
+	infoLog << std::endl;
+	}
+	// Delete the shaders as they’re linked into our program now
+	and no longer necessery
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+
+最后来实现一个use函数
+	
+	void Use() { glUseProgram(this->Program); }
+接下来是一个使用这个简单实例：
+
+	Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.frag");
+	...
+	while(...)
+	{
+	ourShader.Use();
+	glUniform1f(glGetUniformLocation(ourShader.Program, "
+	someUniform"), 1.0f);
+	DrawStuff();
+	}
+上面我们已经把顶点着色器和片段着色器代码分别放在shader.vs和shader.frag里面了，这些文件的名字和后缀名都可以随意命名的，只要符合文件名规范就好。
+完整的代码实例：
+
+[使用的实例](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-using-object)
+
+[着色器类](http://learnopengl.com/code_viewer.php?type=header&code=shader)
+
+[顶点着色器代码](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/basic)
+
+[片段着色器代码](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/basic)
+
+
+**练习题**
+
+1.通过调整的顶点着色器，以使三角形是倒置 [答案](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise1)
+
+2.通过一个常量，使得三角在x方向偏移 [答案](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise2)
+
+3.使用in 和out 关键字，把顶点着色器的位置数据作为片段着色器的颜色，然后看看得出的三角形颜色，进一步理解差值的问题，同时可以尝试回答下面的问题：为什么我们三角形左下侧有黑边?:[答案](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise3)
+
+
