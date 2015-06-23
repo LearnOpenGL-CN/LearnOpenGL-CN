@@ -1,4 +1,4 @@
-本文作者JoeyDeVries，由codeman001翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Shaders)
+本文作者JoeyDeVries，由[codeman001](https://github.com/codeman001)翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Shaders)
 
 ##着色器
 
