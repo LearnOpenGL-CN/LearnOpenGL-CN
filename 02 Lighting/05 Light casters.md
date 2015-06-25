@@ -92,7 +92,7 @@ else if(lightVector.w == 1.0)
 
 幸运的是一些聪明人已经早就把它想到了。下面的方程把一个片段的光的亮度除以一个已经计算出来的衰减值，这个值根据光源的远近得到：
 
-![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.jpg)
+![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.png)
 
 在这里I是当前片段的光的亮度，d代表片段到光源的距离。为了计算衰减值，我们定义3个项：常数项Kc，一次项Kl和二次项Kq。
 
