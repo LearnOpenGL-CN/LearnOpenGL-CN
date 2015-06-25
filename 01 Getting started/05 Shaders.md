@@ -98,7 +98,7 @@ GLSL跟一般的编程语言一样，定义了一些常用的数据类型，基�
 可以看到在顶点着色器生命了一个向量：*vertexColor* 有out修饰，同时在片段着色器声明了一个*vertexColor* 使用in来修饰，这样片段着色器就可以获取顶点着色器处理的*vertexColor*的结果了。
 根据上面shader，可以得出下图的效果：
 
-![shader效果](https://github.com/codeman001/LearnOpenGL-CN/blob/master/01%20Getting%20started/pic1.jpg?raw=true)
+![shader效果](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/shaders1.jpg)
 
 
 **常量**
