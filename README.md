@@ -2,7 +2,7 @@
 learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 **当前翻译进度：**
-![Progress](http://progressed.io/bar/54?title=31/57) 
+![Progress](http://progressed.io/bar/56?title=32/57) 
 
 
 **翻译组成员请注意：Advanced Lighting之前的教程已经翻译完成，请认领Advanced Lighting及其以后的教程。**
