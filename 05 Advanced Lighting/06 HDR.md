@@ -64,7 +64,7 @@ lightColors.push_back(glm::vec3(0.0f, 0.0f, 0.2f));
 lightColors.push_back(glm::vec3(0.0f, 0.1f, 0.0f));  
 ```
 
-渲染至浮点帧缓冲和渲染至一个普通的帧缓冲是一样的. 新的东西就是这个的`hdrShader`的片段着色器，用来渲染最终拥有浮点颜色缓冲材质的2D四方形. 我们来定义一个简单的直通片段着色器(Pass-through Fragment Shader):
+渲染至浮点帧缓冲和渲染至一个普通的帧缓冲是一样的. 新的东西就是这个的`hdrShader`的片段着色器，用来渲染最终拥有浮点颜色缓冲纹理的2D四方形. 我们来定义一个简单的直通片段着色器(Pass-through Fragment Shader):
 
 ```c++
 #version 330 core
@@ -80,8 +80,75 @@ void main()
 }  
 ```
 
-这里我们直接采样了浮点颜色缓冲并将其作为片段着色器的输出. 然而，这个2D四方形的输出是被直接渲染到默认的帧缓冲中，导致所有片段着色器的输出值被约束在0.0到1.0间，尽管我们已经有了一些存在浮点颜色材质的值超过了1.0.
+这里我们直接采样了浮点颜色缓冲并将其作为片段着色器的输出. 然而，这个2D四方形的输出是被直接渲染到默认的帧缓冲中，导致所有片段着色器的输出值被约束在0.0到1.0间，尽管我们已经有了一些存在浮点颜色纹理的值超过了1.0.
 
 ![](http://learnopengl.com/img/advanced-lighting/hdr_direct.png)
 
-很明显，在隧道尽头的强光的值被约束在1.0，因为一大块区域都是白色的，过程中超过1.0的地方损失了所有细节. 因为我们直接转换HDR值到LDR值，这就像我们根本就没有应用HDR一样. 为了修复这个问题我们需要做的是无损转化所有浮点颜色值回0.0-1.0范围中. 我们需要应用到色调映射.(Tone Mapping)
+很明显，在隧道尽头的强光的值被约束在1.0，因为一大块区域都是白色的，过程中超过1.0的地方损失了所有细节. 因为我们直接转换HDR值到LDR值，这就像我们根本就没有应用HDR一样. 为了修复这个问题我们需要做的是无损转化所有浮点颜色值回0.0-1.0范围中. 我们需要应用到色调映射.
+
+### 色调映射(Tone Mapping)
+
+色调映射是一个损失很小的转换浮点颜色值至我们所需的LDR[0.0, 1.0]范围内的过程，通常会伴有特定的风格的色平衡(Stylistic Color Balance)
+
+最简单的色调映射算法是Reinhard色调映射，它涉及到分散整个HDR颜色值到LDR颜色值上，所有的值都有对应. Reinhard色调映射算法平均得将所有亮度值分散到LDR上. 我们将Reinhard色调映射应用到之前的片段着色器上，并且为了更好的测量加上一个Gamma校正过滤(包括SRGB纹理的使用):
+
+```c++
+void main()
+{             
+    const float gamma = 2.2;
+    vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
+  
+    // Reinhard色调映射
+    vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+    // Gamma校正
+    mapped = pow(mapped, vec3(1.0 / gamma));
+  
+    color = vec4(mapped, 1.0);
+}   
+```
+
+有了Reinhard色调映射的应用，我们不再会在场景明亮的地方损失细节. 当然，这个算法是倾向明亮的区域的，暗的区域会不那么精细也不那么有区分度.
+
+![](http://learnopengl.com/img/advanced-lighting/hdr_reinhard.png)
+
+现在你可以看到在隧道的尽头木头纹理变得可见了. 用了这个非常简单地色调映射算法，我们可以合适的看到存在浮点帧缓冲中整个范围的HDR值，给我们对于无损场景光照精确的控制.
+
+另一个有趣的色调映射应用是曝光(exposure)参数的使用. 你可能还记得之前我们在介绍里讲到的，HDR图片包含在不同曝光等级的细节. 如果我们有一个场景要展现日夜交替，我们当然会在白天使用低曝光，在夜间使用高曝光，就像人眼调节方式一样. 有了这个曝光参数，我们可以去设置可以同时在白天和夜晚不同光照条件工作的光照参数，我们只需要调整曝光参数就行了
+
+一个简单的曝光色调映射算法像这样
+
+```c++
+uniform float exposure;
+
+void main()
+{             
+    const float gamma = 2.2;
+    vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
+  
+    // Exposure tone mapping
+    vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+    // Gamma correction 
+    mapped = pow(mapped, vec3(1.0 / gamma));
+  
+    color = vec4(mapped, 1.0);
+}  
+```
+
+在这里我们将`exposure`定义为默认为1.0的`uniform`，从而允许我们更加精确设定我们是要注重黑暗还是明亮的区域的HDR颜色值. 举例来说，高曝光值会使隧道的黑暗部分显示更多的细节，然而低曝光值会显著减少黑暗区域的细节，但允许我们看到更多明亮区域的细节. 下面这组图片展示了在不同曝光值下的通道:
+
+![](http://learnopengl.com/img/advanced-lighting/hdr_exposure.png)
+
+这个图片清晰地展示了HDR渲染的优点. 通过改变曝光等级，我们可以看见场景的很多细节，而这些细节可能在LDR渲染中都被丢失了. 比如说隧道尽头，在正常曝光下木头结构隐约可见，但用低曝光木头的花纹就可以清晰看见了. 对于近处的木头花纹来说，在高曝光下会能更好的看见.
+
+你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/hdr "这里")找到这个演示的源码和HDR的[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/hdr&type=vertex "顶点")和[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/hdr&type=fragment "片段")着色器.
+
+### HDR拓展
+
+在这里展示的两个色调映射算法仅仅是大量(更先进)的色调映射算法中的一小部分，这些算法各有长短.一些色调映射算法倾向于特定的某种颜色/强度，也有一些算法同时显示低于高曝光颜色从而能够显示更加多彩和精细的图像. 也有一些技巧被称作自动曝光调整(Automatic Exposure Adjustment)或者叫人眼适应(Eye Adaptation)技术，它能够检测前一帧场景的亮度并且缓慢调整曝光参数模仿人眼使得场景在黑暗区域逐渐变亮或者在明亮区域逐渐变暗.
+
+HDR渲染的真正优点在庞大和复杂的场景中应用复杂光照算法会被显示出来，但是出于教学目的创建这样复杂的演示场景是很困难的，这个教程用的场景是很小的，而且缺乏细节. 但是如此简单的演示也是能够显示出HDR渲染的一些优点: 在明亮和黑暗区域无细节损失，因为它们可以由色调映射重新获取；多个光照的叠加不会导致亮度被约束的区域；光照可以被设定为他们原来的亮度而不是被LDR值限定. 而且，HDR渲染也使一些有趣的效果更加可行和真实; 其中一个效果叫做敷霜(Bloom)，我们将在下一节讨论他.
+
+### 附加资源
+
+- [如果敷霜效果不被应用HDR渲染还有好处吗?](http://gamedev.stackexchange.com/questions/62836/does-hdr-rendering-have-any-benefits-if-bloom-wont-be-applied): 一个StackExchange问题，其中有一个答案非常详细地解释HDR渲染的好处.
+- [什么是色调映射? 它与HDR有什么联系?](http://photo.stackexchange.com/questions/7630/what-is-tone-mapping-how-does-it-relate-to-hdr): 另一个非常有趣的答案，用了大量图片解释色调映射.
