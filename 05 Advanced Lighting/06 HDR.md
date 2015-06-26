@@ -115,7 +115,7 @@ void main()
 
 另一个有趣的色调映射应用是曝光(Exposure)参数的使用. 你可能还记得之前我们在介绍里讲到的，HDR图片包含在不同曝光等级的细节. 如果我们有一个场景要展现日夜交替，我们当然会在白天使用低曝光，在夜间使用高曝光，就像人眼调节方式一样. 有了这个曝光参数，我们可以去设置可以同时在白天和夜晚不同光照条件工作的光照参数，我们只需要调整曝光参数就行了.
 
-一个简单的曝光色调映射算法像这样:
+一个简单的曝光色调映射算法会像这样:
 
 ```c++
 uniform float exposure;
@@ -125,9 +125,9 @@ void main()
     const float gamma = 2.2;
     vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
   
-    // Exposure tone mapping
+    // 曝光色调映射
     vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
-    // Gamma correction 
+    // Gamma校正 
     mapped = pow(mapped, vec3(1.0 / gamma));
   
     color = vec4(mapped, 1.0);
