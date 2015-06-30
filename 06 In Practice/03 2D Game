@@ -1,7 +1,17 @@
-本文作者JoeyDeVries，由Hi翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Shaders)
+本文作者JoeyDeVries，由Alex Zhao翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Shaders)
 
-## **Text Rendering** ##
 
-##**Classical text rendering: bitmap fonts**##
-
-##**Modern text rendering: FreeType**##
+## **Breakout** ##
+## **Setting up** ##
+## **Rendering Sprites** ##
+## **Levels** ##
+## **Collisions** ##
+## **Ball** ##
+## **Collision detection** ##
+## **Collision resolution** ##
+## **Particles** ##
+## **Postprocessing** ##
+## **Powerups** ##
+## **Audio** ##
+## **Render text** ##
+## **Final thoughts** ##
