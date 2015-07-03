@@ -1,12 +1,14 @@
 本文作者JoeyDeVries，由[Django](http://bullteacher.com/16-light-casters.html)翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Light-casters)
 
+#投光物
+
 我们目前使用的所有光照都来自于一个单独的光源，这是空间中的一个点。它的效果不错，但是在真实世界，我们有多种类型的光，它们每个表现都不同。一个光源把光投射到物体上，叫做投光。这个教程里我们讨论几种不同的投光类型。学习模拟不同的光源是你未来丰富你的场景的另一个工具。
 
 我们首先讨论定向光（directional light），接着是作为之前学到知识的扩展的点光（point light），最后我们讨论聚光灯（spot light）。下面的教程我们会把这几种不同的光类型整合到一个场景中。
 
  
 
-##16.1 定向光
+## 定向光
 
 当一个光源很远的时候，来自光源的每条光线接近于平行。这看起来就像所有的光线来自于同一个方向，无论物体和观察者在哪儿。当一个光源被设置为无限远时，它被称为定向光，因为所有的光线都有着同一个方向；它会独立于光源的位置。
 
@@ -94,7 +96,7 @@ else if(lightVector.w == 1.0)
 
 ![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.png)
 
-在这里I是当前片段的光的亮度，d代表片段到光源的距离。为了计算衰减值，我们定义3个项：常数项Kc，一次项Kl和二次项Kq。
+在这里![I](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/I.png)是当前片段的光的亮度，![d](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/d.png)代表片段到光源的距离。为了计算衰减值，我们定义3个项：常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)，一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)和二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)。
 
 常数项通常是1.0，它的作用是保证坟墓永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
 一次项用于与距离值相称，这回以线性的方式减少亮度。
@@ -110,89 +112,22 @@ else if(lightVector.w == 1.0)
 ###16.3.1 选择正确的值
 
 但是，我们把这三个项设置为什么值呢？正确的值的设置由很多因素决定：环境、你希望光所覆盖的距离范围、光的类型等。大多数场合，这是经验的问题，也要适度调整。下面的表格展示一些各项的值，它们模拟现实（某种类型的）光源，覆盖特定的半径（距离）。第一蓝定义一个光的距离，它覆盖所给定的项。这些值是大多数光的良好开始，它是来自Ogre3D的维基的礼物：
-<table>
-<tbody>
-<tr>
-<td width="50"><b>Distance</b></td>
-<td width="52"><b>Constant</b></td>
-<td width="40"><b>Linear</b></td>
-<td width="56"><b>Quadratic</b></td>
-</tr>
-<tr>
-<td width="50">7</td>
-<td width="52">1.0</td>
-<td width="40">0.7</td>
-<td width="56">1.8</td>
-</tr>
-<tr>
-<td width="50">13</td>
-<td width="52">1.0</td>
-<td width="40">0.35</td>
-<td width="56">0.44</td>
-</tr>
-<tr>
-<td width="50">20</td>
-<td width="52">1.0</td>
-<td width="40">0.22</td>
-<td width="56">0.20</td>
-</tr>
-<tr>
-<td width="50">32</td>
-<td width="52">1.0</td>
-<td width="40">0.14</td>
-<td width="56">0.07</td>
-</tr>
-<tr>
-<td width="50">50</td>
-<td width="52">1.0</td>
-<td width="40">0.09</td>
-<td width="56">0.032</td>
-</tr>
-<tr>
-<td width="50">65</td>
-<td width="52">1.0</td>
-<td width="40">0.07</td>
-<td width="56">0.017</td>
-</tr>
-<tr>
-<td width="50">100</td>
-<td width="52">1.0</td>
-<td width="40">0.045</td>
-<td width="56">0.0075</td>
-</tr>
-<tr>
-<td width="50">160</td>
-<td width="52">1.0</td>
-<td width="40">0.027</td>
-<td width="56">0.0028</td>
-</tr>
-<tr>
-<td width="50">200</td>
-<td width="52">1.0</td>
-<td width="40">0.022</td>
-<td width="56">0.0019</td>
-</tr>
-<tr>
-<td width="50">325</td>
-<td width="52">1.0</td>
-<td width="40">0.014</td>
-<td width="56">0.0007</td>
-</tr>
-<tr>
-<td width="50">600</td>
-<td width="52">1.0</td>
-<td width="40">0.007</td>
-<td width="56">0.0002</td>
-</tr>
-<tr>
-<td width="50">3250</td>
-<td width="52">1.0</td>
-<td width="40">0.0014</td>
-<td width="56">0.000007</td>
-</tr>
-</tbody>
-</table>
-就像你所看到的，常数项Kc一直都是1.0。一次项Kl为了覆盖更远的距离通常很小，二次项Kq就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
+
+Distance|Constant|Linear|Quadratic
+-------|------|-----|------
+7|1.0|0.7|1.8
+13|1.0|0.35|0.44
+20|1.0|0.22|0.20
+32|1.0|0.14|0.07
+50|1.0|0.09|0.032
+65|1.0|0.07|0.017
+100|1.0|0.045|0.0075
+160|1.0|0.027|0.0028
+200|1.0|0.022|0.0019
+325|1.0|0.014|0.0007
+600|1.0|0.007|0.0002
+3250|1.0|0.0014|0.000007
+就像你所看到的，常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)一直都是1.0。一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)为了覆盖更远的距离通常很小，二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
 
  
 
@@ -316,94 +251,21 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 为创建外圆锥，我们简单定义另一个余弦值，它代表聚光灯的方向向量和外圆锥的向量（等于它的半径）的角度。然后，如果片段在内圆锥和外圆锥之间，就会给它计算出一个0.0到1.0之间的亮度。如果片段在内圆锥以内这个亮度就等于1.0，如果在外面就是0.0。
 
 我们可以使用下面的公式计算这样的值：
-[math]
-这里ε是内部（φ）和外部圆锥[math]的差。结果I的值是聚光灯在当前片段的亮度。
+![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.png)
+这里![Epsilon](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/epsilon.png)是内部（![Phi](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/phi.png)）和外部圆锥(![Gamma](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/gamma.png))![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters3.png)的差。结果I的值是聚光灯在当前片段的亮度。
 
 很难用图画描述出这个公式是怎样工作的，所以我们尝试使用一个例子：
-<table>
-<tbody>
-<tr>
-<td width="36">θ</td>
-<td width="60">θ<b>in&nbsp;</b><b>degrees</b></td>
-<td width="68">φ<b>(inner&nbsp;</b><b>cutoff)</b></td>
-<td width="61">φ<b>in&nbsp;</b><b>degrees</b></td>
-<td width="67">γ<b>(outer&nbsp;</b><b>cutoff)</b></td>
-<td width="60">γ<b>in&nbsp;</b><b>degrees</b></td>
-<td width="94">ε</td>
-<td width="115"><i>I</i></td>
-</tr>
-<tr>
-<td width="36">0.87</td>
-<td width="60">30</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.87&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;0.56</td>
-</tr>
-<tr>
-<td width="36">0.9</td>
-<td width="60">26</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.9&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;0.89</td>
-</tr>
-<tr>
-<td width="36">0.97</td>
-<td width="60">14</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.97&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;1.67</td>
-</tr>
-<tr>
-<td width="36">0.97</td>
-<td width="60">14</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.97&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;1.67</td>
-</tr>
-<tr>
-<td width="36">0.83</td>
-<td width="60">34</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.83&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;0.11</td>
-</tr>
-<tr>
-<td width="36">0.64</td>
-<td width="60">50</td>
-<td width="68">0.91</td>
-<td width="61">25</td>
-<td width="67">0.82</td>
-<td width="60">35</td>
-<td width="94">0.91&nbsp;–&nbsp;0.82&nbsp;=&nbsp;0.09</td>
-<td width="115">0.64&nbsp;–&nbsp;0.82&nbsp;/&nbsp;0.09&nbsp;=&nbsp;-2.0</td>
-</tr>
-<tr>
-<td width="36">0.966</td>
-<td width="60">15</td>
-<td width="68">0.9978</td>
-<td width="61">12.5</td>
-<td width="67">0.953</td>
-<td width="60">17.5</td>
-<td width="94">0.966&nbsp;–&nbsp;0.953&nbsp;=&nbsp;0.0448</td>
-<td width="115">0.966&nbsp;–&nbsp;0.953&nbsp;/&nbsp;0.0448&nbsp;=&nbsp;0.29</td>
-</tr>
-</tbody>
-</table>
+
+
+θ|θ in degrees|φ (inner cutoff)|φ in degrees|γ (outer cutoff)|γ in degrees|ε|l
+--|---|---|---|---|---|---|---
+0.87|30|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.87 - 0.82 / 0.09 = 0.56
+0.9|26|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.9 - 0.82 / 0.09 = 0.89
+0.97|14|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.97 - 0.82 / 0.09 = 1.67
+0.97|14|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.97 - 0.82 / 0.09 = 1.67
+0.83|34|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.83 - 0.82 / 0.09 = 0.11
+0.64|50|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.64 - 0.82 / 0.09 = -2.0
+0.966|15|0.9978|12.5|0.953|17.5|0.966 - 0.953 = 0.0448|0.966 - 0.953 / 0.0448 = 0.29
 就像你看到的那样我们基本是根据θ在外余弦和内余弦之间插值。如果你仍然不明白怎么继续，不要担心。你可以简单的使用这个公式计算，当你更加老道和明白的时候再来看。
 
 由于我们现在有了一个亮度值，当在聚光灯外的时候是个负的，当在内部圆锥以内大于1。如果我们适当地把这个值固定，我们在像素着色器中就再不需要if-else了，我们可以简单地用计算出的亮度值乘以光的元素：

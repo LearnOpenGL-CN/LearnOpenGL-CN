@@ -1,27 +1,29 @@
-��������JoeyDeVries����[Django](http://bullteacher.com/15-lighting-maps.html)������[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Lighting-maps)
+本文作者JoeyDeVries，由[Django](http://bullteacher.com/15-lighting-maps.html)翻译自[http://learnopengl.com](http://www.learnopengl.com/#!Lighting/Lighting-maps)
 
-ǰ��Ľ̳̣�����������ÿ�����嶼ӵ�и��Բ�ͬ�Ĳ��ʣ������Թ�������ͬ�ķ�Ӧ����һ�����ճ����У���ÿ��������������岻ͬ����ۺܰ�����������Ȼ�����һ�������ͼ������ṩ�ܶ�������ԡ�
+# 光照贴图
 
-ǰ��Ľ̳�����Ϊһ���������Ϊһ�����嶨����һ�����ʣ�������ʵ���������ͨ������ֻ����ôһ�ֲ��ʣ������ɶ��ֲ�����ɡ�����һ��������������ʵع����������Ჿ�ַ��价����������̥û��specular�߹⣬���ȴ�ǳ���������ϴ��֮�󣩡�����ͬ����diffuse��ambient��ɫ���������������϶�����ͬ��һ������ʾ�˶��ֲ�ͬ��ambient/diffuse��ɫ����֮������һ������ÿ�����ֶ��ж��ֲ������ԡ�
+前面的教程，我们讨论了每个物体都拥有各自不同的材质，因而会对光做出不同的反应。在一个光照场景中，给每个物体和其他物体不同的外观很棒，但是这仍然不会对一个物体的图像输出提供很多的伸缩性。
 
-���ԣ�ǰ��Ĳ���ϵͳ���ڳ�����򵥵�ģ�����ⶼ�ǲ����ģ�����������Ҫ��չǰ���ϵͳ������Ҫ����diffuse��specular��ͼ�������������һ�������diffuse�����ڼ���ambient�ɷ���˵�����Ǽ���������һ���ģ���specular�ɷ��ܹ��и���ȷ��Ӱ�졣
+前面的教程我们为一个物体的作为一个整体定义了一个材质，但是现实世界的物体通常不会只有这么一种材质，而是由多种材质组成。想象一辆车：它的外表质地光亮，车窗会部分反射环境，它的轮胎没有specular高光，轮彀却非常闪亮（在洗过之后）。汽车同样有diffuse和ambient颜色，它们在整个车上都不相同；一辆车显示了多种不同的ambient/diffuse颜色。总之，这样一个物体每个部分都有多种材质属性。
+
+所以，前面的材质系统对于除了最简单的模型以外都是不够的，所以我们需要扩展前面的系统，我们要介绍diffuse和specular贴图。它们允许你对一个物体的diffuse（对于简洁的ambient成分来说，它们几乎总是是一样的）和specular成分能够有更精确的影响。
 
  
 
-##15.1 diffuse��ͼ
+## 漫反射贴图
 
-����ϣ��ͨ��ĳ�ַ�ʽ��ÿ��ԭʼ���ض�������diffuse��ɫ���п��������ǻ�������ԭʼ���ص�λ������ȡ��ɫֵ��ϵͳ��
+我们希望通过某种方式对每个原始像素独立设置diffuse颜色。有可以让我们基于物体原始像素的位置来获取颜色值的系统吗？
 
-������������������ƣ�̹��������������ʹ��������ϵͳ�Ѿ���һ����ˡ�������������һ������Ľ̳���̸�۵�����������������һ��������������ʵ��ʹ��ͬһ��Ǳ��ԭ���µĲ�ͬ���ƣ�ʹ��һ��ͼƬ����ס���壬����Ϊÿ��ԭʼ��������������ɫֵ�����й�ĳ����ͨ������diffuse��ͼ����ͨ����3D�����ҵĽз�������Ϊ�������ͼ����������������diffuse��ɫ��
+这可能听起来极其相似，坦白来讲我们我们使用这样的系统已经有一会儿了。听起来很像在一个较早的教程中谈论的纹理，它基本就是一个纹理。我们其实是使用同一个潜在原则下的不同名称：使用一张图片包裹住物体，我们为每个原始像素索引独立颜色值。在有光的场景里，通常叫做diffuse贴图（这通常是3D艺术家的叫法），因为这个纹理图像表现了所有物体的diffuse颜色。
 
-Ϊ��ǿ��diffuse��ͼ�����ǽ���ʹ�������ͼƬ������һ����һȦ�ֱߵ�ľ�䣺
+为了强调diffuse贴图，我们将会使用下面的图片，它是一个有一圈钢边的木箱：
 
 ![](http://www.learnopengl.com/img/textures/container2.png)
 
-����ɫ����ʹ��diffuse��ͼ�������̳̽��ܵ�һ����������ǰ���������Ϊsampler2D������Material�ṹ���С�����ʹ��diffuse��ͼ������ڶ����vec3���͵�diffuse��ɫ��
+在着色器中使用diffuse贴图和纹理教程介绍的一样。这次我们把纹理储存为sampler2D，它在Material结构体中。我们使用diffuse贴图替代早期定义的vec3类型的diffuse颜色。
 
-Ҫ��ס����sampler2DҲ����ģ�����ͣ�����ζ�����ǲ�����ĳ�����Ͷ���ʵ������ֻ����uniform�������ǡ���������ýṹ�������uniformʵ�������������Ĳ�����������GLSL���׳���ֵĴ�����ͬ��Ҳ����������ģ�����͡�
-����ҲҪ�Ƴ�amibient������ɫ��������Ϊambient��ɫ��������������diffuse��ɫ�����Բ���Ҫ�ֱ�ȥ��������
+要记住的是sampler2D也叫做模糊类型，这意味着我们不能以某种类型对它实例化，只能用uniform定义它们。如果我们用结构体而不是uniform实例化（就像函数的参数那样），GLSL会抛出奇怪的错误；这同样也适用于其他模糊类型。
+我们也要移除amibient材质颜色向量，因为ambient颜色绝大多数情况等于diffuse颜色，所以不需要分别去储存它：
 ```c++
 struct Material 
 { 
@@ -32,18 +34,18 @@ struct Material
 ... 
 in vec2 TexCoords;
 ```
-�����ǰ�ambient��ɫ����Ϊ��ͬ��ֵ���ɣ���ͬ��diffuseֵ��������Լ�������ambient��vec3���������������ambient��ɫ��������ֲ��䡣Ϊ��ʹÿ��ԭʼ���صõ���ͬambientֵ������Ҫ��ambientֵ����ʹ����һ��������
-ע�⣬��������ɫ�������ǽ����ٴ���Ҫ�������꣬������������һ���������������Ȼ�����Ǽ򵥵ش����������������ԭʼ���ص�diffuse��ɫֵ��
+如果你非把ambient颜色设置为不同的值不可（不同于diffuse值），你可以继续保持ambient的vec3，但是整个物体的ambient颜色会继续保持不变。为了使每个原始像素得到不同ambient值，你需要对ambient值单独使用另一个纹理。
+注意，在像素着色器中我们将会再次需要纹理坐标，所以我们声明一个额外输入变量。然后我们简单地从纹理采样，来获得原始像素的diffuse颜色值：
 ```c++
 vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 ```
-ͬ������Ҫ���ǰ�ambient���ʵ���ɫ����Ϊdiffuse���ʵ���ɫ��
+同样，不要忘记把ambient材质的颜色设置为diffuse材质的颜色：
 ```c++
 vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 ```
-�����diffuse��ͼ��ȫ�������ˡ������㿴���ģ��ⲻ��ʲô�µĶ�����������ȴ�����������Ӿ�Ʒ�ʡ�Ϊ������������������Ҫ�õ�����������¶������ݣ���������Ϊ�������Դ��ݵ�������ɫ�������������أ��������󶨵����ʵ�������Ԫ��
+这就是diffuse贴图的全部内容了。就像你看到的，这不是什么新的东西，但是它却极大提升了视觉品质。为了让它工作，我们需要用到纹理坐标更新顶点数据，把它们作为顶点属性传递到像素着色器，把纹理加载，把纹理绑定到合适的纹理单元。
 
-���µĶ������ݿ��Դ������ҵ��������������ڰ����˶���λ�ã������������������꣬ÿ��������Ķ��㶼����Щ���ԡ������Ǹ��¶�����ɫ������������������Ϊ�������ԣ�Ȼ���͵�������ɫ����
+更新的顶点数据可以从这里找到。顶点数据现在包括了顶点位置，法线向量和纹理坐标，每个立方体的顶点都有这些属性。让我们更新顶点着色器来接受纹理坐标作为顶点属性，然后发送到像素着色器：
 ```c++
 #version 330 core 
 layout (location = 0) in vec3 position; 
@@ -58,48 +60,48 @@ void main()
     TexCoords = texCoords; 
 }
 ```
-Ҫ��֤���µĶ�������ָ�룬������VAOƥ���µĶ������ݣ�ҲҪ������ͼƬ����Ϊ�������ڻ�������֮ǰ������ϣ����ѡ������Ԫ����Ϊmaterial.diffuse���uniform���������������ӵ����������������Ԫ��
+要保证更新的顶点属性指针，不仅是VAO匹配新的顶点数据，也要把箱子图片加载为纹理。在绘制箱子之前，我们希望首选纹理单元被赋为material.diffuse这个uniform采样器，并绑定箱子的纹理到这个纹理单元：
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0);
 ... 
 glActiveTexture(GL_TEXTURE0); 
 glBindTexture(GL_TEXTURE_2D, diffuseMap);
 ```
-���ڣ�ʹ��һ��diffuse��ͼ��������ϸ�����ٴλ�þ��˵�������������ӵ������ϵĹ��տ�ʼ�����ˣ�������ʵ��������������ڿ��ܿ�������������
+现在，使用一个diffuse贴图，我们在细节上再次获得惊人的提升，这次添加到箱子上的光照开始闪光了（名符其实）。你的箱子现在可能看起来像这样：
 
 ![](http://www.learnopengl.com/img/lighting/materials_diffuse_map.png)
 
-�����������õ�Ӧ�õ�ȫ�����롣
+你可以在这里得到应用的全部代码。
 
  
 
-##15.2 specular��ͼ
+## 镜面贴图
 
-�����ע�⵽��specular�߹⿴��������ô�����������ǵ������Ǹ����ӣ��󲿷���ľͷ������֪��ľͷ�ǲ����о���߹�ġ�����ͨ������������specular��������Ϊvec3(0.0f)��������������������ζ�����߻᲻����ʾ����߹⣬����֪�������ǻ���ʾһЩ����߹�ġ����ǻ���Ҫ�������岿�ֵ���ʾ����߹⣬�������޸��˵����ȡ�������⿴������diffuse��ͼ������һ�������ɺ������벻�ǡ�
+你可能注意到，specular高光看起来不怎么样，由于我们的物体是个箱子，大部分是木头，我们知道木头是不会有镜面高光的。我们通过把物体设置specular材质设置为vec3(0.0f)来修正它。但是这样意味着铁边会不再显示镜面高光，我们知道钢铁是会显示一些镜面高光的。我们会想要控制物体部分地显示镜面高光，它带有修改了的亮度。这个问题看起来和diffuse贴图的讨论一样。是巧合吗？我想不是。
 
-����ͬ������һ��������ͼ������þ���߹⡣����ζ��������Ҫ����һ���ڰף�������ϲ������ɫ������������specular���ȣ�����Ӧ�õ������ÿ�����֡�������һ��specular��ͼ�����ӣ�
+我们同样适用一个纹理贴图，来获得镜面高光。这意味着我们需要生成一个黑白（或者你喜欢的颜色）纹理来定义specular亮度，把它应用到物体的每个部分。下面是一个specular贴图的例子：
 
 ![](http://www.learnopengl.com/img/textures/container2_specular.png)
 
-һ��specular�߹�����ȿ���ͨ��ͼƬ��ÿ����������������á�specular��ͼ��ÿ�����ؿ�����ʾΪһ����ɫ���������磺�������ɫ������ɫ����vec3(0.0f)����ɫ��vec3(0.5f)����������ɫ���У����ǲ�����Ӧ����ɫֵ���������Թ��specular���ȡ�����Խ���ס����˻��Ľ��Խ�������specualr����Խ����
+一个specular高光的亮度可以通过图片中每个纹理的亮度来获得。specular贴图的每个像素可以显示为一个颜色向量，比如：在那里黑色代表颜色向量vec3(0.0f)，灰色是vec3(0.5f)。在像素着色器中，我们采样相应的颜色值，把它乘以光的specular亮度。像素越“白”，乘积的结果越大，物体的specualr部分越亮。
 
-�������Ӽ�������ľͷ��ɣ�ľͷ��Ϊһ�����ʲ����о���߹⣬������͸���ֵ�diffuse�������ú�ɫ���ǣ���ɫ���ֲ�������κ�specular�߹⡣���ӵ�������һ���޸ĵ�specular���ȣ��������������ܵ�����߹�Ӱ�죬ľ�Ʋ����򲻻ᡣ
+由于箱子几乎是由木头组成，木头作为一个材质不会有镜面高光，整个不透部分的diffuse纹理被用黑色覆盖：黑色部分不会包含任何specular高光。箱子的铁边有一个修改的specular亮度，它自身更容易受到镜面高光影响，木纹部分则不会。
 
-�Ӽ�����������ľͷҲ�о���߹⣬�����������ֵ��С������Ĺⱻɢ�䣩��Ӱ���С������Ϊ��ѧϰĿ�ģ����ǿ��Լ�װľͷ�������κ�specular�ⷴ�䡣
-ʹ��Photoshop��Gimp֮��Ĺ��ߣ�����һЩ���֣��ǳ����ױ任һ��diffuse������ΪspecularͼƬ������������/�Աȶȵķ�ʽ�����԰�������ֱ任Ϊ��ɫ���ɫ��
+从技术上来讲，木头也有镜面高光，尽管这个闪亮值很小（更多的光被散射），影响很小，但是为了学习目的，我们可以假装木头不会有任何specular光反射。
+使用Photoshop或Gimp之类的工具，剪切一些部分，非常容易变换一个diffuse纹理，为specular图片，以增加亮度/对比度的方式，可以把这个部分变换为黑色或白色。
 
  
 
-###15.2.1 specular��ͼ����
+###15.2.1 specular贴图采样
 
-һ��specular��ͼ����������һ�������Դ����diffuse��ͼ�Ĵ���Ҳ���ơ�ȷ�������ļ�����ͼƬ������һ��������������������ͬ����������ɫ����ʹ����һ�����������������Ǳ���Ϊspecular��ͼʹ��һ����ͬ��������Ԫ���鿴����������������Ⱦǰ�����ǰ����󶨵����ʵ�������Ԫ
+一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的像素着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（查看纹理），所以在渲染前让我们把它绑定到合适的纹理单元
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1); 
 ... 
 glActiveTexture(GL_TEXTURE1); 
 glBindTexture(GL_TEXTURE_2D, specularMap);
 ```
-Ȼ�����������ɫ���������ԣ�����һ��sampler2D��Ϊ���specular���ֵ����ͣ�������vec3��
+然后更新像素着色器材质属性，接受一个sampler2D作为这个specular部分的类型，而不是vec3：
 ```c++
 struct Material 
 { 
@@ -108,20 +110,20 @@ struct Material
     float shininess; 
 };
 ```
-�������ϣ���������specular��ͼ������ȡԭʼ������Ӧ��specular���ȣ�
+最后我们希望采样这个specular贴图，来获取原始像素相应的specular亮度：
 ```c++
 vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords)); 
 vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)); 
 vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords)); 
 color = vec4(ambient + diffuse + specular, 1.0f);
 ```
-ͨ��ʹ��һ��specular��ͼ���ǿ��Զ��弫Ϊ��ϸ��ϸ�ڣ������������ֻ������������ԣ����ǿ�������������Ӧ�����ȡ�specular��ͼ������һ�����ӵĸ���diffuse��ͼ�Ŀ���Ȩ�ޡ�
+通过使用一个specular贴图我们可以定义极为精细的细节，物体的这个部分会获得闪亮的属性，我们可以设置它们相应的亮度。specular贴图给我们一个附加的高于diffuse贴图的控制权限。
 
-����㲻���Ϊ�������������specular��ͼ��ʹ����ɫ��������Ϊÿ��ԭʼ��������specular���ȣ�ͬʱҲ����specular�߹����ɫ������ʵ�Ƕ���˵��specular����ɫ�������ɹ�Դ���������ģ�����������������ʵ��ͼ�������ΪʲôͼƬͨ���Ǻ�ɫ�Ͱ�ɫ�ģ�����ֻ�������ȣ���
-�������������Ӧ�ã�����������ؿ������ӵĲ������ڷǳ�������ʵ�����ߵ�ľͷ�����ˣ�
+如果你不想成为主流，你可以在specular贴图里使用颜色，不单单为每个原始像素设置specular亮度，同时也设置specular高光的颜色。从真实角度来说，specular的颜色基本是由光源自身决定的，所以它不会生成真实的图像（这就是为什么图片通常是黑色和白色的：我们只关心亮度）。
+如果你现在运行应用，你可以清晰地看到箱子的材质现在非常类似真实的铁边的木头箱子了：
 
 ![](http://www.learnopengl.com/img/lighting/materials_specular_map.png)
 
-������������ҵ�ȫ��Դ�롣Ҳ�Ա�һ����Ķ�����ɫ����������ɫ����
+你可以在这里找到全部源码。也对比一下你的顶点着色器和像素着色器。
 
-ʹ��diffuse��specular��ͼ�����ǿ��Ը���ص�����������һ����Ϊ���Ե�ϸ�ڡ����ǿ���ʹ������������ͼ�����編��/bump��ͼ���߷�����ͼ�����������Ӹ����ϸ�ڡ�������Щ�ں���̳̲Ż��漰����������Ӹ������е����Ѻͼ��˿�����һ���������㣬���ǵ����ӻ�����ڸ�Ư����
+使用diffuse和specular贴图，我们可以给相关但简单物体添加一个极为明显的细节。我们可以使用其他纹理贴图，比如法线/bump贴图或者反射贴图，给物体添加更多的细节。但是这些在后面教程才会涉及。把你的箱子给你所有的朋友和家人看，有一天你会很满足，我们的箱子会比现在更漂亮！
