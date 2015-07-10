@@ -2,7 +2,7 @@
 
 # Hello Window
 
-我们看看GLFW是否能够运行。首先，创建一个.cpp文件，在新创建的文件的顶部包含下面的头文件。注意，我们定义了GLEW_STATIC，这是因为我们将使用静态GLEW库。
+我们看看GLFW是否能够运行。首先，创建一个.cpp文件，在新创建的文件的顶部包含下面的头文件。注意，我们定义了`GLEW_STATIC`，这是因为我们将使用静态GLEW库。
 
 ```c++
 // GLEW
@@ -11,6 +11,7 @@
 // GLFW
 #include <GLFW/glfw3.h>
 ```
+
 <div style="border:solid #E1B3B3;border-radius:10px;background-color:#FFD2D2;margin:10px 10px 10px 0px;padding:10px">
 必须在GLFW之前引入GLEW。GLEW的头文件已经包含了OpenGL的头文件（`GL/gl.h`），所以要在其他头文件之前引入GLEW，因为它们需要有OpenGL才能起作用。
 </div>
