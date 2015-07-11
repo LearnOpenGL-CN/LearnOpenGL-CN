@@ -17,15 +17,16 @@ GLFW是一个C库，专门针对OpenGL，提供了一些渲染物件所需的最
 GLFW可以从它们网站的[下载页](http://www.glfw.org/download.html)上获取。GLFW已经有针对Visual Studio 2012/2013的预编译的二进制版本和相应的头文件，但是为了完整性我们将从编译源代码开始，所以需要下载**源代码包**。
 
 
-<div style="border:solid #E1B3B3;border-radius:10px;background-color:#FFD2D2;margin:10px 10px 10px 0px;padding:10px">
-当你下载二进制版本时，请下载32位的版本而不是64位的除非你清楚你在做什么。64位版本被报告出现很多奇怪的问题。
-</div>
+!!! Attention
+
+	当你下载二进制版本时，请下载32位的版本而不是64位的除非你清楚你在做什么。64位版本被报告出现很多奇怪的问题。
+
 
 
 一旦下载完了源码包，解压到某处。我们只关心里面的这些内容：
 
--编译生成的库
--**include**文件夹
+- 编译生成的库
+- **include**文件夹
 
 从源代码编译库可以保证生成的目标代码是针对你的操作系统和CPU的，而一个预编译的二进制代码并不保证总是适合。提供源代码的一个问题是不是每个人都用相同的IDE来编译，因而提供的工程文件可能和一些人的IDE不兼容。所以人们只能从.cpp和.h文件来自己建立工程，这是一项笨重的工作。因此诞生了一个叫做CMake的工具。
 
@@ -113,11 +114,10 @@ GLEW代表OpenGL Extension Wrangler Library，管理我们上面提到的繁琐�
 我们使用GLEW的静态版本glew32s.lib（注意这里的's'），用如上的方式添加其库文件和头文件，最后在链接器的选项里加上glew32s.lib。注意GLFW3也是编译成了一个静态库。
 
 
-<div style="border:solid #AFDFAF;border-radius:10px;background-color:#D8F5D8;margin:10px 10px 10px 0px;padding:10px">
-静态链接是指编译时就将库代码里的内容合并进二进制文件。优点就是你不需要再放额外的文件，只需要发布你最终的二进制代码文件。缺点就是你的程序会变得更大，另外当库有升级版本时，你必须重新进行编译。
-<br/>
-动态链接是指一个库通过.dll或.so的方式存在，它的代码与你的二进制文件的代码是分离的。优点是使你的程序大小变小并且更容易升级，缺点是你发布时必须带上这些dll。
-</div>
+!!! Important
+
+	静态链接是指编译时就将库代码里的内容合并进二进制文件。优点就是你不需要再放额外的文件，只需要发布你最终的二进制代码文件。缺点就是你的程序会变得更大，另外当库有升级版本时，你必须重新进行编译。
+	动态链接是指一个库通过.dll或.so的方式存在，它的代码与你的二进制文件的代码是分离的。优点是使你的程序大小变小并且更容易升级，缺点是你发布时必须带上这些dll。
 
 
 如果你希望静态链接GLEW，必须在包含GLEW头文件之前定义预编译宏GLEW\_STATIC：
@@ -130,9 +130,10 @@ GLEW代表OpenGL Extension Wrangler Library，管理我们上面提到的繁琐�
 如果你希望动态链接那么不要定义这个宏。几乎动态链接的话你需要拷贝一份dll文件到你的应用程序同目录。
 
 
-<div style="border:solid #AFDFAF;border-radius:10px;background-color:#D8F5D8;margin:10px 10px 10px 0px;padding:10px">
-对于Linux用户建议使用这个命令行-lGLEW -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi。没有正确链接相应的库会产生<i>undefined reference</i> errors.（未定义的引用）
-</div>
+
+!!! Important
+
+	对于Linux用户建议使用这个命令行`-lGLEW -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi`。没有正确链接相应的库会产生*undefined reference* errors.（未定义的引用）
 
 
 我们现在成功编译了GLFW和GLEW库，我们将进入[下一节](http://www.learnopengl.com/#!Getting-Started/Hello-Window)（第一章第三节）去使用GLFW和GLEW来设置OpenGL上下文并创建窗口。记住确保你的头文件和库文件的目录设置正确，以及链接器里引用的库文件名正确。如果仍然遇到错误，请参考额外资源中的例子。
