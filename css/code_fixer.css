@@ -1,0 +1,13 @@
+div.admonition code {
+  color: #404040;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+p {
+  text-align: justify;
+}
+
+p code {
+  word-wrap: normal;
+}
