@@ -140,9 +140,9 @@ void main()
 
 	**向量（Vector）**
 
-	在图形编程中我们经常会使用向量这个数学概念，因为它简明地表达了任意空间中位置和方向，二者是有用的数学属性。在GLSL中一个向量有最多4个元素，每个元素值都可以从各自代表一个空间坐标的vec.x、vec.y、vec.z和vec.w来获取到。注意vec.w元素不是用作表达空间中的位置的（我们处理的是3D不是4D）而是用在所谓透视除法（Perspective Division）上。我们会在后面的教程中更详细地讨论向量。
+	在图形编程中我们经常会使用向量这个数学概念，因为它简明地表达了任意空间中位置和方向，二者是有用的数学属性。在GLSL中一个向量有最多4个元素，每个元素值都可以从各自代表一个空间坐标的`vec.x`、`vec.y`、`vec.z`和`vec.w`来获取到。注意`vec.w`元素不是用作表达空间中的位置的（我们处理的是3D不是4D）而是用在所谓透视除法（Perspective Division）上。我们会在后面的教程中更详细地讨论向量。
 
-为了设置顶点着色器的输出，我们必须把位置数据赋值给预定义的`gl_Position`变量，这个位置数据是一个vec4类型的。在main函数的最后，无论我们给`gl_Position`设置成什么，它都会成为着色器的输出。由于我们的输入是一个3元素的向量，我们必须把它转换为4元素。我们可以通过把`vec3`数据作为`vec4`初始化构造器的参数，同时把`w`元素设置为`1.0f`（我们会在后面解释为什么）。
+为了设置顶点着色器的输出，我们必须把位置数据赋值给预定义的`gl_Position`变量，这个位置数据是一个`vec4`类型的。在main函数的最后，无论我们给`gl_Position`设置成什么，它都会成为着色器的输出。由于我们的输入是一个3元素的向量，我们必须把它转换为4元素。我们可以通过把`vec3`数据作为`vec4`初始化构造器的参数，同时把`w`元素设置为`1.0f`（我们会在后面解释为什么）。
 
 这个顶点着色器可能是能想到的最简单的了，因为我们什么都没有处理就把输入数据输出了。在真实的应用里输入数据通常都没有在标准化设备坐标中，所以我们首先就必须把它们放进OpenGL的可视区域内。
 
@@ -172,21 +172,17 @@ glCompileShader(vertexShader);
 
 	你可能会希望检测调用`glCompileShader`后是否编译成功了，是否要去修正错误。检测编译时错误的方法是：
 	
-		```c++
 		GLint success;
 		GLchar infoLog[512];
 		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-		```
 
 	首先我们定义一个整型来表示是否成功编译，还需要一个储存错误消息的容器（如果有的话）。然后我们用`glGetShaderiv`检查是否编译成功了。如果编译失败，我们应该用`glGetShaderInfoLog`获取错误消息，然后打印它。
 
-		```c++
 		if(!success)
 		{
 	    	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 	    	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 		}
-		```
 
 如果编译的时候没有任何错误，顶点着色器就被编译了。
 
@@ -249,13 +245,11 @@ glLinkProgram(shaderProgram);
 
 	就像着色器的编译一样，我们也可以检验链接着色器程序是否失败，获得相应的日志。与glGetShaderiv和glGetShaderInfoLog不同，现在我们使用：
 
-		```c++
 		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 		if(!success) {
 	    	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 	  	  ...
 		}
-		```
 
 我们可以调用`glUseProgram`函数，用新创建的程序对象作为它的参数，这样就能激活这个程序对象：
 
