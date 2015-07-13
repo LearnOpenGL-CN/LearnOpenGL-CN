@@ -117,7 +117,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 ## 顶点着色器
 
-顶点着色器是几个着色器中的一个，它是可编程的。现代OpenGL需要我们至少设置一个顶点和一个像素着色器，如果我们打算做渲染的话。我们会简要介绍一下着色器以及配置两个非常简单的着色器来绘制我们第一个三角形。下个教程里我们会更详细的讨论着色器。
+顶点着色器是几个着色器中的一个，它是可编程的。现代OpenGL需要我们至少设置一个顶点和一个片段着色器，如果我们打算做渲染的话。我们会简要介绍一下着色器以及配置两个非常简单的着色器来绘制我们第一个三角形。下个教程里我们会更详细的讨论着色器。
 
 我们需要做的第一件事是用着色器语言GlSL写顶点着色器，然后编译这个着色器，这样我们就可以在应用中使用它了。下面你会看到一个非常基础的顶点着色器的源代码，它就是使用GLSL写的：
 
@@ -172,27 +172,27 @@ glCompileShader(vertexShader);
 
 	你可能会希望检测调用`glCompileShader`后是否编译成功了，是否要去修正错误。检测编译时错误的方法是：
 	
-	```c++
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	```
+		```c++
+		GLint success;
+		GLchar infoLog[512];
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+		```
 
 	首先我们定义一个整型来表示是否成功编译，还需要一个储存错误消息的容器（如果有的话）。然后我们用`glGetShaderiv`检查是否编译成功了。如果编译失败，我们应该用`glGetShaderInfoLog`获取错误消息，然后打印它。
 
-	```c++
-	if(!success)
-	{
-    	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-	```c++
+		```c++
+		if(!success)
+		{
+	    	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+	    	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		}
+		```
 
 如果编译的时候没有任何错误，顶点着色器就被编译了。
 
 ## 片段着色器(Fragment Shader)
 
-像素着色器是第二个也是最终我们打算创建的用于渲染三角形的着色器。像素着色器的全部，都是用来计算你的像素的最后颜色输出。为了让事情比较简单，我们的像素着色器只输出橘黄色。
+片段着色器是第二个也是最终我们打算创建的用于渲染三角形的着色器。片段着色器的全部，都是用来计算你的像素的最后颜色输出。为了让事情比较简单，我们的片段着色器只输出橘黄色。
 
 !!! Important
 
@@ -209,9 +209,9 @@ void main()
 }
 ```
 
-像素着色器只需要一个输出变量，这个变量是一个4元素表示的最终输出颜色的向量，我们可以自己计算出来。我们可以用`out`关键字声明输出变量，这里我们命名为`color`。下面，我们简单的把一个带有alpha值为1.0（1.0代表完全不透明）的橘黄的`vec4`赋值给`color`作为输出。
+片段着色器只需要一个输出变量，这个变量是一个4元素表示的最终输出颜色的向量，我们可以自己计算出来。我们可以用`out`关键字声明输出变量，这里我们命名为`color`。下面，我们简单的把一个带有alpha值为1.0（1.0代表完全不透明）的橘黄的`vec4`赋值给`color`作为输出。
 
-编译像素着色器的过程与顶点着色器相似，尽管这次我们使用GL_FRAGMENT_SHADER作为着色器类型：
+编译片段着色器的过程与顶点着色器相似，尽管这次我们使用GL_FRAGMENT_SHADER作为着色器类型：
 
 ```c++
 GLuint fragmentShader;
@@ -248,13 +248,14 @@ glLinkProgram(shaderProgram);
 !!! Important
 
 	就像着色器的编译一样，我们也可以检验链接着色器程序是否失败，获得相应的日志。与glGetShaderiv和glGetShaderInfoLog不同，现在我们使用：
-	```c++
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if(!success) {
-    	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-  	  ...
-	}
-	```
+
+		```c++
+		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+		if(!success) {
+	    	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+	  	  ...
+		}
+		```
 
 我们可以调用`glUseProgram`函数，用新创建的程序对象作为它的参数，这样就能激活这个程序对象：
 
@@ -271,7 +272,7 @@ glDeleteShader(vertexShader);
 glDeleteShader(fragmentShader);
 ```
 
-现在，我们把输入顶点数据发送给GPU，指示GPU如何在顶点和像素着色器中处理它。还没结束。OpenGL还不知道如何解释内存中的顶点数据，以及怎样把顶点数据链接到顶点着色器的属性上。我们会告诉OpenGL怎么做。
+现在，我们把输入顶点数据发送给GPU，指示GPU如何在顶点和片段着色器中处理它。还没结束。OpenGL还不知道如何解释内存中的顶点数据，以及怎样把顶点数据链接到顶点着色器的属性上。我们会告诉OpenGL怎么做。
 
 ## 链接顶点属性
 
@@ -306,7 +307,7 @@ glEnableVertexAttribArray(0);
 
 	每个顶点属性从VBO管理的内存中获得它的数据，它所获取数据的那个VBO，就是当调用`glVetexAttribPointer`的时候，最近绑定到`GL_ARRAY_BUFFER`的那个VBO。由于在调用`glVertexAttribPointer`之前绑定了VBO，顶点属性0现在链接到了它的顶点数据。
 
-现在我们定义OpenGL如何解释顶点数据，我们也要开启顶点属性，使用`glEnableVertexAttribArray`，把顶点属性位置值作为它的参数；顶点属性默认是关闭的。自此，我们把每件事都做好了：我们使用一个顶点缓冲对象初始化了一个缓冲中的顶点数据，设置了一个顶点和像素着色器，告诉了OpenGL如何把顶点数据链接到顶点着色器的顶点属性上。在OpenGL绘制一个物体，看起来会像是这样：
+现在我们定义OpenGL如何解释顶点数据，我们也要开启顶点属性，使用`glEnableVertexAttribArray`，把顶点属性位置值作为它的参数；顶点属性默认是关闭的。自此，我们把每件事都做好了：我们使用一个顶点缓冲对象初始化了一个缓冲中的顶点数据，设置了一个顶点和片段着色器，告诉了OpenGL如何把顶点数据链接到顶点着色器的顶点属性上。在OpenGL绘制一个物体，看起来会像是这样：
 
 ```c++
 // 0. 复制顶点数组到缓冲中提供给OpenGL使用
@@ -529,6 +530,6 @@ glBindVertexArray(0);
 
 为了更好的理解讨论的那些概念最好做点练习。建议在继续下面的主题之前做完这些练习，确保你对这些有比较好的理解。
 
-尝试使用`glDrawArrays`以在你的数据中添加更多顶点的方式，绘制两个彼此相连的三角形：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise1)
-现在，使用不同的VAO（和VBO）创建同样的2个三角形，每个三角形的数据要不同（提示：创建2个顶点数据数组，而不是1个）：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise2)
-创建连个着色器程序（Shader Program），第二个程序使用不同的像素着色器，它输出黄色；绘制这两个三角形，其中一个输出为黄色：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise3)
+- 尝试使用`glDrawArrays`以在你的数据中添加更多顶点的方式，绘制两个彼此相连的三角形：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise1)
+- 现在，使用不同的VAO（和VBO）创建同样的2个三角形，每个三角形的数据要不同（提示：创建2个顶点数据数组，而不是1个）：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise2)
+- 创建连个着色器程序（Shader Program），第二个程序使用不同的片段着色器，它输出黄色；绘制这两个三角形，其中一个输出为黄色：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise3)
