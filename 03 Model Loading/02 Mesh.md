@@ -1,6 +1,6 @@
 本文作者JoeyDeVries，由[Django](http://bullteacher.com/20-mesh.html)翻译自[http://learnopengl.com](http://learnopengl.com/)
 
-# Assimp
+# Mesh
 
 使用Assimp可以把多种不同格式的模型加载到程序里，但是一旦载入，它们就都被储存为Assimp自己的数据结构。我们最终的想法是把这些数据转变为OpenGL可读的数据，用来渲染物体。我们从前面的教程了解到，一个网格代表一个可绘制实体，现在我们就定义一个自己的网格类。
 
