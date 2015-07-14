@@ -7,6 +7,24 @@ pages:
     - Hello Triangle: '01 Getting started/04 Hello Triangle.md'
     - 坐标系统: '01 Getting started/08 Coordinate Systems.md'
     - 复习: '01 Getting started/10 Review.md'
+  - 光照(Lighting):
+    - 颜色: '02 Lighting/01 Colors.md'
+    - 基本光源: '02 Lighting/02 Basic Lighting.md'
+    - 材质: '02 Lighting/03 Materials.md'
+    - 光照贴图: '02 Lighting/04 Lighting maps.md'
+    - 投光物: '02 Lighting/05 Light casters.md'
+    - 复习: '02 Lighting/07 Review.md'
+  - 加载模型(Model Loading):
+    - 颜色: '03 Model Loading/01 Assimp.md'
+    - 网格: '03 Model Loading/02 Mesh.md'
+    - 模型: '03 Model Loading/03 Model.md'
+  - 高级OpenGL(Advanced OpenGL):
+    - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
+  - 高级光照(Advanced Lighting):
+    - HDR: '05 Advanced Lighting/06 HDR.md'
+  - 实践(In Practice):
+    - 2D游戏:
+      - 《打砖块》: '06 In Practice\2D-Game\Breakout.md'
 
 site_name: LearnOpenGL-CN
 
