@@ -22,9 +22,6 @@ pages:
     - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
   - 高级光照(Advanced Lighting):
     - HDR: '05 Advanced Lighting/06 HDR.md'
-  - 实践(In Practice):
-    - 2D游戏:
-      - 《打砖块》: '06 In Practice\2D-Game\Breakout.md'
 
 site_name: LearnOpenGL-CN
 
