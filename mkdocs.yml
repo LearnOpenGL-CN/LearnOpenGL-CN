@@ -18,10 +18,6 @@ pages:
     - Assimp: '03 Model Loading/01 Assimp.md'
     - 网格: '03 Model Loading/02 Mesh.md'
     - 模型: '03 Model Loading/03 Model.md'
-  - 高级OpenGL(Advanced OpenGL):
-    - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
-  - 高级光照(Advanced Lighting):
-    - HDR: '05 Advanced Lighting/06 HDR.md'
 
 
 site_name: LearnOpenGL-CN
