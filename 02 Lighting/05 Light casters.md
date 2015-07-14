@@ -127,9 +127,8 @@ Distance|Constant|Linear|Quadratic
 325|1.0|0.014|0.0007
 600|1.0|0.007|0.0002
 3250|1.0|0.0014|0.000007
-就像你所看到的，常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)一直都是1.0。一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)为了覆盖更远的距离通常很小，二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
 
- 
+就像你所看到的，常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)一直都是1.0。一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)为了覆盖更远的距离通常很小，二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
 
 ###16.3.2 实现衰减
 
