@@ -1,4 +1,4 @@
-## **深度测试** ##
+# 深度测试
 
 在[坐标系的教程](http://www.learnopengl.com/#!Getting-started/Coordinate-Systems)中我们呈现了一个3D容器,使用*深度缓冲*,以防止被其他面遮挡的面渲染到前面。在本教程中我们将细致地讨论被深度缓冲区(depth-buffer或z-buffer)所存储的*深度值*和它如何确定是否一个片段是否被其他片段遮挡。
 
