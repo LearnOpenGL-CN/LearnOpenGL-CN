@@ -117,7 +117,7 @@ void main()
 ```
 你可以看到我们在顶点着色器中声明了一个vertexColor变量作为vec4输出，在像素着色器声明了一个一样的vertexColor。由于它们类型相同名字相同，像素着色器中的vertexColor就和顶点着色器中的vertexColor链接了。因为我们在顶点着色器中设置的颜色是深红色的，像素着色器输出的结果也是深红色的。下面的图片展示了输出结果：
 
-![](http://bullteacher.com/wp-content/uploads/2015/05/%E5%9B%BE%E7%89%8731.png)
+![](http://learnopengl.com/img/getting-started/shaders.png)
 
 我们完成了从顶点着色器向像素着色器发送数据。让我们更上一层楼，看看能否从应用程序中直接给像素着色器发送一个颜色！
 
@@ -265,7 +265,7 @@ glVertexAttribPointer函数的前几个参数比较明了。这次我们配置�
 同样，这次我们必须指定一个偏移量（offset）。对于每个顶点来说，位置（position）顶点属性是先声明的，所以它的偏移量是0。颜色属性紧随位置数据之后，所以偏移量就是3*sizeof(GLfloat)，用字节来计算就是12字节。
 
 运行应用你会看到如下结果：
-![](http://bullteacher.com/wp-content/uploads/2015/05/shaders3.png)
+![](http://learnopengl.com/img/getting-started/shaders3.png)
 
 如果你有困惑，可以在这里获得源码。
 

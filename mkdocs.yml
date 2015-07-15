@@ -5,6 +5,7 @@ pages:
     - 创建一个窗口: '01 Getting started/02 Creating a window.md'
     - Hello Window: '01 Getting started/03 Hello Window.md'
     - Hello Triangle: '01 Getting started/04 Hello Triangle.md'
+    - 着色器: '01 Getting started/05 Shaders.md'
     - 坐标系统: '01 Getting started/08 Coordinate Systems.md'
     - 复习: '01 Getting started/10 Review.md'
   - 光照(Lighting):
