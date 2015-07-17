@@ -210,7 +210,7 @@
 
 我们可以尝试去缩放向量![](../img/trans/transformations23.png)。我们可以把向量沿着x轴缩放0.5，使它的宽度缩小为原来的二分之一；我们可以沿着y轴把向量的高度缩放为原来的两倍。我们看看把向量缩放（0.5, 2）所获得的![](../img/trans/s_blue.png)是什么样的：
 
-[http://learnopengl.com/img/getting-started/vectors_scale.png](http://learnopengl.com/img/getting-started/vectors_scale.png)
+![](http://learnopengl.com/img/getting-started/vectors_scale.png)
 
 记住，OpenGL通常是在3D空间操作的，对于2D的情况我们可以把z轴缩放1这样就无害了。我们刚刚的缩放操作是不均匀（non-uniform）缩放，因为每个轴的缩放因子都不一样。如果每个轴的缩放都一样那么就叫均匀（uniform）缩放。
 
