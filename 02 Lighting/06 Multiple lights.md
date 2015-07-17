@@ -1,5 +1,7 @@
 ##多光源（Multiple lights）
 
+本文作者JoeyDeVries，由Geequlim翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Multiple-lights)
+
 我们在前面的教程中已经学习了许多关于OpenGL 光照的知识，其中包括冯氏照明（Phong shading）、光照材质（Materials）、光照图（Lighting maps）以及各种投光物。本教程将结合上述所学的知识，创建一个包含六个光源的场景。我们将模拟一个类似阳光的平行光（Directional light）和4个定点光（Point lights）以及一个手电筒(Flashlight).
 
 要在场景中使用多光源我们需要封装一些GLSL函数用来计算光照。如果我们对每个光源都去些一遍光照计算的代码，这将是一件令人恶心的事情，并且这些放在main函数中的代码将难以理解，所以我们将一些操作封装为函数。
