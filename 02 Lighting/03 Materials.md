@@ -17,12 +17,15 @@ struct Material
 }; 
 uniform Material material;
 ```
+
 在像素着色器中，我们创建一个结构体，来储存物体的材质属性。我们也可以把它们储存为独立的uniform值，但是作为一个结构体来储存可以更有条理。我们首先定义结构体的布局，然后简单声明一个uniform变量，以新近创建的结构体作为它的类型。
 
 就像你所看到的，我们为每个Phong光照的元素都定义一个颜色向量。ambient材质向量定义了在ambient光照下这个物体反射的是什么颜色；通常这是和物体颜色相同的颜色。diffuse材质向量定义了在diffuse光照下物体的颜色。diffuse颜色被设置为（和ambient光照一样）物体要求的颜色。specular材质向量设置的是物体受到的specular光的影响的颜色（或者可能是反射一个物体特定的specular高光颜色）。最后，shininess影响specular高光的散射/半径。
 
 这四个元素定义了一个物体的材质，通过它们我们能够模拟很多真实世界的材质。这里有一个列表devernay.free.fr展示了几种材质属性，这些材质属性模拟外部世界的真实材质。下面的图片展示了几种真实世界材质对我们的立方体的影响：
+
 ![](http://www.learnopengl.com/img/lighting/materials_real_world.png)
+
 就像你所看到的，正确的指定一个物体的材质属性，似乎就是改变我们物体的相关属性的比例。效果显然很引人注目，但是对于大多数真实效果，我们最终需要更加复杂的形状，而不单单是一个立方体。在下面教程部分里，我们会讨论更复杂的形状。
 
 为一个物体赋予正确的材质是一件高难的手艺，这需要大量实验和丰富的经验，所以由于错误的设置材质而毁了物体的画面质量是件经常发生的事。
@@ -33,6 +36,7 @@ uniform Material material;
 ## 设置材质
 
 我们在像素着色器中创建了一个uniform材质结构体，所以下面我们希望改变光照计算来顺应新的材质属性。由于所有材质变量都是储存在结构体中，我们可以从uniform变量material取得它们：
+
 ```c++
 void main()
 {    
@@ -55,9 +59,11 @@ void main()
     color = vec4(result, 1.0f);
 }
 ```
+
 就像你所看到的，我么现在获得所有材质结构体的属性，无论在哪儿我们都需要它们，这次通过材质颜色的帮助，计算结果输出的颜色。物体的每个材质属性都乘以它们对应的光照元素。
 
 通过设置适当的uniform，我们可以在应用中设置物体的材质。当设置uniform时，在GLSL中的一个结构体不会被认为有什么特别之处。一个结构体值扮演uniform变量的封装体，所以如果我们希望填充这个结构体，我们就仍然必须设置单独的uniform，但是这次带有结构体名字作为前缀：
+
 ```c++
 GLint matAmbientLoc = glGetUniformLocation(lightingShader.Program, "material.ambient"); 
 GLint matDiffuseLoc = glGetUniformLocation(lightingShader.Program, "material.diffuse"); 
@@ -69,26 +75,34 @@ glUniform3f(matDiffuseLoc, 1.0f, 0.5f, 0.31f);
 glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f); 
 glUniform1f(matShineLoc, 32.0f);
 ```
+
 我们设置ambient和diffuse元素我们喜欢物体所呈现的颜色，设置物体的specular元素为中等亮度颜色；我们不希望specular元素对这个指定物体产生过于强烈的影响。我们同样保持光亮为32。我们现在可以简单的在应用中影响物体的材质。
 
 运行程序，会得到下面这样的结果：
+
 ![](http://www.learnopengl.com/img/lighting/materials_with_material.png)
+
 看起来真不怎么样对吗？
 
 
 ## 光的属性
 
 这个物体太亮了。物体过亮的原因是ambient、diffuse和specular颜色被从任何一个光源全力地反射。光源对ambient、diffuse和specular元素同时有着不同的亮度。前面的教程，我们通过使用一个强度值改变ambient和specular亮度的方式，解决了这个问题，但是这次为每个光照元素指定了亮度向量。如果我们想象lightColor是vec3(1.0)，代码看起来像是这样：
+
 ```c++
 vec3 ambient = vec3(1.0f) * material.ambient; 
 vec3 diffuse = vec3(1.0f) * (diff * material.diffuse); 
 vec3 specular = vec3(1.0f) * (spec * material.specular);
 ```
+
 所以物体的每个材质属性返回了每个光照元素的全亮度。这些vec3(1.0)值可以各自独立的影响每个光源，这通常就是我们想要的。现在物体的ambient元素完全地影响了立方体的颜色，可视ambient元素uyinggai对最终颜色有这么大的影响，所以我们要通过设置光的ambient亮度为一个小一点的值的方式，限制ambient颜色：
+
 ```c++
 vec3 result = vec3(0.1f) * material.ambient;
 ```
+
 我们可以用同样的方式影响光源的diffuse和specular亮度。这和我们前面教程所做的极为相似；你可以说我们已经创建了一些光的属性各自独立地来影响每个光照元素。我们希望为光的属性创建一些与材质结构体相似的东西：
+
 ```c++
 struct Light 
 { 
@@ -99,15 +113,19 @@ struct Light
 };
 uniform Light light;
 ```
+
 一个光源的ambient、diffuse和specular光都有不同的亮度。ambient光通常设置为一个比较低的亮度，因为饿哦们不希望ambient颜色成为主导。光源的diffuse元素通常设置为我们希望光所具有的颜色；经常是一个明亮的白色。specular元素通常设置为vec3(1.0f)的全亮度的发光度。要记住的是我们同样把光的位置添加到结构体中。
 
 就像材质uniform一样，我么你需要更新像素着色器：
+
 ```c++
 vec3 ambient = light.ambient * material.ambient; 
 vec3 diffuse = light.diffuse * (diff * material.diffuse); 
 vec3 specular = light.specular * (spec * material.specular);
 ```
+
 然后我们要在应用里设置光的亮度：
+
 ```c++
 GLint lightAmbientLoc = glGetUniformLocation(lightingShader.Program, "light.ambient"); 
 GLint lightDiffuseLoc = glGetUniformLocation(lightingShader.Program, "light.diffuse"); 
@@ -117,8 +135,11 @@ glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
 glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f); // Let's darken the light a bit to fit the scene 
 glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 ```
+
 现在，我们调整了光如何影响物体所有的材质的，我们得到一个更像前面教程的视觉输出。这次我们完全控制了物体光照和材质：
+
 ![](http://www.learnopengl.com/img/lighting/materials_light.png)
+
 现在改变物体的外观相对简单了些。我们做点更有趣的事！
 
  
@@ -126,12 +147,14 @@ glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 ## 不同的光的颜色
 
 目前为止，我们只是使用光的颜色去改变它们的独立元素，选择的是从白到灰到黑范围的颜色，不是动感的物体的真实颜色（只是亮度）。由于我们现在简单的取得了光的属性，我们可以随着时间改变它们的颜色，获得的效果有很意思。由于没见识都已经在像素着色器做好了，改变光的颜色很简单，可以立即创建出一些有趣的效果：
+
 <video src="http://www.learnopengl.com/video/lighting/materials.mp4" controls="controls">
 </video>
 
 就像你所看见的，不同的光的颜色极大地影响了物体的颜色输出。由于光的颜色直接影响物体反射的颜色（你可能想起颜色教程），它对视觉输出有显著的影响。
 
 利用sin和glfwGetTime，改变光的ambient和diffuse颜色，我们可以随着时间流逝简单的改变光的颜色：
+
 ```c++
 glm::vec3 lightColor; lightColor.x = sin(glfwGetTime() * 2.0f); 
 lightColor.y = sin(glfwGetTime() * 0.7f); 
@@ -143,4 +166,5 @@ glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // Low influence
 glUniform3f(lightAmbientLoc, ambientColor.x, ambientColor.y, ambientColor.z); 
 glUniform3f(lightDiffuseLoc, diffuseColor.x, diffuseColor.y, diffuseColor.z);
 ```
+
 尝试和实验使用这些光照和材质值，看看它们怎样影响图像输出的。你可以从这里找到应用，和像素着色器的源码。

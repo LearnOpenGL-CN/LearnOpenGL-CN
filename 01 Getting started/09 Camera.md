@@ -89,7 +89,8 @@ view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::ve
 
 如果你运行代码你会得到下面的东西：
 
-![](../img/camera1.gif)
+<video src="http://learnopengl.com/video/getting-started/camera_circle.mp4" controls="controls">
+</video>
 
 这一小段代码中，摄像机围绕场景转动。自己试试改变半径和位置/方向参数，看看LookAt矩阵是如何工作的。同时，这里有源码、顶点和像素着色器。
 
@@ -137,7 +138,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 如果你用这段代码更新key_callback函数，你就可以在场景中自由的前后左右移动了。
 
-![](../img/camera2.gif)
+<video src="http://learnopengl.com/video/getting-started/camera_inside.mp4" controls="controls">
+</video>
 
 你可能会注意到这个摄像机系统不能同时朝两个方向移动，当你按下一个按键时，它会先顿一下才开始移动。这是因为大多数事件输入系统一次只能处理一个键盘输入，它们的函数只有当我们激活了一个按键时才被调用。大多数GUI系统都是这样的，它对摄像机来说用并不合理。我们可以用一些小技巧解决这个问题。
 
@@ -225,7 +227,8 @@ void Do_Movement()
 与前面的部分结合在一起，我们有了一个更流畅点的摄像机系统：
 
 
-![](../img/camera5.gif)
+<video src="http://learnopengl.com/video/getting-started/camera_smooth.mp4" controls="controls">
+</video>
 
 现在我们有了一个在任何系统上移动速度都一样的摄像机。这里是源码。我们可以看到任何移动都会影响返回的deltaTime值。
 
@@ -446,7 +449,8 @@ glfwSetScrollCallback(window, scroll_callback);
 
 现在我们实现了一个简单的摄像机系统，它能够让我们在3D环境中自由移动。
 
-![](../img/camera6.gif)
+<video src="http://learnopengl.com/video/getting-started/camera_mouse.mp4" controls="controls">
+</video>
 
 自由的去实验，如果遇到困难对比源代码。
 
