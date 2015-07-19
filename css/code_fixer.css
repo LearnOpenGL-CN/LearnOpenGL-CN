@@ -7,7 +7,3 @@ div.admonition code {
 p {
   text-align: justify;
 }
-
-p code {
-  word-wrap: normal;
-}
