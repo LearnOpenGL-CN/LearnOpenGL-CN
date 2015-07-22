@@ -27,6 +27,12 @@ pages:
     - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
     - 模板测试: '04 Advanced OpenGL/02 Stencil testing.md'
     - 混合: '04 Advanced OpenGL/03 Blending.md'
+    - 面剔除: '04 Advanced OpenGL/04 Face culling.md'
+    - 帧缓冲: '04 Advanced OpenGL/05 Framebuffers.md'
+    - Cubmaps: '04 Advanced OpenGL/06 Cubemaps.md'
+    - 高级数据: '04 Advanced OpenGL/07 Advanced Data.md'
+    - 高级GLSL: '04 Advanced OpenGL/08 Advanced GLSL.md'
+
   - 高级光照(Advanced Lighting):
     - HDR: '05 Advanced Lighting/06 HDR.md'
 
