@@ -32,7 +32,9 @@ pages:
     - Cubmaps: '04 Advanced OpenGL/06 Cubemaps.md'
     - 高级数据: '04 Advanced OpenGL/07 Advanced Data.md'
     - 高级GLSL: '04 Advanced OpenGL/08 Advanced GLSL.md'
-
+    - 几何着色器: '04 Advanced OpenGL/09 Geometry Shader.md'
+    - 实例化: '04 Advanced OpenGL/10 Instancing.md'
+    - 反走样: '04 Advanced OpenGL/11 Anti Aliasing.md'
   - 高级光照(Advanced Lighting):
     - HDR: '05 Advanced Lighting/06 HDR.md'
 
