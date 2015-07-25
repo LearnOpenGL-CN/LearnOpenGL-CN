@@ -45,7 +45,7 @@ pages:
     - 法线贴图: '05 Advanced Lighting/04 Normal Mapping.md'
     - 视差贴图: '05 Advanced Lighting/05 Parallax Mapping.md'
     - HDR: '05 Advanced Lighting/06 HDR.md'
-    - Bloom: '05 Advanced Lighting/07 Bloom.md'
+    - 泛光: '05 Advanced Lighting/07 Bloom.md'
 
 site_name: LearnOpenGL-CN
 
