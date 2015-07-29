@@ -1,10 +1,14 @@
-本文作者JoeyDeVries，由Meow J翻译自[http://learnopengl.com](http://learnopengl.com/#!Getting-started/Review)
-
 # 复习
+
+原文     | [Review](http://learnopengl.com/#!Getting-started/Review)
+      ---|---
+作者     | JoeyDeVries
+翻译     | Meow J
+校对     | Geequlim
 
 恭喜您完成了本章的学习，至此为止你应该能够创建一个窗口，创建并且编译着色器，通过缓冲对象或者uniform发送顶点数据，绘制物体，使用纹理，理解向量和矩阵，并且可以综合上述知识创建一个3D场景并可以通过摄像机来移动.
 
-这些就是我们在前几章学习的内容，尝试在教程的基础上进行改动程序，或者实验你自己的想法并解决问题. 一旦你认为你真正熟悉了我们讨论的所有的东西，你就可以进行[下一节](http://www.learnopengl.com/#!Lighting/Colors "下一节")的学习.
+这些就是我们在前几章学习的内容，尝试在教程的基础上进行改动程序，或者实验你自己的想法并解决问题. 一旦你认为你真正熟悉了我们讨论的所有的东西，你就可以进行[下一节](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/01%20Colors/)的学习.
 
 词汇表
 --------
