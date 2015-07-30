@@ -161,4 +161,4 @@ glBindVertexArray(0);
 
 如果你在把上述代码片段放到一起编译遇到困难，可以去认真地看看我的[源代码](http://learnopengl.com/code_viewer.php?code=lighting/colors_scene)。你好最自己实现一遍这些操作。
 
-现在我们有了一些关于颜色的知识，并且创建了一个基本的场景能够绘制一些性感的光线。你现在可以阅读[下一个教程](http://www.learnopengl.com/#!Lighting/Basic-Lighting)，真正的魔法即将开始！
+现在我们有了一些关于颜色的知识，并且创建了一个基本的场景能够绘制一些性感的光线。你现在可以阅读[下一个教程](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/02%20Basic%20Lighting/)，真正的魔法即将开始！
