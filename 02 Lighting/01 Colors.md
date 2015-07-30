@@ -1,37 +1,48 @@
-本文作者JoeyDeVries，由Geequlim翻译自[http://learnopengl.com](http://learnopengl.com/#!Lighting/Colors)
+# 颜色
 
-## 颜色
+原文     | [Colors](http://learnopengl.com/#!Lighting/Colors)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Geequlim](http://geequlim.com/)
+校对     | [Geequlim](http://geequlim.com/)
 
 在前面的教程中我们已经提到过如何在OpenGL中使用颜色，不过前面的教程所接触到的都是表面颜色。本节我们将更广泛地讨论颜色并且为接下来的光照教程创建一个场景。
 
 现实世界中有无数种颜色，每一个物体都有它们自己的颜色。我们要做的工作是使用有限的数字来模拟真实世界中（无限）的颜色，因此并不是所有的颜色都可以用数字来表示。然而我们依然可以用数字来代表许多种颜色，并且你几乎感觉不到他们与真实颜色之间的差异。数字颜色由红色（Red），绿色（Green）和蓝色（Blue）三个分量组成，它们通常被缩写为RGB。这三个不同的分量组合在一起几乎可以表示任何一种颜色。例如,要获取一个珊瑚红颜色我们定义了一个颜色向量:
 
-    glm::vec3 coral(1.0f, 0.5f, 0.31f);
+```c++
+glm::vec3 coral(1.0f, 0.5f, 0.31f);
+```
 
 我们在现实生活中看到某一物体的颜色并不是这个物体的真实颜色而是它所反射的颜色。换句话说，那些不能被物体吸收的颜色（被反射的颜色）就是我们能够感知到的物体的颜色。例如,太阳光被认为是由许多不同的颜色组合成的白色光(如下图所示)。如果我们将白色的太阳光照在一个蓝色的玩具上，这个蓝色的玩具会吸收白色光中除了蓝色以外的所有颜色，不被吸收的蓝色光被反射到我们的眼中，使我们看到了一个蓝色的玩具。下图显示的是一个珊瑚红的玩具，它以不同强度的方式反射了几种不同的颜色。
 
-<img src="http://learnopengl.com/img/lighting/light_reflection.png"/>
+![](http://learnopengl.com/img/lighting/light_reflection.png)
 
 正如你所见，白色的阳光是一种所有可见颜色的集合，上面的物体吸收了其中的大部分颜色，它仅反射了那些代表这个物体颜色的部分，这些被反射颜色的组合就是我们感知到的颜色（此例中为珊瑚红）。
 
 这些颜色反射的规律被直接地运用在图形领域。我们在OpenGL中创建一个光源时都会为它定义一个颜色。在前面的段落中所提到光源的颜色都是白色的，那我们就继续来创建一个白色的光源吧。当我们把光源的颜色与物体的颜色相乘，所得到的就是这个物体所反射该光源的颜色（也就是我们感知到的颜色）。让我们再次审视我们的玩具（这一次它还是珊瑚红）并看看如何计算出他的反射颜色。我们通过检索结果颜色的每一个分量来看一下光源色和物体颜色的反射运算：
 
-    glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-    glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
-    glm::vec3 result = lightColor * toyColor; // = (1.0f, 0.5f, 0.31f);
+```c++
+glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+glm::vec3 result = lightColor * toyColor; // = (1.0f, 0.5f, 0.31f);
+```
 
 我们看到玩具体在进行反射时吸收了白色光源颜色中的大部分颜色，但它对红、绿、蓝三个分量都有一定的反射，反射量是由物体本身的颜色所决定的。这也代表着现实中的光线原理。由此，我们可以根据一个物体反射各个颜色分量的多少来定义这个物体的颜色。当我们使用一束绿色的光又会发生什么呢？
 
-    glm::vec3 lightColor(0.0f, 1.0f, 0.0f);
-    glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
-    glm::vec3 result = lightColor * toyColor; // = (0.0f, 0.5f, 0.0f);
+```c++
+glm::vec3 lightColor(0.0f, 1.0f, 0.0f);
+glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+glm::vec3 result = lightColor * toyColor; // = (0.0f, 0.5f, 0.0f);
+```
 
 现在我们的玩具没有红色和蓝色的让它来吸收或反射，这个玩具依然吸收并反射了光线中一半的绿色，它现在看上去是深绿色的。我们可以看到，如果我们用一束绿色的光线照来照射玩具，那么只有绿色能被反射和感知到，没有红色和蓝色能被反射和感知。结果是，一个珊瑚红的玩具突然变成了深绿色物体。现在我们来看另一个例子，使用深橄榄绿色的光线：
 
-
-    glm::vec3 lightColor(0.33f, 0.42f, 0.18f);
-    glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
-    glm::vec3 result = lightColor * toyColor; // = (0.33f, 0.21f, 0.06f);
+```c++
+glm::vec3 lightColor(0.33f, 0.42f, 0.18f);
+glm::vec3 toyColor(1.0f, 0.5f, 0.31f);
+glm::vec3 result = lightColor * toyColor; // = (0.33f, 0.21f, 0.06f);
+```
 
 如你所见，我们可以通过物体对不同颜色光的反射来的得到意想不到的不到的颜色，从此创作颜色已经变得非常简单。
 
@@ -45,63 +56,72 @@
 
 我们首先需要一个顶点着色器来绘制场景。与上一个教程的顶点着色器相比，容器的顶点位置保持不变（虽然这一次我们不需要纹理坐标），因此顶点着色器中没有新的代码，而是上一篇教程的精简版：
 
-    #version 330 core
-    layout (location = 0) in vec3 position;
-    
-    uniform mat4 model;
-    uniform mat4 view;
-    uniform mat4 projection;
-    
-    void main()
-    {
-        gl_Position = projection * view * model * vec4(position, 1.0f);
-    } 
+```c++
+#version 330 core
+layout (location = 0) in vec3 position;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(position, 1.0f);
+}
+```
 
 请确认更新你的顶点数据和属性对应的指针与新的顶点着色器一致（当然你可以继续保留纹理数据并保持属性对应的指针有效。在这一节中我们不使用纹理，如果你觉得留着好看那也不是什么坏的主意）。
 
 因为我们还要创建一个表示灯（光源）的立方体，所以我们还要为这个灯创建一个特殊的VAO。当然我们也可以让这个灯和其他物体使用同一个VAO然后对他的模型矩阵做一些变换，然而接下来的教程中我们会频繁地对顶点数据做一些改变并且需要改变属性对应指针设置，我们并不想因此影响到灯（我们只在乎灯的位置），因此我们有必要为灯创建一个新的VAO。
 
-    GLuint lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-    //只需要绑定VBO不用再次设置VBO的数据，因为容器（物体）的VBO数据中已经包含了正确的立方体顶点数据
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //设置灯立方体的顶点属性指针（仅设置灯的顶点数据）
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0); 
+```c++
+GLuint lightVAO;
+glGenVertexArrays(1, &lightVAO);
+glBindVertexArray(lightVAO);
+//只需要绑定VBO不用再次设置VBO的数据，因为容器（物体）的VBO数据中已经包含了正确的立方体顶点数据
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//设置灯立方体的顶点属性指针（仅设置灯的顶点数据）
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+glEnableVertexAttribArray(0);
+glBindVertexArray(0); 
+```
 
 这段代码对你来说应该是相对简单的。现在我们创建了表示灯和被照物体的立方体，最后需要做的事就是定义片段着色器：
 
-    #version 330 core
-    out vec4 color;
-      
-    uniform vec3 objectColor;
-    uniform vec3 lightColor;
-    
-    void main()
-    {
-        color = vec4(lightColor * objectColor, 1.0f);
-    }
+```c++
+#version 330 core
+out vec4 color;
+  
+uniform vec3 objectColor;
+uniform vec3 lightColor;
+
+void main()
+{
+    color = vec4(lightColor * objectColor, 1.0f);
+}
+```
 
 这个片段着色器接受两个分别表示物体颜色和光源颜色的uniform变量。正如本篇教程一开始所讨论的一样，我们将光源的颜色与物体(能反射)的颜色相乘。这个着色器应该很容易理解。接下来让我们把物体的颜色设置为上一节中所提到的珊瑚红并把光源设置为白色：
 
-    //在此之前不要忘记使用匹配的着色器程序
-    GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
-    GLint lightColorLoc  = glGetUniformLocation(lightingShader.Program, "lightColor");
-    glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);//我们所熟悉的珊瑚红
-    glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f); // 依旧把光源设置为白色
-
+```c++
+//在此之前不要忘记使用匹配的着色器程序
+GLint objectColorLoc = glGetUniformLocation(lightingShader.Program, "objectColor");
+GLint lightColorLoc  = glGetUniformLocation(lightingShader.Program, "lightColor");
+glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);//我们所熟悉的珊瑚红
+glUniform3f(lightColorLoc,  1.0f, 1.0f, 1.0f); // 依旧把光源设置为白色
+```
 
 要注意的是，当我们修改顶点或者片段着色器后，灯的位置或颜色也会随之改变，这并不是我们想要的效果。我们不希望灯对象的颜色在接下来的教程中因光照计算的结果而受到影响，而希望它能够独立。希望表示灯不受其他光照的影响而一直保持明亮（这样它才更像是一个真实的光源）。为了实现这个目的，我们需要为光源对象创建新的着色器程序。由于我们使用立方体来模拟灯，所以它的顶点着色器应该与我们之前使用的一样。而它的片段着色器只需要做一件事，就是保持灯的颜色不变。只需要简单地使用一个白色常量就行：
 
-    #version 330 core
-    out vec4 color;
-    
-    void main()
-    {
-        color = vec4(1.0f); //设置四维向量的所有元素为 1.0f
-    }
+```c++
+#version 330 core
+out vec4 color;
+
+void main()
+{
+    color = vec4(1.0f); //设置四维向量的所有元素为 1.0f
+}
+```
     
 当我们想绘制容器（或者其他对象）时，使用前面定义的光照着色器；当我们要绘制灯对象时，使用这个特制的着色器。在接下来的教程中我们将逐步修改这个着色器，让它慢慢地展示出更真实的效果。
 
@@ -109,27 +129,33 @@
 
 我们声明一个全局变量来表示光源在场景的世界坐标中的位置：
 
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+```c++
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+```
 
 然后我们把灯平移到这儿，当然我们需要对它进行缩放，让它不那么高大：
 
-    model = glm::mat4();
-    model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.2f));
+```c++
+model = glm::mat4();
+model = glm::translate(model, lightPos);
+model = glm::scale(model, glm::vec3(0.2f));
+```
 
 绘制灯立方体的代码应该与下面的类似：
 
-    lampShader.Use();
-    // 设置模型、视图和投影矩阵
-    ...
-    // 绘制灯立方体对象
-    glBindVertexArray(lightVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);			
-    glBindVertexArray(0);
+```c++
+lampShader.Use();
+// 设置模型、视图和投影矩阵
+...
+// 绘制灯立方体对象
+glBindVertexArray(lightVAO);
+glDrawArrays(GL_TRIANGLES, 0, 36);			
+glBindVertexArray(0);
+```
 
 为了让你的程序简洁易读，请把上述的所有代码片段放在你程序中合适的位置。如果一切顺利，运行效果将会如下图所示：
 
-<img src="http://learnopengl.com/img/lighting/colors_scene.png"/>
+![](http://learnopengl.com/img/lighting/colors_scene.png)
 
 没什么好看的是吗？但我承诺接下来的教程中它会给你有趣的视觉效果。
 
