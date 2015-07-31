@@ -6,7 +6,7 @@
 
 我们首先讨论定向光（directional light），接着是作为之前学到知识的扩展的点光（point light），最后我们讨论聚光灯（spot light）。下面的教程我们会把这几种不同的光类型整合到一个场景中。
 
- 
+
 
 ## 定向光
 
@@ -63,7 +63,7 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
 ```c++
 if(lightVector.w == 0.0) // Note: be careful for floating point errors
     // Do directional light calculations
- 
+
 else if(lightVector.w == 1.0)
     // Do light calculations using the light’s position (like last tutorial)
 ```
@@ -72,9 +72,9 @@ else if(lightVector.w == 1.0)
 
 ![](http://www.learnopengl.com/img/lighting/light_casters_directional_light.png)
 
-你可以在这里获得应用的所有代码，这里是顶点和像素着色器代码。
+你可以在这里获得应用的所有代码，这里是顶点和片段着色器代码。
 
- 
+
 
 ##16.2 点光
 
@@ -86,7 +86,7 @@ else if(lightVector.w == 1.0)
 
 如果你把10个箱子添加到之前教程的光照场景中，你会注意到黑暗中的每个箱子都会有同样的亮度，就像箱子在光照的前面；没有公式定义光的距离衰减。我们想让黑暗中与光源比较近的箱子被轻微地照亮。
 
- 
+
 
 ##16.3 衰减
 
@@ -107,7 +107,7 @@ else if(lightVector.w == 1.0)
 
 你可以看到当距离很近的时候光有最强的亮度，但是随着距离增大，亮度明显减弱，大约接近100的时候，就会慢下来。这就是我们想要的。
 
- 
+
 
 ###16.3.1 选择正确的值
 
@@ -152,7 +152,7 @@ glUniform1f(glGetUniformLocation(lightingShader.Program, "light.linear"), 0.09);
 glUniform1f(glGetUniformLocation(lightingShader.Program, "light.quadratic"), 0.032);
 
 ```
-在像素着色器中实现衰减很直接：我们根据公式简单的计算衰减值，在乘以ambient、diffuse和specular元素。
+在片段着色器中实现衰减很直接：我们根据公式简单的计算衰减值，在乘以ambient、diffuse和specular元素。
 
 我们需要光源的距离提供给公式；记得我们能够计算向量的长度吗？我们可以通过获取片段和光源之间的不同向量把向量的长度结果作为距离项。我们可以使用GLSL的内建length函数做这件事：
 ```c++
@@ -175,7 +175,7 @@ light_casters_point_light
 
 电光就是一个可配的置位置和衰减值应用到光照计算中。还有另一种类型光可用于我们照明库当中。
 
- 
+
 
 ##16.4 聚光灯
 
@@ -185,20 +185,20 @@ OpenGL中的聚光灯用世界空间位置，一个方向和一个指定了聚�
 
 ![](http://www.learnopengl.com/img/lighting/light_casters_spotlight_angles.png)
 
-* LightDir：从片段指向光源的向量。 
+* LightDir：从片段指向光源的向量。
 * SpotDir：聚光灯所指向的方向。
 * Phiφ：定义聚光灯半径的切光角。每个落在这个角度之外的，聚光灯都不会照亮。
 * Thetaθ：LightDir向量和SpotDir向量之间的角度。θ值应该比φ值小，这样才会在聚光灯内。
 
 所以我们大致要做的是，计算LightDir向量和SpotDir向量的点乘（返回两个单位向量的点乘，还记得吗？），然后在和遮光角φ对比。现在你应该明白聚光灯是我们下面将创建的手电筒的范例。
 
- 
+
 
 ##16.5 手电筒
 
 手电筒是一个坐落在观察者位置的聚光灯，通常瞄准玩家透视图的前面。基本上说，一个手电筒是一个普通的聚光灯，但是根据玩家的位置和方向持续的更新它的位置和方向。
 
-所以我们需要为像素着色器提供的值，是聚光灯的位置向量（来计算光的方向坐标），聚光灯的方向向量和遮光角。我们可以把这些值储存在Light结构体中：
+所以我们需要为片段着色器提供的值，是聚光灯的位置向量（来计算光的方向坐标），聚光灯的方向向量和遮光角。我们可以把这些值储存在Light结构体中：
 ```c++
 struct Light
 {
@@ -214,7 +214,7 @@ glUniform3f(lightPosLoc, camera.Position.x, camera.Position.y, camera.Position.z
 glUniform3f(lightSpotdirLoc, camera.Front.x, camera.Front.y, camera.Front.z);
 glUniform1f(lightSpotCutOffLoc, glm::cos(glm::radians(12.5f)));
 ```
-你可以看到，我们为遮光角设置一个角度，但是我们根据一个角度计算了余弦值，把这个余弦结果传给了像素着色器。这么做的原因是在像素着色器中，我们计算LightDir和SpotDir向量的点乘，而点乘返回一个余弦值，不是一个角度，所以我们不能直接把一个角度和余弦值对比。为了获得这个角度，我们必须计算点乘结果的反余弦，这个操作开销是很大的。所以为了节约一些性能，我们先计算给定切光角的余弦值，然后把结果传递给像素着色器。由于每个角度都被表示为余弦了，我们可以直接对比它们，而不用进行任何开销高昂的操作。
+你可以看到，我们为遮光角设置一个角度，但是我们根据一个角度计算了余弦值，把这个余弦结果传给了片段着色器。这么做的原因是在片段着色器中，我们计算LightDir和SpotDir向量的点乘，而点乘返回一个余弦值，不是一个角度，所以我们不能直接把一个角度和余弦值对比。为了获得这个角度，我们必须计算点乘结果的反余弦，这个操作开销是很大的。所以为了节约一些性能，我们先计算给定切光角的余弦值，然后把结果传递给片段着色器。由于每个角度都被表示为余弦了，我们可以直接对比它们，而不用进行任何开销高昂的操作。
 
 现在剩下要做的是计算θ值，用它和φ值对比，以决定我们是否在或不在聚光灯的内部：
 ```c++
@@ -237,11 +237,11 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 
 `[](http://www.learnopengl.com/img/lighting/light_casters_spotlight_hard.png)
 
-你可以在这里获得全部源码和像素着色器的源码。
+你可以在这里获得全部源码和片段着色器的源码。
 
-它看起来仍然有点假，大部分原因是聚光灯有了一个硬边。像素着色器一旦到达了聚光灯的圆锥边缘，它就立刻黑了下来，却没有任何平滑减弱的过度。一个真实的聚光灯的光会在它的边界处平滑减弱的。
+它看起来仍然有点假，大部分原因是聚光灯有了一个硬边。片段着色器一旦到达了聚光灯的圆锥边缘，它就立刻黑了下来，却没有任何平滑减弱的过度。一个真实的聚光灯的光会在它的边界处平滑减弱的。
 
- 
+
 
 ##16.6 平滑/软化边缘
 
@@ -267,7 +267,7 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 0.966|15|0.9978|12.5|0.953|17.5|0.966 - 0.953 = 0.0448|0.966 - 0.953 / 0.0448 = 0.29
 就像你看到的那样我们基本是根据θ在外余弦和内余弦之间插值。如果你仍然不明白怎么继续，不要担心。你可以简单的使用这个公式计算，当你更加老道和明白的时候再来看。
 
-由于我们现在有了一个亮度值，当在聚光灯外的时候是个负的，当在内部圆锥以内大于1。如果我们适当地把这个值固定，我们在像素着色器中就再不需要if-else了，我们可以简单地用计算出的亮度值乘以光的元素：
+由于我们现在有了一个亮度值，当在聚光灯外的时候是个负的，当在内部圆锥以内大于1。如果我们适当地把这个值固定，我们在片段着色器中就再不需要if-else了，我们可以简单地用计算出的亮度值乘以光的元素：
 ```c++
 float theta = dot(lightDir, normalize(-light.direction));
 float epsilon = light.cutOff - light.outerCutOff;

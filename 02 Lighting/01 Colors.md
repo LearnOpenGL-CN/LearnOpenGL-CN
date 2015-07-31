@@ -83,7 +83,7 @@ glBindBuffer(GL_ARRAY_BUFFER, VBO);
 //设置灯立方体的顶点属性指针（仅设置灯的顶点数据）
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 glEnableVertexAttribArray(0);
-glBindVertexArray(0); 
+glBindVertexArray(0);
 ```
 
 这段代码对你来说应该是相对简单的。现在我们创建了表示灯和被照物体的立方体，最后需要做的事就是定义片段着色器：
@@ -91,7 +91,7 @@ glBindVertexArray(0);
 ```c++
 #version 330 core
 out vec4 color;
-  
+
 uniform vec3 objectColor;
 uniform vec3 lightColor;
 
@@ -122,7 +122,7 @@ void main()
     color = vec4(1.0f); //设置四维向量的所有元素为 1.0f
 }
 ```
-    
+
 当我们想绘制容器（或者其他对象）时，使用前面定义的光照着色器；当我们要绘制灯对象时，使用这个特制的着色器。在接下来的教程中我们将逐步修改这个着色器，让它慢慢地展示出更真实的效果。
 
 使用这个灯立方体的主要目的是为了让我们知道光源在场景中的具体位置。我们通常在场景中定义一个光源的位置，但这只是一个位置，没有视觉意义。我们将表示光源的灯立方体放在光源的位置只是为了表示光源的具体位置，请使用我们为它新建的片段着色器让它保持它一直处于白色状态，不受场景中的光照影响。
@@ -149,7 +149,7 @@ lampShader.Use();
 ...
 // 绘制灯立方体对象
 glBindVertexArray(lightVAO);
-glDrawArrays(GL_TRIANGLES, 0, 36);			
+glDrawArrays(GL_TRIANGLES, 0, 36);
 glBindVertexArray(0);
 ```
 

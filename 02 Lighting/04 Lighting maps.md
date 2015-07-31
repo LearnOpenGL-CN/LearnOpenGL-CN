@@ -8,7 +8,7 @@
 
 所以，前面的材质系统对于除了最简单的模型以外都是不够的，所以我们需要扩展前面的系统，我们要介绍diffuse和specular贴图。它们允许你对一个物体的diffuse（对于简洁的ambient成分来说，它们几乎总是是一样的）和specular成分能够有更精确的影响。
 
- 
+
 
 ## 漫反射贴图
 
@@ -25,17 +25,17 @@
 要记住的是sampler2D也叫做模糊类型，这意味着我们不能以某种类型对它实例化，只能用uniform定义它们。如果我们用结构体而不是uniform实例化（就像函数的参数那样），GLSL会抛出奇怪的错误；这同样也适用于其他模糊类型。
 我们也要移除amibient材质颜色向量，因为ambient颜色绝大多数情况等于diffuse颜色，所以不需要分别去储存它：
 ```c++
-struct Material 
-{ 
-    sampler2D diffuse; 
-    vec3 specular; 
-    float shininess; 
-}; 
-... 
+struct Material
+{
+    sampler2D diffuse;
+    vec3 specular;
+    float shininess;
+};
+...
 in vec2 TexCoords;
 ```
 如果你非把ambient颜色设置为不同的值不可（不同于diffuse值），你可以继续保持ambient的vec3，但是整个物体的ambient颜色会继续保持不变。为了使每个原始像素得到不同ambient值，你需要对ambient值单独使用另一个纹理。
-注意，在像素着色器中我们将会再次需要纹理坐标，所以我们声明一个额外输入变量。然后我们简单地从纹理采样，来获得原始像素的diffuse颜色值：
+注意，在片段着色器中我们将会再次需要纹理坐标，所以我们声明一个额外输入变量。然后我们简单地从纹理采样，来获得原始像素的diffuse颜色值：
 ```c++
 vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
 ```
@@ -43,28 +43,28 @@ vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords))
 ```c++
 vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 ```
-这就是diffuse贴图的全部内容了。就像你看到的，这不是什么新的东西，但是它却极大提升了视觉品质。为了让它工作，我们需要用到纹理坐标更新顶点数据，把它们作为顶点属性传递到像素着色器，把纹理加载，把纹理绑定到合适的纹理单元。
+这就是diffuse贴图的全部内容了。就像你看到的，这不是什么新的东西，但是它却极大提升了视觉品质。为了让它工作，我们需要用到纹理坐标更新顶点数据，把它们作为顶点属性传递到片段着色器，把纹理加载，把纹理绑定到合适的纹理单元。
 
-更新的顶点数据可以从这里找到。顶点数据现在包括了顶点位置，法线向量和纹理坐标，每个立方体的顶点都有这些属性。让我们更新顶点着色器来接受纹理坐标作为顶点属性，然后发送到像素着色器：
+更新的顶点数据可以从这里找到。顶点数据现在包括了顶点位置，法线向量和纹理坐标，每个立方体的顶点都有这些属性。让我们更新顶点着色器来接受纹理坐标作为顶点属性，然后发送到片段着色器：
 ```c++
-#version 330 core 
-layout (location = 0) in vec3 position; 
-layout (location = 1) in vec3 normal; 
-layout (location = 2) in vec2 texCoords; 
-... 
+#version 330 core
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
+layout (location = 2) in vec2 texCoords;
+...
 out vec2 TexCoords;
- 
-void main() 
-{ 
-    ... 
-    TexCoords = texCoords; 
+
+void main()
+{
+    ...
+    TexCoords = texCoords;
 }
 ```
 要保证更新的顶点属性指针，不仅是VAO匹配新的顶点数据，也要把箱子图片加载为纹理。在绘制箱子之前，我们希望首选纹理单元被赋为material.diffuse这个uniform采样器，并绑定箱子的纹理到这个纹理单元：
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0);
-... 
-glActiveTexture(GL_TEXTURE0); 
+...
+glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, diffuseMap);
 ```
 现在，使用一个diffuse贴图，我们在细节上再次获得惊人的提升，这次添加到箱子上的光照开始闪光了（名符其实）。你的箱子现在可能看起来像这样：
@@ -73,7 +73,7 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 你可以在这里得到应用的全部代码。
 
- 
+
 
 ## 镜面贴图
 
@@ -83,38 +83,38 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 ![](http://www.learnopengl.com/img/textures/container2_specular.png)
 
-一个specular高光的亮度可以通过图片中每个纹理的亮度来获得。specular贴图的每个像素可以显示为一个颜色向量，比如：在那里黑色代表颜色向量vec3(0.0f)，灰色是vec3(0.5f)。在像素着色器中，我们采样相应的颜色值，把它乘以光的specular亮度。像素越“白”，乘积的结果越大，物体的specualr部分越亮。
+一个specular高光的亮度可以通过图片中每个纹理的亮度来获得。specular贴图的每个像素可以显示为一个颜色向量，比如：在那里黑色代表颜色向量vec3(0.0f)，灰色是vec3(0.5f)。在片段着色器中，我们采样相应的颜色值，把它乘以光的specular亮度。像素越“白”，乘积的结果越大，物体的specualr部分越亮。
 
 由于箱子几乎是由木头组成，木头作为一个材质不会有镜面高光，整个不透部分的diffuse纹理被用黑色覆盖：黑色部分不会包含任何specular高光。箱子的铁边有一个修改的specular亮度，它自身更容易受到镜面高光影响，木纹部分则不会。
 
 从技术上来讲，木头也有镜面高光，尽管这个闪亮值很小（更多的光被散射），影响很小，但是为了学习目的，我们可以假装木头不会有任何specular光反射。
 使用Photoshop或Gimp之类的工具，剪切一些部分，非常容易变换一个diffuse纹理，为specular图片，以增加亮度/对比度的方式，可以把这个部分变换为黑色或白色。
 
- 
+
 
 ###15.2.1 specular贴图采样
 
-一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的像素着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（查看纹理），所以在渲染前让我们把它绑定到合适的纹理单元
+一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（查看纹理），所以在渲染前让我们把它绑定到合适的纹理单元
 ```c++
-glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1); 
-... 
-glActiveTexture(GL_TEXTURE1); 
+glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1);
+...
+glActiveTexture(GL_TEXTURE1);
 glBindTexture(GL_TEXTURE_2D, specularMap);
 ```
-然后更新像素着色器材质属性，接受一个sampler2D作为这个specular部分的类型，而不是vec3：
+然后更新片段着色器材质属性，接受一个sampler2D作为这个specular部分的类型，而不是vec3：
 ```c++
-struct Material 
-{ 
-    sampler2D diffuse; 
-    sampler2D specular; 
-    float shininess; 
+struct Material
+{
+    sampler2D diffuse;
+    sampler2D specular;
+    float shininess;
 };
 ```
 最后我们希望采样这个specular贴图，来获取原始像素相应的specular亮度：
 ```c++
-vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords)); 
-vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords)); 
-vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords)); 
+vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 color = vec4(ambient + diffuse + specular, 1.0f);
 ```
 通过使用一个specular贴图我们可以定义极为精细的细节，物体的这个部分会获得闪亮的属性，我们可以设置它们相应的亮度。specular贴图给我们一个附加的高于diffuse贴图的控制权限。
@@ -124,6 +124,6 @@ color = vec4(ambient + diffuse + specular, 1.0f);
 
 ![](http://www.learnopengl.com/img/lighting/materials_specular_map.png)
 
-你可以在这里找到全部源码。也对比一下你的顶点着色器和像素着色器。
+你可以在这里找到全部源码。也对比一下你的顶点着色器和片段着色器。
 
 使用diffuse和specular贴图，我们可以给相关但简单物体添加一个极为明显的细节。我们可以使用其他纹理贴图，比如法线/bump贴图或者反射贴图，给物体添加更多的细节。但是这些在后面教程才会涉及。把你的箱子给你所有的朋友和家人看，有一天你会很满足，我们的箱子会比现在更漂亮！

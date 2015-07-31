@@ -49,7 +49,7 @@ void main()
 你可能记得在[变换教程](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/07%20Transformations/)里，我们知道两个单位向量的角度越小，它们点乘的结果越倾向于1。当两个向量的角度是90度的时候，点乘会变为0。这同样适用于θ，θ越大，光对片段颜色的影响越小。
 
 !!! Important
-    
+
     注意，我们使用的是单位向量（长度是1的向量）取得两个向量夹角的余弦值，所以我们需要确保所有的向量都被标准化，另一方面，点乘返回的不仅是余弦（查看[变换](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/07%20Transformations/)）。
 
 点乘返回一个标量，我们用它计算光线对片段颜色的影响力，基于不同片段所朝向光源的方向的不同，这些片段被照亮的情况也不同。
@@ -82,10 +82,10 @@ glEnableVertexAttribArray(0);
 我们只想使用每个顶点的前三个浮点数，忽略后三个浮点数，所以我们只需要把步长参数改成GLfloat尺寸的6倍。
 
 !!! Important
-    
+
     发光物着色器顶点数据的不完全使用看起来有点低效，但是这些顶点数据已经从立方体对象载入到GPU的内存里了，所以GPU内存不是必须再储存新数据。相对于重新给发光物分配VBO，实际上却是更高效了。
 
-所有光照的计算需要在片段着色器里进行，所以我们需要把法线向量由顶点着色器传递到像素着色器。我们这么做：
+所有光照的计算需要在片段着色器里进行，所以我们需要把法线向量由顶点着色器传递到片段着色器。我们这么做：
 
 ```c++
 out vec3 Normal;
@@ -104,7 +104,7 @@ in vec3 Normal;
 
 ### 计算环境光照
 
-每个顶点现在都有了法线向量，但是我们仍然需要光的位置向量和片段的位置向量。由于光的位置是一个静态变量，我们可以简单的在像素着色器中把它声明为uniform：
+每个顶点现在都有了法线向量，但是我们仍然需要光的位置向量和片段的位置向量。由于光的位置是一个静态变量，我们可以简单的在片段着色器中把它声明为uniform：
 
 ```c++
 uniform vec3 lightPos;
@@ -122,7 +122,7 @@ glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos,z);
 ```c++
 out vec3 FragPos;
 out vec3 Normal;
- 
+
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);
@@ -137,7 +137,7 @@ void main()
 in vec3 FragPos;
 ```
 
-现在，所有需要的变量都设置好了，我们可以在像素着色器中开始光照的计算了。
+现在，所有需要的变量都设置好了，我们可以在片段着色器中开始光照的计算了。
 
 我们需要做的第一件事是计算光源和片段位置之间的方向向量。前面提到，光的方向向量是光的位置向量与片段的位置向量之间的向量差。你可能记得，在变换教程中，我们简单的通过两个向量相减的方式计算向量差。我们同样希望确保所有相关向量最后都转换为单位向量，所以我们把法线和方向向量这个结果都进行标准化：
 
@@ -199,7 +199,7 @@ Normal = mat3(transpose(inverse(model))) * normal;
 !!! Attention
 
     对于着色器来说，逆矩阵也是一种开销比较大的操作，因此，无论何时，在着色器中只要可能就应该尽量避免逆操作，因为它们必须为你场景中的每个顶点进行这样的处理。以学习的目的这样做很好，但是对于一个对于效率有要求的应用来说，在绘制之前，你最好用CPU计算出法线矩阵，然后通过uniform把值传递给着色器（和模型矩阵一样）。
-    
+
 ## 镜面光(Specular)
 
 如果你还没被这些光照计算搞得精疲力尽，我们就再把镜面高光加进来，这样冯氏光照才算完整。
@@ -216,12 +216,12 @@ Normal = mat3(transpose(inverse(model))) * normal;
 
     我们选择在世界空间（world space）进行光照计算，但是大多数人趋向于在观察空间（view space）进行光照计算。在观察空间计算的好处是，观察者的位置总是(0, 0, 0)，所以这样你直接就获得了观察者位置。可是，我发现出于学习的目的，在世界空间计算光照更符合直觉。如果你仍然希望在视野空间计算光照的话，那就使用观察矩阵应用到所有相关的需要变换的向量（不要忘记，也要改变法线矩阵）。
 
-为了得到观察者的世界空间坐标，我们简单地使用摄像机对象的位置坐标代替（它就是观察者）。所以我们把另一个uniform添加到像素着色器，把相应的摄像机位置坐标传给像素着色器：
+为了得到观察者的世界空间坐标，我们简单地使用摄像机对象的位置坐标代替（它就是观察者）。所以我们把另一个uniform添加到片段着色器，把相应的摄像机位置坐标传给片段着色器：
 
 ```c++
 uniform vec3 viewPos;
- 
-GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos"); 
+
+GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
 glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 ```
 
@@ -267,9 +267,9 @@ color = vec4(result, 1.0f);
 !!! Important
 
     早期的光照着色器，开发者在顶点着色器中实现冯氏光照。在顶点着色器中做这件事的优势是，相比片段来说，顶点要少得多，因此会更高效，所以（开销大的）光照计算频率会更低。然而，顶点着色器中的颜色值是只是顶点的颜色值，片段的颜色值是它与周围的颜色值的插值。结果就是这种光照看起来不会非常真实，除非使用了大量顶点。
-    
+
     ![](http://learnopengl.com/img/lighting/basic_lighting_gouruad.png)
-    
+
     在顶点着色器中实现的冯氏光照模型叫做Gouraud着色，而不是冯氏着色。记住由于插值，这种光照连起来有点逊色。冯氏着色能产生更平滑的光照效果。
 
 现在你可以看到着色器的强大之处了。只用很少的信息，着色器就能计算出光照，影响到为我们所有物体的片段颜色。[下一个教程](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/03%20Materials/)，我们会更深入的研究光照模型，看看我们还能做些什么。
@@ -283,4 +283,3 @@ color = vec4(result, 1.0f);
 在观察空间中计算冯氏光照：[解决方案](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise2)。
 
 尝试实现一个Gouraud光照来模拟冯氏光照，[解决方案](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise3)
-
