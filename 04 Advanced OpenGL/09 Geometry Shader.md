@@ -2,7 +2,7 @@
 
 本文作者JoeyDeVries，由Django翻译自http://learnopengl.com
 
-在顶点和像素着色器张志坚有一个可选的着色器阶段，叫做几何着色器（geometry shader）。几何着色器以一个或多个表示为一个单独基本图形（primitive）的顶点作为输入，比如可以是一个点或者三角形。几何着色器在将这些顶点发送到下一个着色阶段之前，可以将这些顶点转变为它认为合适的内容。几何着色器有意思的地方在于它可以把（一个或多个）顶点转变为完全不同的基本图形（primitive），从而生成比原来多得多的顶点。
+在顶点和片段着色器张志坚有一个可选的着色器阶段，叫做几何着色器（geometry shader）。几何着色器以一个或多个表示为一个单独基本图形（primitive）的顶点作为输入，比如可以是一个点或者三角形。几何着色器在将这些顶点发送到下一个着色阶段之前，可以将这些顶点转变为它认为合适的内容。几何着色器有意思的地方在于它可以把（一个或多个）顶点转变为完全不同的基本图形（primitive），从而生成比原来多得多的顶点。
 
 我们直接用一个例子深入了解一下：
 
@@ -10,14 +10,14 @@
 #version 330 core
 layout (points) in;
 layout (line_strip, max_vertices = 2) out;
- 
-void main() {    
-    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0); 
+
+void main() {
+    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0);
     EmitVertex();
- 
+
     gl_Position = gl_in[0].gl_Position + vec4(0.1, 0.0, 0.0, 0.0);
     EmitVertex();
-    
+
     EndPrimitive();
 }
 ```
@@ -60,7 +60,7 @@ in gl_Vertex
     float gl_PointSize;
     float gl_ClipDistance[];
 } gl_in[];
- 
+
 ```
 
 这里它被声明为一个interface block（前面的教程已经讨论过），它包含几个有意思的变量，其中最有意思的是gl_Position，它包含着和我们设置的顶点着色器的输出相似的向量。
@@ -70,13 +70,13 @@ in gl_Vertex
 使用从前一个顶点着色阶段的顶点数据，我们就可以开始生成新的数据了，这是通过2个几何着色器函数EmitVertex和EndPrimitive来完成的。几何着色器需要你去生成/输出至少一个你定义为输出的基本图形。在我们的例子里我们打算至少生成一个线条（line strip）基本图形。
 
 ```c++
-void main() {    
-    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0); 
+void main() {
+    gl_Position = gl_in[0].gl_Position + vec4(-0.1, 0.0, 0.0, 0.0);
     EmitVertex();
- 
+
     gl_Position = gl_in[0].gl_Position + vec4(0.1, 0.0, 0.0, 0.0);
     EmitVertex();
-    
+
     EndPrimitive();
 }
 ```
@@ -113,22 +113,22 @@ GLfloat points[] = {
 ```c++
 #version 330 core
 layout (location = 0) in vec2 position;
- 
+
 void main()
 {
-    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f); 
+    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f);
 }
 ```
 
-我们会简单地为所有点输出绿色，我们直接在像素着色器里进行硬编码：
+我们会简单地为所有点输出绿色，我们直接在片段着色器里进行硬编码：
 
 ```c++
 #version 330 core
 out vec4 color;
- 
+
 void main()
 {
-    color = vec4(0.0f, 1.0f, 0.0f, 1.0f);   
+    color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 ```
 
@@ -153,9 +153,9 @@ glBindVertexArray(0);
 #version 330 core
 layout (points) in;
 layout (points, max_vertices = 1) out;
- 
-void main() {    
-    gl_Position = gl_in[0].gl_Position; 
+
+void main() {
+    gl_Position = gl_in[0].gl_Position;
     EmitVertex();
     EndPrimitive();
 }
@@ -163,7 +163,7 @@ void main() {
 
 现在这个几何着色器应该很容易理解了。它简单地将它接收到的输入的无修改的顶点位置发射出去，然后生成一个point基本图形。
 
-一个几何着色器需要像顶点和像素着色器一样被编译和链接，但是这次我们将使用GL_GEOMETRY_SHADER作为着色器的类型来创建这个着色器：
+一个几何着色器需要像顶点和片段着色器一样被编译和链接，但是这次我们将使用GL_GEOMETRY_SHADER作为着色器的类型来创建这个着色器：
 
 ```c++
 geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
@@ -174,7 +174,7 @@ glAttachShader(program, geometryShader);
 glLinkProgram(program);
 ```
 
-编译着色器的代码和顶点、像素着色器的基本一样。要记得检查编译和链接错误！
+编译着色器的代码和顶点、片段着色器的基本一样。要记得检查编译和链接错误！
 
 如果你现在编译和运行，就会看到和下面相似的结果：
 
@@ -182,7 +182,7 @@ glLinkProgram(program);
 
 它和没用几何着色器一样！我承认有点无聊，但是事实上，我们仍能绘制证明几何着色器工作了的点，所以现在是时候来做点更有意思的事了！
 
- 
+
 
 ### 创建几个房子
 
@@ -202,11 +202,11 @@ glLinkProgram(program);
 #version 330 core
 layout (points) in;
 layout (triangle_strip, max_vertices = 5) out;
- 
+
 void build_house(vec4 position)
-{    
+{
     gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
-    EmitVertex();   
+    EmitVertex();
     gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
     EmitVertex();
     gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
@@ -217,15 +217,15 @@ void build_house(vec4 position)
     EmitVertex();
     EndPrimitive();
 }
- 
-void main() 
-{    
+
+void main()
+{
     build_house(gl_in[0].gl_Position);
 }
- 
+
 ```
 
-这个几何着色器生成5个顶点，每个顶点是点（point）的位置加上一个偏移量，来组成一个大triangle strip。接着最后的基本图形被像素化，像素着色器处理整个triangle strip，结果是为我们绘制的每个点生成一个绿房子：
+这个几何着色器生成5个顶点，每个顶点是点（point）的位置加上一个偏移量，来组成一个大triangle strip。接着最后的基本图形被像素化，片段着色器处理整个triangle strip，结果是为我们绘制的每个点生成一个绿房子：
 
 ![](http://learnopengl.com/img/advanced/geometry_shader_houses.png)
 
@@ -240,7 +240,7 @@ GLfloat points[] = {
      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // Bottom-left
 };
-``` 
+```
 
 然后我们更新顶点着色器，使用一个interface block来像几何着色器发送颜色属性：
 
@@ -248,14 +248,14 @@ GLfloat points[] = {
 #version 330 core
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec3 color;
- 
+
 out VS_OUT {
     vec3 color;
 } vs_out;
- 
+
 void main()
 {
-    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f); 
+    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f);
     vs_out.color = color;
 }
 ```
@@ -273,24 +273,24 @@ in VS_OUT {
 !!! Important
 
         我们不是必须使用interface block来把数据发送到几何着色器中。我们还可以这么写：
-        
+
         in vec3 vColor[];
-        
+
         如果顶点着色器发送的颜色向量是out vec3 vColor那么interface block就会在比如几何着色器这样的着色器中更轻松地完成工作。事实上，几何着色器的输入可以非常大，把它们组成一个大的interface block数组会更有意义。
-        
-        
+
+
 然后我们还要为下一个像素着色阶段僧名一个输出颜色向量：
 
 ```c++
 out vec3 fColor;
 ```
 
-因为像素着色器只需要一个（已进行了插值的）颜色，传送多个颜色没有意义。fColor向量这样就不是一个数组，而是一个单一的向量。当发射一个顶点时，为了它的像素着色器运行，每个顶点都会储存最后在fColor中储存的值。对于这些房子来说，我们可以在第一个顶点被发射，对整个房子上色前，只使用来自顶点着色器的颜色填充fColor一次：
+因为片段着色器只需要一个（已进行了插值的）颜色，传送多个颜色没有意义。fColor向量这样就不是一个数组，而是一个单一的向量。当发射一个顶点时，为了它的片段着色器运行，每个顶点都会储存最后在fColor中储存的值。对于这些房子来说，我们可以在第一个顶点被发射，对整个房子上色前，只使用来自顶点着色器的颜色填充fColor一次：
 
 ```c++
 fColor = gs_in[0].color; // gs_in[0] since there's only one input vertex
-gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left   
-EmitVertex();   
+gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
+EmitVertex();
 gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
 EmitVertex();
 gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
@@ -309,9 +309,9 @@ EndPrimitive();
 为了好玩儿，我们还可以假装这是在冬天，给最后一个顶点一个自己的白色，就像在屋顶上落了一些雪。
 
 ```c++
-fColor = gs_in[0].color; 
-gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left   
-EmitVertex();   
+fColor = gs_in[0].color;
+gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
+EmitVertex();
 gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
 EmitVertex();
 gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
@@ -352,7 +352,7 @@ vec3 GetNormal()
    vec3 b = vec3(gl_in[2].gl_Position) - vec3(gl_in[1].gl_Position);
    return normalize(cross(a, b));
 }
-``` 
+```
 
 这里我们使用减法获取了两个向量a和b，它们平行于三角形的表面。两个向量相减得到一个两个向量的差值，由于所有3个点都在三角形平面上，任何向量相减都会得到一个平行于平面的向量。一定要注意，如果我们调换了a和b的叉乘顺序，我们得到的法线向量就会使反的，顺序很重要！
 
@@ -362,7 +362,7 @@ vec3 GetNormal()
 vec4 explode(vec4 position, vec3 normal)
 {
     float magnitude = 2.0f;
-    vec3 direction = normal * ((sin(time) + 1.0f) / 2.0f) * magnitude; 
+    vec3 direction = normal * ((sin(time) + 1.0f) / 2.0f) * magnitude;
     return position + vec4(direction, 0.0f);
 }
 ```
@@ -375,22 +375,22 @@ vec4 explode(vec4 position, vec3 normal)
 #version 330 core
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
- 
+
 in VS_OUT {
     vec2 texCoords;
 } gs_in[];
- 
-out vec2 TexCoords; 
- 
+
+out vec2 TexCoords;
+
 uniform float time;
- 
+
 vec4 explode(vec4 position, vec3 normal) { ... }
- 
+
 vec3 GetNormal() { ... }
- 
-void main() {    
+
+void main() {
     vec3 normal = GetNormal();
- 
+
     gl_Position = explode(gl_in[0].gl_Position, normal);
     TexCoords = gs_in[0].texCoords;
     EmitVertex();
@@ -409,7 +409,7 @@ void main() {
 也不要忘记在OpenGL代码中设置time变量：
 
 ```c++
-glUniform1f(glGetUniformLocation(shader.Program, "time"), glfwGetTime()); 
+glUniform1f(glGetUniformLocation(shader.Program, "time"), glfwGetTime());
  ```
 
 最后的结果是一个随着时间持续不断地爆炸的3D模型（不断爆炸不断回到正常状态）。尽管没什么大用处，它却向你展示出很多几何着色器的高级用法。你可以用完整的源码和着色器对比一下你自己的。
@@ -433,18 +433,18 @@ DrawScene();
 #version 330 core
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
- 
+
 out VS_OUT {
     vec3 normal;
 } vs_out;
- 
+
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
- 
+
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f); 
+    gl_Position = projection * view * model * vec4(position, 1.0f);
     mat3 normalMatrix = mat3(transpose(inverse(view * model)));
     vs_out.normal = normalize(vec3(projection * vec4(normalMatrix * normal, 1.0)));
 }
@@ -456,13 +456,13 @@ void main()
 #version 330 core
 layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
- 
+
 in VS_OUT {
     vec3 normal;
 } gs_in[];
- 
+
 const float MAGNITUDE = 0.4f;
- 
+
 void GenerateLine(int index)
 {
     gl_Position = gl_in[index].gl_Position;
@@ -471,7 +471,7 @@ void GenerateLine(int index)
     EmitVertex();
     EndPrimitive();
 }
- 
+
 void main()
 {
     GenerateLine(0); // First vertex normal
@@ -482,12 +482,12 @@ void main()
 
 到现在为止，像这样的几何着色器的内容就不言自明了。需要注意的是我们我们把法线向量乘以一个MAGNITUDE向量来限制显示出的法线向量的大小（否则它们就太大了）。
 
-由于把法线显示出来通常用于调试的目的，我们可以在像素着色器的帮助下把它们显示为单色的线（如果你愿意也可以更炫一点）。
+由于把法线显示出来通常用于调试的目的，我们可以在片段着色器的帮助下把它们显示为单色的线（如果你愿意也可以更炫一点）。
 
 ```c++
 #version 330 core
 out vec4 color;
- 
+
 void main()
 {
     color = vec4(1.0f, 1.0f, 0.0f, 1.0f);

@@ -13,7 +13,7 @@ for(GLuint i = 0; i < amount_of_models_to_draw; i++)
     glDrawArrays(GL_TRIANGLES, 0, amount_of_vertices);
 }
 ```
- 
+
 
 像这样绘制出你模型的其他实例，多次绘制之后，很快将达到一个瓶颈。和渲染真实的顶点相比，告诉GPU使用像glDrawArrays或glDrawElements这样的函数，去渲染你的顶点数据，会明显降低执行效率，这是因为OpenGL比在它可以绘制你的顶点数据之前必须做一些不必要的准备工作（比如告诉GPU从哪个缓冲读取数据，以及在哪里找到顶点属性，所有这些都会是CPU到GPU的总线变慢）。所以即使渲染顶点超快，给你的GPU下达这样的渲染命令却未必。
 
@@ -37,20 +37,20 @@ GLfloat quadVertices[] = {
     -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
      0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
     -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
- 
+
     -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
-     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,   
-     0.05f,  0.05f,  0.0f, 1.0f, 1.0f      
+     0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+     0.05f,  0.05f,  0.0f, 1.0f, 1.0f
 };
 ```
 
-像素着色器接收从顶点着色器发送来的颜色向量，设置为它的颜色输出，从而为四边形上色：
+片段着色器接收从顶点着色器发送来的颜色向量，设置为它的颜色输出，从而为四边形上色：
 
 ```c++
 #version 330 core
 in vec3 fColor;
 out vec4 color;
- 
+
 void main()
 {
     color = vec4(fColor, 1.0f);
@@ -63,11 +63,11 @@ void main()
 #version 330 core
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec3 color;
- 
+
 out vec3 fColor;
- 
+
 uniform vec2 offsets[100];
- 
+
 void main()
 {
     vec2 offset = offsets[gl_InstanceID];
@@ -95,7 +95,7 @@ for(GLint y = -10; y < 10; y += 2)
     }
 }
 ```
- 
+
 这里我们创建100个平移向量，它包含着10×10格子所有位置。除了生成translations数组外，我们还需要把数据发送到顶点着色器的uniform数组：
 
 ```c++
@@ -104,8 +104,8 @@ for(GLuint i = 0; i < 100; i++)
 {
     stringstream ss;
     string index;
-    ss << i; 
-    index = ss.str(); 
+    ss << i;
+    index = ss.str();
     GLint location = glGetUniformLocation(shader.Program, ("offsets[" + index + "]").c_str())
     glUniform2f(location, translations[i].x, translations[i].y);
 }
@@ -136,15 +136,15 @@ glDrawArraysInstanced的参数和glDrawArrays一样，除了最后一个参数�
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec3 color;
 layout (location = 2) in vec2 offset;
- 
+
 out vec3 fColor;
- 
+
 void main()
 {
     gl_Position = vec4(position + offset, 0.0f, 1.0f);
     fColor = color;
 }
-``` 
+```
 
 我们不再使用gl_InstanceID，可以直接用offset属性，不用先在一个大uniform数组里进行索引。
 
@@ -164,7 +164,7 @@ glBindBuffer(GL_ARRAY_BUFFER, 0);
 glEnableVertexAttribArray(2);
 glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-glBindBuffer(GL_ARRAY_BUFFER, 0); 
+glBindBuffer(GL_ARRAY_BUFFER, 0);
 glVertexAttribDivisor(2, 1);
 ```
 
@@ -207,7 +207,7 @@ void main()
 GLuint amount = 1000;
 glm::mat4* modelMatrices;
 modelMatrices = new glm::mat4[amount];
-srand(glfwGetTime()); // initialize random seed 
+srand(glfwGetTime()); // initialize random seed
 GLfloat radius = 50.0;
 GLfloat offset = 2.5f;
 for(GLuint i = 0; i < amount; i++)
@@ -221,10 +221,10 @@ for(GLuint i = 0; i < amount; i++)
     GLfloat y = displacement * 0.4f; // y value has smaller displacement
     displacement = (rand() % (GLint)(2 * offset * 100)) / 100.0f - offset;
     GLfloat z = cos(angle) * radius + displacement;
-    model = glm::translate(model, glm::vec3(x, y, z));        
+    model = glm::translate(model, glm::vec3(x, y, z));
     // 2. Scale: Scale between 0.05 and 0.25f
     GLfloat scale = (rand() % 20) / 100.0f + 0.05;
-    model = glm::scale(model, glm::vec3(scale));         
+    model = glm::scale(model, glm::vec3(scale));
     // 3. Rotation: add random rotation around a (semi)randomly picked rotation axis vector
     GLfloat rotAngle = (rand() % 360);
     model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
@@ -245,7 +245,7 @@ model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
 model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 planet.Draw(shader);
-  
+
 // Draw Asteroid circle
 for(GLuint i = 0; i < amount; i++)
 {
@@ -271,15 +271,15 @@ for(GLuint i = 0; i < amount; i++)
 layout (location = 0) in vec3 position;
 layout (location = 2) in vec2 texCoords;
 layout (location = 3) in mat4 instanceMatrix;
- 
+
 out vec2 TexCoords;
- 
+
 uniform mat4 projection;
 uniform mat4 view;
- 
+
 void main()
 {
-    gl_Position = projection * view * instanceMatrix * vec4(position, 1.0f); 
+    gl_Position = projection * view * instanceMatrix * vec4(position, 1.0f);
     TexCoords = texCoords;
 }
 ```
@@ -300,20 +300,20 @@ for(GLuint i = 0; i < rock.meshes.size(); i++)
     glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
     // Vertex Attributes
     GLsizei vec4Size = sizeof(glm::vec4);
-    glEnableVertexAttribArray(3); 
+    glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*)0);
-    glEnableVertexAttribArray(4); 
+    glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*)(vec4Size));
-    glEnableVertexAttribArray(5); 
+    glEnableVertexAttribArray(5);
     glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*)(2 * vec4Size));
-    glEnableVertexAttribArray(6); 
+    glEnableVertexAttribArray(6);
     glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (GLvoid*)(3 * vec4Size));
- 
+
     glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
     glVertexAttribDivisor(5, 1);
     glVertexAttribDivisor(6, 1);
- 
+
     glBindVertexArray(0);
 }
 ```

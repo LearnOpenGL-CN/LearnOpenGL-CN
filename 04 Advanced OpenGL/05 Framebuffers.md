@@ -8,7 +8,7 @@
 
 你不会立刻理解应用程序的帧缓的含义，但是把你的场景渲染到一个不同的帧缓冲中，可以使我们能够在场景中创建镜子这样的效果，或者做出一些炫酷的后处理特效。首先我们会讨论它们是如何工作的，然后我们将利用它们来实现一些炫酷的后处理效果。
 
- 
+
 
 ###创建一个帧缓冲
 
@@ -42,7 +42,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 if(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
   // Execute victory dance
   ```
-  
+
 后续所有渲染操作将渲染到当前绑定的帧缓冲的附加缓冲中，由于我们的帧缓冲不是默认的帧缓冲，渲染命令对窗口的视频输出不会产生任何影响。出于这个原因，它被称为离屏渲染（off-screen rendering），就是渲染到一个另外的缓冲中。为了让所有的渲染操作对主窗口产生影响我们必须通过绑定为0来使默认帧缓冲激活：
 
 ```c++
@@ -67,9 +67,9 @@ glDeleteFramebuffers(1, &fbo);
 GLuint texture;
 glGenTextures(1, &texture);
 glBindTexture(GL_TEXTURE_2D, texture);
-  
+
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
- 
+
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 ```
@@ -96,10 +96,10 @@ glFramebufferTexture2D函数有以下参数：
 
 ```c++
 glTexImage2D(
-  GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600, 0, 
+  GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600, 0,
   GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
 );
- 
+
 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 ```
 渲染缓冲对象附件（Renderbuffer object attachments）
@@ -164,7 +164,7 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NU
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 glBindTexture(GL_TEXTURE_2D, 0);
- 
+
 // Attach it to currently bound framebuffer object
 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
 ```
@@ -176,7 +176,7 @@ glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texC
 ```c++
 GLuint rbo;
 glGenRenderbuffers(1, &rbo);
-glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
+glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);  
 glBindRenderbuffer(GL_RENDERBUFFER, 0);
 ```
@@ -214,27 +214,27 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 #version 330 core
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 texCoords;
- 
+
 out vec2 TexCoords;
- 
+
 void main()
 {
-    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f); 
+    gl_Position = vec4(position.x, position.y, 0.0f, 1.0f);
     TexCoords = texCoords;
 }
 ```
 
-没有花哨的地方。像素着色器更简洁，因为我们做的唯一一件事是从纹理采样：
+没有花哨的地方。片段着色器更简洁，因为我们做的唯一一件事是从纹理采样：
 
 ```c++
 #version 330 core
 in vec2 TexCoords;
 out vec4 color;
- 
+
 uniform sampler2D screenTexture;
- 
+
 void main()
-{ 
+{
     color = texture(screenTexture, TexCoords);
 }
 ```
@@ -247,13 +247,13 @@ glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // We're not using stencil buffer now
 glEnable(GL_DEPTH_TEST);
-DrawScene(); 
-  
+DrawScene();
+
 // Second pass
 glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
-glClearColor(1.0f, 1.0f, 1.0f, 1.0f); 
+glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 glClear(GL_COLOR_BUFFER_BIT);
-  
+
 screenShader.Use();  
 glBindVertexArray(quadVAO);
 glDisable(GL_DEPTH_TEST);
@@ -272,16 +272,16 @@ glBindVertexArray(0);
 
 你可以从这里得到应用的源码。
 
-然而这有什么好处呢？好处就是我们现在可以自由的获取已经渲染场景中的任何像素，然后把它当作一个纹理图像了，我们可以在像素着色器中创建一些有意思的效果。所有这些有意思的效果统称为后处理特效。
+然而这有什么好处呢？好处就是我们现在可以自由的获取已经渲染场景中的任何像素，然后把它当作一个纹理图像了，我们可以在片段着色器中创建一些有意思的效果。所有这些有意思的效果统称为后处理特效。
 
- 
+
 ###后处理
 
 现在，整个场景渲染到了一个单独的纹理上，我们可以创建一些有趣的效果，只要简单操纵纹理数据就能做到。这部分，我们会向你展示一些流行的后处理特效，以及怎样添加一些创造性去创建出你自己的特效。
 
 ###反相
 
-我们已经取得了渲染输出的每个颜色，所以在像素着色器里返回这些颜色的反色并不难。我们得到屏幕纹理的颜色，然后用1.0减去它：
+我们已经取得了渲染输出的每个颜色，所以在片段着色器里返回这些颜色的反色并不难。我们得到屏幕纹理的颜色，然后用1.0减去它：
 
 ```c++
 void main()
@@ -334,12 +334,12 @@ kernel是一个长得有点像一个小矩阵的数值数组，它中间的值�
 !!! Important
 
         你在网上能找到的kernel的例子大多数都是所有值加起来等于1，如果加起来不等于1就意味着这个纹理值比原来更大或者更小了。
-        
-kernel对于后处理来说非常管用，因为用起来简单。网上能找到有很多实例，为了能用上kernel我们还得改改像素着色器。这里假设每个kernel都是3×3（实际上大多数都是3×3）：
+
+kernel对于后处理来说非常管用，因为用起来简单。网上能找到有很多实例，为了能用上kernel我们还得改改片段着色器。这里假设每个kernel都是3×3（实际上大多数都是3×3）：
 
 ```c++
 const float offset = 1.0 / 300;  
- 
+
 void main()
 {
     vec2 offsets[9] = vec2[](
@@ -351,15 +351,15 @@ void main()
         vec2(offset,  0.0f),    // center-right
         vec2(-offset, -offset), // bottom-left
         vec2(0.0f,    -offset), // bottom-center
-        vec2(offset,  -offset)  // bottom-right    
+        vec2(offset,  -offset)  // bottom-right
     );
- 
+
     float kernel[9] = float[](
         -1, -1, -1,
         -1,  9, -1,
         -1, -1, -1
     );
-    
+
     vec3 sampleTex[9];
     for(int i = 0; i < 9; i++)
     {
@@ -368,12 +368,12 @@ void main()
     vec3 col;
     for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
-    
+
     color = vec4(col, 1.0);
 }
 ```
 
-在像素着色器中我们先为每个四周的纹理坐标创建一个9个vec2偏移量的数组。偏移量是一个简单的常数，你可以设置为自己喜欢的。接着我们定义kernel，这里应该是一个锐化kernel，它通过一种有趣的方式从所有周边的像素采样，对每个颜色值进行锐化。最后，在采样的时候我们把每个偏移量加到当前纹理坐标上，然后用加在一起的kernel的值乘以这些纹理值。
+在片段着色器中我们先为每个四周的纹理坐标创建一个9个vec2偏移量的数组。偏移量是一个简单的常数，你可以设置为自己喜欢的。接着我们定义kernel，这里应该是一个锐化kernel，它通过一种有趣的方式从所有周边的像素采样，对每个颜色值进行锐化。最后，在采样的时候我们把每个偏移量加到当前纹理坐标上，然后用加在一起的kernel的值乘以这些纹理值。
 
 这个锐化的kernel看起来像这样：
 

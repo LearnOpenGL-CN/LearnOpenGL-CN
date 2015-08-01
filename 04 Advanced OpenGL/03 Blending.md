@@ -36,7 +36,7 @@ unsigned char * image = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGBA
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 ```
 
-保证你在像素着色器中获取了纹理的所有4个颜色元素，而不仅仅是RGB元素：
+保证你在片段着色器中获取了纹理的所有4个颜色元素，而不仅仅是RGB元素：
 
 ```c++
 void main()
@@ -66,10 +66,10 @@ vegetation.push_back(glm::vec3( 0.5f,  0.0f, -0.6f));
 ```c++
 glBindVertexArray(vegetationVAO);
 glBindTexture(GL_TEXTURE_2D, grassTexture);  
-for(GLuint i = 0; i < vegetation.size(); i++) 
+for(GLuint i = 0; i < vegetation.size(); i++)
 {
     model = glm::mat4();
-    model = glm::translate(model, vegetation[i]); 
+    model = glm::translate(model, vegetation[i]);
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }  
@@ -79,18 +79,18 @@ glBindVertexArray(0);
 运行程序你将看到：
 ![image description](http://learnopengl.com/img/advanced/blending_no_discard.png)
 
-出现这种情况是因为OpenGL默认是不知道如何处理alpha值的，不知道何时丢弃它们。我们不得不手动做这件事。幸运的是这很简单，感谢着色器吧。GLSL为我们提供了discard命令，它保证了fragment不会被进一步处理，这样就不会进入颜色缓冲。有了这个命令我们就可以在像素着色器中检查一个fragment是否有在一定的阈限下的alpha值，如果有，那么丢弃这个fragment，就好像它从来都没被处理过一样：
+出现这种情况是因为OpenGL默认是不知道如何处理alpha值的，不知道何时丢弃它们。我们不得不手动做这件事。幸运的是这很简单，感谢着色器吧。GLSL为我们提供了discard命令，它保证了fragment不会被进一步处理，这样就不会进入颜色缓冲。有了这个命令我们就可以在片段着色器中检查一个fragment是否有在一定的阈限下的alpha值，如果有，那么丢弃这个fragment，就好像它从来都没被处理过一样：
 
 ```c++
 #version 330 core
 in vec2 TexCoords;
- 
+
 out vec4 color;
- 
+
 uniform sampler2D texture1;
- 
+
 void main()
-{             
+{
     vec4 texColor = texture(texture1, TexCoords);
     if(texColor.a < 0.1)
         discard;
@@ -98,7 +98,7 @@ void main()
 }
 ```
 
-在这儿我们检查被采样纹理颜色包含着一个低于0.1这个阈限的alpha值，如果有，就丢弃fragment。这个像素着色器能够保证我们只渲染哪些不是完全透明的fragment。现在我们来看看效果：
+在这儿我们检查被采样纹理颜色包含着一个低于0.1这个阈限的alpha值，如果有，就丢弃fragment。这个片段着色器能够保证我们只渲染哪些不是完全透明的fragment。现在我们来看看效果：
 
 ![image description](http://learnopengl.com/img/advanced/blending_discard.png)
 
@@ -109,7 +109,7 @@ void main()
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
+
 你可以[在这里得到源码](http://learnopengl.com/code_viewer.php?code=advanced/blending_discard)。
 
 ###混合
@@ -131,7 +131,7 @@ C¯result = C¯source ∗ Fsource + C¯destination ∗ Fdestination
 * Fsource：源因子。设置了对源颜色的alpha值影响。
 * Fdestination：目标因子。设置了对目标颜色的alpha影响。
 
-像素着色器运行和所有的测试就通过了以后，混合方程才能自由执行fragment的颜色输出，当前它在颜色缓冲中（前面的fragment的颜色在当前fragment之前储存）。源和目标颜色会自动被OpenGL设置，但是源和目标因子可以让我们自由设置。我们来看一个简单的例子：
+片段着色器运行和所有的测试就通过了以后，混合方程才能自由执行fragment的颜色输出，当前它在颜色缓冲中（前面的fragment的颜色在当前fragment之前储存）。源和目标颜色会自动被OpenGL设置，但是源和目标因子可以让我们自由设置。我们来看一个简单的例子：
 
 ![](http://learnopengl.com/img/advanced/blending_equation.png)
 
@@ -204,18 +204,18 @@ glEnable(GL_BLEND);
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 ```
 
-由于我们开启了混合，就不需要丢弃fragment了，所以我们把像素着色器设置为原来的那个版本：
+由于我们开启了混合，就不需要丢弃fragment了，所以我们把片段着色器设置为原来的那个版本：
 
 ```c++
 #version 330 core
 in vec2 TexCoords;
- 
+
 out vec4 color;
- 
+
 uniform sampler2D texture1;
- 
+
 void main()
-{             
+{
     color = texture(texture1, TexCoords);
 }
 ```
@@ -233,7 +233,7 @@ void main()
 !!! Important
 
         对于全透明物体，比如草叶，我们选择简单的丢弃透明像素而不是混合，这样就减少了我们的头疼问题（没有深度测试问题）。
-        
+
 ####别打乱顺序
 
 要让混合在多物体上有效，我们必须先绘制最远的物体，最后绘制最近的物体。普通的无混合物体仍然可以使用深度缓冲正常绘制，所以不必给它们排序。我们一定要保证它们在透明物体前绘制好。当无透明度物体和透明物体一起绘制的时候，通常要遵循以下原则：
@@ -257,10 +257,10 @@ for (GLuint i = 0; i < windows.size(); i++) // windows contains all window posit
 随后当渲染的时候，我们逆序获取到每个map的值（从远到近），然后以正确的绘制相应的窗子：
 
 ```c++
-for(std::map<float,glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) 
+for(std::map<float,glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
 {
     model = glm::mat4();
-    model = glm::translate(model, it->second); 
+    model = glm::translate(model, it->second);
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }

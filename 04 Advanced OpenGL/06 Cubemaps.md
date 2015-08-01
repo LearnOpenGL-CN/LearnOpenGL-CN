@@ -50,7 +50,7 @@ for(GLuint i = 0; i < textures_faces.size(); i++)
 {
     image = SOIL_load_image(textures_faces[i], &width, &height, 0, SOIL_LOAD_RGB);
     glTexImage2D(
-        GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+        GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
     );
 }
@@ -71,22 +71,22 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 ```
 
-在像素着色器中，我们也必须使用一个不同的采样器——samplerCube，用它来从texture函数中采样，但是这次使用的是一个vec3方向向量，取代vec2。下面是一个像素着色器使用了cubemap的例子：
+在片段着色器中，我们也必须使用一个不同的采样器——samplerCube，用它来从texture函数中采样，但是这次使用的是一个vec3方向向量，取代vec2。下面是一个片段着色器使用了cubemap的例子：
 
 ```c++
 
 in vec3 textureDir; // Direction vector representing a 3D texture coordinate
 uniform samplerCube cubemap;  // Cubemap texture sampler
- 
+
 void main()
-{             
+{
     color = texture(cubemap, textureDir);
 }
 ```
 
 看起来不错，但是何必这么做呢？因为恰巧使用cubemap可以简单的实现很多有意思的技术。其中之一便是天空盒（skybox）。
 
- 
+
 
 ### 天空盒(Skybox)
 
@@ -118,10 +118,10 @@ GLuint loadCubemap(vector<const GLchar*> faces)
     GLuint textureID;
     glGenTextures(1, &textureID);
     glActiveTexture(GL_TEXTURE0);
- 
+
     int width,height;
     unsigned char* image;
- 
+
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     for(GLuint i = 0; i < faces.size(); i++)
     {
@@ -137,7 +137,7 @@ GLuint loadCubemap(vector<const GLchar*> faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
- 
+
     return textureID;
 }
 ```
@@ -159,7 +159,7 @@ GLuint cubemapTexture = loadCubemap(faces);
 
 现在我们已经用cubemapTexture作为id把天空盒加载为cubemap。我们现在可以把它绑定到一个立方体来替换不完美的clear color，在前面的所有教程中这个东西做背景已经很久了。
 
- 
+
 
 #### 天空盒的显示
 
@@ -171,10 +171,10 @@ cubemap用于给3D立方体帖上纹理，可以用立方体的位置作为纹�
 #version 330 core
 layout (location = 0) in vec3 position;
 out vec3 TexCoords;
- 
+
 uniform mat4 projection;
 uniform mat4 view;
- 
+
 void main()
 {
     gl_Position =   projection * view * vec4(position, 1.0);  
@@ -182,22 +182,22 @@ void main()
 }
 ```
 
-注意，顶点着色器有意思的地方在于我们把输入的位置向量作为输出给像素着色器的纹理坐标。像素着色器就会把它们作为输入去采样samplerCube：
+注意，顶点着色器有意思的地方在于我们把输入的位置向量作为输出给片段着色器的纹理坐标。片段着色器就会把它们作为输入去采样samplerCube：
 
 ```c++
 #version 330 core
 in vec3 TexCoords;
 out vec4 color;
- 
+
 uniform samplerCube skybox;
- 
+
 void main()
-{    
+{
     color = texture(skybox, TexCoords);
 }
 ```
 
-像素着色器比较明了。我们把顶点属性中的位置向量作为纹理的方向向量，使用它们从cubemap采样纹理值。渲染天空盒现在很简单，我们有了一个cubemap纹理，我们简单绑定cubemap纹理，天空盒就自动地用天空盒的cubemap填充了。为了绘制天空盒，我们将把它作为场景中第一个绘制的物体并且关闭深度写入。这样天空盒才能成为所有其他物体的背景来绘制出来。
+片段着色器比较明了。我们把顶点属性中的位置向量作为纹理的方向向量，使用它们从cubemap采样纹理值。渲染天空盒现在很简单，我们有了一个cubemap纹理，我们简单绑定cubemap纹理，天空盒就自动地用天空盒的cubemap填充了。为了绘制天空盒，我们将把它作为场景中第一个绘制的物体并且关闭深度写入。这样天空盒才能成为所有其他物体的背景来绘制出来。
 
 ```c++
 
@@ -228,9 +228,9 @@ glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
 #### 优化
 
-现在我们在渲染场景中的其他物体之前渲染了天空盒。这么做没错，但是不怎么高效。如果我们先渲染了天空盒，那么我们就是在为每一个屏幕上的像素运行像素着色器，即使天空盒只有部分在显示着；fragment可以使用前置深度测试（early depth testing）简单地被丢弃，这样就节省了我们宝贵的带宽。
+现在我们在渲染场景中的其他物体之前渲染了天空盒。这么做没错，但是不怎么高效。如果我们先渲染了天空盒，那么我们就是在为每一个屏幕上的像素运行片段着色器，即使天空盒只有部分在显示着；fragment可以使用前置深度测试（early depth testing）简单地被丢弃，这样就节省了我们宝贵的带宽。
 
-所以最后渲染天空盒就能够给我们带来轻微的性能提升。采用这种方式，深度缓冲被全部物体的深度值完全填充，所以我们只需要渲染通过前置深度测试的那部分天空的fragment就行了，而且能显著减少像素着色器的调用。问题是天空盒是个1×1×1的立方体，极有可能会渲染失败，因为极有可能通不过深度测试。简单地不用深度测试渲染它也不是解决方案，这是因为天空盒会在之后覆盖所有的场景中其他物体。我们需要耍个花招让深度缓冲相信天空盒的深度缓冲有着最大深度值1.0，如此只要有个物体存在深度测试就会失败，看似物体就在它前面了。
+所以最后渲染天空盒就能够给我们带来轻微的性能提升。采用这种方式，深度缓冲被全部物体的深度值完全填充，所以我们只需要渲染通过前置深度测试的那部分天空的fragment就行了，而且能显著减少片段着色器的调用。问题是天空盒是个1×1×1的立方体，极有可能会渲染失败，因为极有可能通不过深度测试。简单地不用深度测试渲染它也不是解决方案，这是因为天空盒会在之后覆盖所有的场景中其他物体。我们需要耍个花招让深度缓冲相信天空盒的深度缓冲有着最大深度值1.0，如此只要有个物体存在深度测试就会失败，看似物体就在它前面了。
 
 在坐标系教程中我们说过，透视除法（perspective division）是在顶点着色器运行之后执行的，把gl_Position的xyz坐标除以w元素。我们从深度测试教程了解到除法结果的z元素等于顶点的深度值。利用这个信息，我们可以把输出位置的z元素设置为它的w元素，这样就会导致z元素等于1.0了，因为，当透视除法应用后，它的z元素转换为w/w = 1.0：
 
@@ -263,19 +263,19 @@ void main()
 
 我们基于观察方向向量I和物体的法线向量N计算出反射向量R。我们可以使用GLSL的内建函数reflect来计算这个反射向量。最后向量R作为一个方向向量对cubemap进行索引/采样，返回一个环境的颜色值。最后的效果看起来就像物体反射了天空盒。
 
-因为我们在场景中已经设置了一个天空盒，创建反射就不难了。我们改变一下箱子使用的那个像素着色器，给箱子一个反射属性：
+因为我们在场景中已经设置了一个天空盒，创建反射就不难了。我们改变一下箱子使用的那个片段着色器，给箱子一个反射属性：
 
 ```c++
 #version 330 core
 in vec3 Normal;
 in vec3 Position;
 out vec4 color;
- 
+
 uniform vec3 cameraPos;
 uniform samplerCube skybox;
- 
+
 void main()
-{             
+{
     vec3 I = normalize(Position - cameraPos);
     vec3 R = reflect(I, normalize(Normal));
     color = texture(skybox, R);
@@ -288,14 +288,14 @@ void main()
 #version 330 core
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 normal;
- 
+
 out vec3 Normal;
 out vec3 Position;
- 
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
- 
+
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0f);
@@ -304,7 +304,7 @@ void main()
 }
 ```
 
-我们用了法线向量，所以我们打算使用一个法线矩阵（normal matrix）变换它们。Position输出的向量是一个世界空间位置向量。顶点着色器输出的Position用来在像素着色器计算观察方向向量。
+我们用了法线向量，所以我们打算使用一个法线矩阵（normal matrix）变换它们。Position输出的向量是一个世界空间位置向量。顶点着色器输出的Position用来在片段着色器计算观察方向向量。
 
 因为我们使用法线，你还得更新顶点数据，更新属性指针。还要确保设置cameraPos的uniform。
 
@@ -312,7 +312,7 @@ void main()
 
 ```c++
 glBindVertexArray(cubeVAO);
-glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);   
+glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
 glDrawArrays(GL_TRIANGLES, 0, 36);
 glBindVertexArray(0);
 ```
@@ -353,11 +353,11 @@ glBindVertexArray(0);
 
 我们使用这些折射指数来计算光线通过两个材质的比率。在我们的例子中，光线/视线从空气进入玻璃（如果我们假设箱子是玻璃做的）所以比率是1.001.52 = 0.658。
 
-我们已经绑定了cubemap，提供了定点数据，设置了摄像机位置的uniform。现在只需要改变像素着色器：
+我们已经绑定了cubemap，提供了定点数据，设置了摄像机位置的uniform。现在只需要改变片段着色器：
 
 ```c++
 void main()
-{             
+{
     float ratio = 1.00 / 1.52;
     vec3 I = normalize(Position - cameraPos);
     vec3 R = refract(I, normalize(Normal), ratio);
@@ -369,7 +369,7 @@ void main()
 
 ```c++
 void main()
-{             
+{
     float ratio = 1.00 / 1.52;
     vec3 I = normalize(Position - cameraPos);
     vec3 R = refract(I, normalize(Normal), ratio);
@@ -387,7 +387,7 @@ void main()
 
 它看起效果很好，但是有一个劣势：使用环境贴图我们必须为每个物体渲染场景6次，这需要非常大的开销。现代应用尝试尽量使用天空盒子，凡可能预编译cubemap就创建少量动态环境贴图。动态环境映射是个非常棒的技术，要想在不降低执行效率的情况下实现它就需要很多巧妙的技巧。
 
- 
+
 
 ### 练习
 

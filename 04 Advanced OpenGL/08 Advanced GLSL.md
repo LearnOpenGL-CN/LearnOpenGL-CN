@@ -8,7 +8,7 @@
 
 ### GLSL的内建变量
 
-着色器是很小的，如果我们需要从当前着色器以外的别的资源里的数据，那么我们就不得不穿给它。我们学过了使用顶点属性、uniform和采样器可以实现这个目标。GLSL有几个以gl_为前缀的变量，使我们有一个额外的手段来获取和写入数据。我们已经看到了两个：gl_Position和gl_FragCoord，前一个是顶点着色器的输出向量，后一个是像素着色器的变量。
+着色器是很小的，如果我们需要从当前着色器以外的别的资源里的数据，那么我们就不得不穿给它。我们学过了使用顶点属性、uniform和采样器可以实现这个目标。GLSL有几个以gl_为前缀的变量，使我们有一个额外的手段来获取和写入数据。我们已经看到了两个：gl_Position和gl_FragCoord，前一个是顶点着色器的输出向量，后一个是片段着色器的变量。
 
 我们会讨论几个有趣的GLSL内建变量，并向你解释为什么它们对我们来说很有好处。注意，我们不会讨论到GLSL中所有的内建变量，因此如果你想看到所有的内建变量还是最好去看[OpenGL的wiki](http://www.opengl.org/wiki/Built-in_Variable_(GLSL)。
 
@@ -33,8 +33,8 @@ glEnable(GL_PROGRAM_POINT_SIZE);
 ```c++
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);    
-    gl_PointSize = gl_Position.z;    
+    gl_Position = projection * view * model * vec4(position, 1.0f);
+    gl_PointSize = gl_Position.z;
 }
 ```
 
@@ -52,9 +52,9 @@ gl_VertexID是个整型变量，它储存着我们绘制的当前顶点的ID。�
 
 尽管目前看似没用，但是我们最好知道我们能获取这样的信息。
 
-#### 像素着色器的变量
+#### 片段着色器的变量
 
-在像素着色器中也有一些有趣的变量。GLSL给我们提供了两个有意思的输入变量，它们是gl_FragCoord和gl_FrontFacing。
+在片段着色器中也有一些有趣的变量。GLSL给我们提供了两个有意思的输入变量，它们是gl_FragCoord和gl_FrontFacing。
 
 ##### gl_FragCoord
 
@@ -62,16 +62,16 @@ gl_VertexID是个整型变量，它储存着我们绘制的当前顶点的ID。�
 
 gl_FragCoord的x和y元素是这个fragment窗口空间坐标（window-space coordinate）。它们的起始处是窗口的左下角。如果我们的窗口是800×600的，那么一个fragment的窗口空间坐标x的范围就在0到800之间，y在0到600之间。
 
-我们可以使用像素着色器基于fragment的窗口坐标计算出一个不同的颜色。gl_FragCoord变量的一个常用的方式是与一个不同的fragment计算出来的视频输出进行对比，通常在技术演示中常见。比如我们可以把屏幕分为两个部分，窗口的左侧渲染一个输出，窗口的右边渲染另一个输出。下面是一个基于fragment的窗口坐标的位置的不同输出不同的颜色的像素着色器：
+我们可以使用片段着色器基于fragment的窗口坐标计算出一个不同的颜色。gl_FragCoord变量的一个常用的方式是与一个不同的fragment计算出来的视频输出进行对比，通常在技术演示中常见。比如我们可以把屏幕分为两个部分，窗口的左侧渲染一个输出，窗口的右边渲染另一个输出。下面是一个基于fragment的窗口坐标的位置的不同输出不同的颜色的片段着色器：
 
 
 ```c++
 void main()
-{             
+{
     if(gl_FragCoord.x < 400)
         color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
     else
-        color = vec4(0.0f, 1.0f, 0.0f, 1.0f);        
+        color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 ```
 
@@ -79,13 +79,13 @@ void main()
 
 ![](http://bullteacher.com/wp-content/uploads/2015/06/advanced_glsl_fragcoord.png)
 
-我们现在可以计算出两个完全不同的像素着色器结果，每个显示在窗口的一端。这对于测试不同的光照技术很有好处。
+我们现在可以计算出两个完全不同的片段着色器结果，每个显示在窗口的一端。这对于测试不同的光照技术很有好处。
 
- 
+
 
 gl_FrontFacing
 
-像素着色器另一个有意思的输入变量是gl_FrontFacing变量。在面剔除教程中，我们提到过OpenGL可以根据顶点绘制顺序弄清楚一个面是正面还是背面。如果我们不适用面剔除，那么gl_FrontFacing变量能告诉我们当前fragment是一个正面的一部分还是背面的一部分。然后我们可以决定做一些事情，比如为正面计算出不同的颜色。
+片段着色器另一个有意思的输入变量是gl_FrontFacing变量。在面剔除教程中，我们提到过OpenGL可以根据顶点绘制顺序弄清楚一个面是正面还是背面。如果我们不适用面剔除，那么gl_FrontFacing变量能告诉我们当前fragment是一个正面的一部分还是背面的一部分。然后我们可以决定做一些事情，比如为正面计算出不同的颜色。
 
 gl_FrontFacing变量是一个布尔值，如果fragment是正面的一部分那么就是true，否则就是false。这样我们可以创建一个立方体，里面和外面使用不同的纹理：
 
@@ -93,12 +93,12 @@ gl_FrontFacing变量是一个布尔值，如果fragment是正面的一部分那�
 #version 330 core
 out vec4 color;
 in vec2 TexCoords;
- 
+
 uniform sampler2D frontTexture;
 uniform sampler2D backTexture;
- 
+
 void main()
-{             
+{
     if(gl_FrontFacing)
         color = texture(frontTexture, TexCoords);
     else
@@ -124,9 +124,9 @@ gl_FragDepth = 0.0f; // This fragment now has a depth value of 0.0f
 
 如果着色器中没有像gl_FragDepth变量写入什么，它就会自动采用gl_FragCoord.z的值。
 
-我们自己设置深度值有一个显著缺点，因为只要我们在像素着色器中对gl_FragDepth写入什么，OpenGL就会关闭所有的前置深度测试。它被关闭的原因是，在我们运行像素着色器之前OpenGL搞不清像素的深度值，因为像素着色器可能会完全改变这个深度值。
+我们自己设置深度值有一个显著缺点，因为只要我们在片段着色器中对gl_FragDepth写入什么，OpenGL就会关闭所有的前置深度测试。它被关闭的原因是，在我们运行片段着色器之前OpenGL搞不清像素的深度值，因为片段着色器可能会完全改变这个深度值。
 
-你也需要考虑到gl_FragDepth写入所带来的性能的下降。然而从OpenGL4.2起，我们仍然可以对二者进行一定的调和，这需要在像素着色器的顶部使用深度条件（depth condition）来重新声明gl_FragDepth：
+你也需要考虑到gl_FragDepth写入所带来的性能的下降。然而从OpenGL4.2起，我们仍然可以对二者进行一定的调和，这需要在片段着色器的顶部使用深度条件（depth condition）来重新声明gl_FragDepth：
 
 ```c++
 layout (depth_<condition>) out float gl_FragDepth;
@@ -143,15 +143,15 @@ unchanged	|如果写入gl_FragDepth, 你就会写gl_FragCoord.z
 
 如果把深度条件定义为greater或less，OpenGL会假定你只写入比当前的像素深度值的深度值大或小的。
 
-下面是一个在像素着色器里增加深度值的例子，不过仍可开启前置深度测试：
+下面是一个在片段着色器里增加深度值的例子，不过仍可开启前置深度测试：
 
 ```c++
 #version 330 core
 layout (depth_greater) out float gl_FragDepth;
 out vec4 color;
- 
+
 void main()
-{             
+{
     color = vec4(1.0f);
     gl_FragDepth = gl_FragCoord.z + 0.1f;
 }
@@ -159,11 +159,11 @@ void main()
 
 一定要记住这个功能只在OpenGL4.2以上版本才有。
 
- 
+
 
 ### Interface blocks（接口块）
 
-到目前位置，每次我们打算从顶点向像素着色器发送数据，我们都会声明一个相互匹配的输入/输入变量。从一个着色器向另一个着色器发送数据，一次将它们声明好是最简单的方式，但是随着应用变得越来越大，你也许会打算发送的不仅仅是变量，最好还可以包括数组和结构体。
+到目前位置，每次我们打算从顶点向片段着色器发送数据，我们都会声明一个相互匹配的输入/输入变量。从一个着色器向另一个着色器发送数据，一次将它们声明好是最简单的方式，但是随着应用变得越来越大，你也许会打算发送的不仅仅是变量，最好还可以包括数组和结构体。
 
 为了帮助我们组织这些变量，GLSL为我们提供了一些叫做interface blocks的东西，好让我们能够组织这些变量。声明interface block和声明struct有点像，不同之处是它现在基于块（block），使用in和out关键字来声明，最后它将成为一个输入或输出块（block）。
 
@@ -171,41 +171,41 @@ void main()
 #version 330 core
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 texCoords;
- 
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
- 
+
 out VS_OUT
 {
     vec2 TexCoords;
 } vs_out;
- 
+
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);    
+    gl_Position = projection * view * model * vec4(position, 1.0f);
     vs_out.TexCoords = texCoords;
 }
 ```
 
 这次我们声明一个叫做vs_out的interface block，它把我们需要发送给下个阶段着色器的所有输出变量组合起来。虽然这是一个微不足道的例子，但是你可以想象一下，它的确能够帮助我们组织着色器的输入和输出。当我们希望把着色器的输入和输出组织成数组的时候它就变得很有用，我们会在下节几何着色器（geometry）中见到。
 
-然后，我们还需要在下一个着色器——像素着色器中声明一个输入interface block。块名（block name）应该是一样的，但是实例名可以是任意的。
+然后，我们还需要在下一个着色器——片段着色器中声明一个输入interface block。块名（block name）应该是一样的，但是实例名可以是任意的。
 
 ```c++
 #version 330 core
 out vec4 color;
- 
+
 in VS_OUT
 {
     vec2 TexCoords;
 } fs_in;
- 
+
 uniform sampler2D texture;
- 
+
 void main()
-{             
-    color = texture(texture, fs_in.TexCoords);   
+{
+    color = texture(texture, fs_in.TexCoords);
 }
 ```
 
@@ -222,15 +222,15 @@ OpenGL为我们提供了一个叫做uniform缓冲对象的工具，使我们能�
 ```c++
 #version 330 core
 layout (location = 0) in vec3 position;
- 
+
 layout (std140) uniform Matrices
 {
     mat4 projection;
     mat4 view;
 };
- 
+
 uniform mat4 model;
- 
+
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0);
@@ -243,7 +243,7 @@ void main()
 
 现在你可能会奇怪layout(std140)是什么意思。它的意思是说当前定义的uniform block为它的内容使用特定的内存布局；这个声明实际上是设置uniform block layout（uniform块布局）。
 
- 
+
 
 #### uniform block layout（uniform块布局）
 
@@ -287,7 +287,7 @@ Struct |	Equal to the computed size of its elements according to the previous ru
 layout (std140) uniform ExampleBlock
 {
     //               // base alignment  // aligned offset
-    float value;     // 4               // 0 
+    float value;     // 4               // 0
     vec3 vector;     // 16              // 16  (must be multiple of 16 so 4->16)
     mat4 matrix;     // 16              // 32  (column 0)
                      // 16              // 48  (column 1)
@@ -330,7 +330,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 我们调用glUniformBlockBinding函数来把uniform block设置到一个特定的绑定点上。函数的第一个参数是一个程序对象，接着是一个uniform block索引（uniform block index）和打算链接的绑定点。uniform block索引是一个着色器中定义的uniform block的索引位置，可以调用glGetUniformBlockIndex来获取这个值，这个函数接收一个程序对象和uniform block的名字。我们可以从图表设置Lights这个uniform block链接到绑定点2：
 
 ```c++
-GLuint lights_index = glGetUniformBlockIndex(shaderA.Program, "Lights");   
+GLuint lights_index = glGetUniformBlockIndex(shaderA.Program, "Lights");
 glUniformBlockBinding(shaderA.Program, lights_index, 2);
 ```
 
@@ -348,7 +348,7 @@ layout(std140, binding = 2) uniform Lights { ... };
 然后我们还需要把uniform缓冲对象绑定到同样的绑定点上，这个可以使用glBindBufferBase或glBindBufferRange来完成。
 
 ```c++
-glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboExampleBlock); 
+glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboExampleBlock);
 // or
 glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboExampleBlock, 0, 150);
 ```
@@ -360,7 +360,7 @@ glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboExampleBlock, 0, 150);
 ```c++
 glBindBuffer(GL_UNIFORM_BUFFER, uboExampleBlock);
 GLint b = true; // bools in GLSL are represented as 4 bytes, so we store it in an integer
-glBufferSubData(GL_UNIFORM_BUFFER, 142, 4, &b); 
+glBufferSubData(GL_UNIFORM_BUFFER, 142, 4, &b);
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
@@ -374,21 +374,21 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```c++
 #version 330 core
 layout (location = 0) in vec3 position;
- 
+
 layout (std140) uniform Matrices
 {
     mat4 projection;
     mat4 view;
 };
 uniform mat4 model;
- 
+
 void main()
 {
     gl_Position = projection * view * model * vec4(position, 1.0);
 }
 ```
 
-这儿没什么特别的，除了我们现在使用了一个带有std140布局的uniform block。我们在例程中将显示4个立方体，每个立方体都使用一个不同的着色器程序。4个着色器程序使用同样的顶点着色器，但是它们将使用各自的像素着色器，每个像素着色器输出一个单色。
+这儿没什么特别的，除了我们现在使用了一个带有std140布局的uniform block。我们在例程中将显示4个立方体，每个立方体都使用一个不同的着色器程序。4个着色器程序使用同样的顶点着色器，但是它们将使用各自的片段着色器，每个片段着色器输出一个单色。
 
 首先，我们把顶点着色器的uniform block设置为绑定点0。注意，我们必须为每个着色器做这件事。
 
@@ -397,7 +397,7 @@ GLuint uniformBlockIndexRed = glGetUniformBlockIndex(shaderRed.Program, "Matrice
 GLuint uniformBlockIndexGreen = glGetUniformBlockIndex(shaderGreen.Program, "Matrices");
 GLuint uniformBlockIndexBlue = glGetUniformBlockIndex(shaderBlue.Program, "Matrices");
 GLuint uniformBlockIndexYellow = glGetUniformBlockIndex(shaderYellow.Program, "Matrices");  
-  
+
 glUniformBlockBinding(shaderRed.Program, uniformBlockIndexRed, 0);
 glUniformBlockBinding(shaderGreen.Program, uniformBlockIndexGreen, 0);
 glUniformBlockBinding(shaderBlue.Program, uniformBlockIndexBlue, 0);
@@ -409,11 +409,11 @@ glUniformBlockBinding(shaderYellow.Program, uniformBlockIndexYellow, 0);
 ```c++
 GLuint uboMatrices
 glGenBuffers(1, &uboMatrices);
-  
+
 glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
-  
+
 glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
 ```
 
@@ -431,7 +431,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 这里我们用投影矩阵储存了uniform缓冲的前半部分。在我们在每次渲染迭代绘制物体前，我们用视图矩阵更新缓冲的第二个部分：
 
 ```c++
-glm::mat4 view = camera.GetViewMatrix();        
+glm::mat4 view = camera.GetViewMatrix();
 glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 glBufferSubData(
   GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
@@ -446,7 +446,7 @@ shaderRed.Use();
 glm::mat4 model;
 model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f)); // Move top-left
 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-glDrawArrays(GL_TRIANGLES, 0, 36);        
+glDrawArrays(GL_TRIANGLES, 0, 36);
 // ... Draw Green Cube
 // ... Draw Blue Cube
 // ... Draw Yellow Cube
@@ -457,7 +457,7 @@ glBindVertexArray(0);
 
 ![](http://learnopengl.com/img/advanced/advanced_glsl_uniform_buffer_objects.png)
 
-通过改变模型矩阵，每个立方体都移动到窗口的一边，由于像素着色器不同，物体的颜色也不同。这是一个相对简单的场景，我们可以使用uniform缓冲对象，但是任何大型渲染程序有成百上千的活动着色程序；彼时uniform缓冲对象就会闪闪发光了。
+通过改变模型矩阵，每个立方体都移动到窗口的一边，由于片段着色器不同，物体的颜色也不同。这是一个相对简单的场景，我们可以使用uniform缓冲对象，但是任何大型渲染程序有成百上千的活动着色程序；彼时uniform缓冲对象就会闪闪发光了。
 
 你可以[在这里获得例程的完整源码](http://www.learnopengl.com/code_viewer.php?code=advanced/advanced_glsl_uniform_buffer_objects)。
 
