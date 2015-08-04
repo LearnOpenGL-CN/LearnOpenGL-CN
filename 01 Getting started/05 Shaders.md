@@ -337,7 +337,7 @@ shader类保留了着色器程序的ID。它的构造器需要顶点和片段着
 
 ### 从文件读取
 
-我们使用C++文件流读取着色器内容，储存到几个string对象里[1]
+我们使用C++文件流读取着色器内容，储存到几个string对象里([译注1])
 
 ```c++
 Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
@@ -445,4 +445,4 @@ while(...)
 2. 通过使用uniform定义一个水平偏移，在顶点着色器中使用这个偏移量把三角形移动到屏幕右侧：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise2)
 3. 使用`out`关键字把顶点位置输出到片段着色器，把像素的颜色设置为与顶点位置相等(看看顶点位置值是如何在三角形中进行插值的)。做完这些后，尝试回答下面的问题：为什么在三角形的左下角是黑的?：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise3)
 
-[1]: "译者注：实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。"
+[译注1]: http://learnopengl-cn.readthedocs.org/ "译者注：实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。"
