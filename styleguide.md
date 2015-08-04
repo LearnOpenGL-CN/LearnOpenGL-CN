@@ -43,4 +43,16 @@
 </video>
 ```
 
+- 如果有比较长的译注:
+
+```
+xxxx(([译注x])
+
+[译注x]: http://learnopengl-cn.readthedocs.org "text"
+```
+效果会像这样([译注1])
+
+
 **如果有不全的继续加**
+
+[译注1]: http://learnopengl-cn.readthedocs.org "bakabaka我是译注"
