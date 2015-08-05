@@ -383,11 +383,11 @@ void main()
 
 ###Blur
 
-A kernel that creates a blur effect is defined as follows:
+创建模糊效果的kernel定义如下：
 
 ![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_05framebuffers_ kernel_sample.png)
 
-Because all values add up to 16, simply returning the combined sampled colors would result in an extremely bright color so we have to divide each value of the kernel by 16. The resulting kernel array would then become:
+由于所有数值加起来的总和为16,简单返回结合起来的采样颜色是非常亮的,所以我们必须将kernel的每个值除以16.最终的kernel数组会是这样的:
 
 ```c++
 float kernel[9] = float[](
@@ -397,27 +397,26 @@ float kernel[9] = float[](
 );
 ```
 
-By changing the kernel float array in the fragment shader we're completely changing the post-processing effect we're after. It now looks something like this:
+通过在像素着色器中改变kernel的float数组,我们就完全改变了之后的后处理效果.现在看起来会像是这样:
 
 ![](http://learnopengl.com/img/advanced/framebuffers_blur.png)
 
-Such a blur effect creates interesting possibilities. We could vary the blur amount over time for example to create the effect of someone being drunk, or increase the blur whenever the main character is not wearing glasses. Blurring also give us a useful utility to smooth color values which we will use in later tutorials.
+这样的模糊效果具有创建许多有趣效果的潜力.例如,我们可以随着时间的变化改变模糊量,创建出类似于某人喝醉酒的效果,或者,当我们的主角摘掉眼镜的时候增加模糊.模糊也能为我们在后面的教程中提供都颜色值进行平滑处理的能力.
 
-You can see that once we have such a little kernel implementation in place it is quite easy to create cool post-processing effects. Let's show you a last popular effect to finish this discussion.
+你可以看到我们一旦拥有了这个kernel的实现以后,创建一个后处理特效就不再是一件难事.最后,我们再来讨论一个流行的特效,以结束本节内容.
 
-###Edge detection
+###边检测
 
-Below you can find an edge-detection kernel that is similar to the sharpen kernel:
+下面的边检测kernel与锐化kernel类似:
 
 ![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_05_Edge_detection.png)
 
-This kernel highlights all edges and darkens the rest, which is quite useful when we only care about edges in an image.
+这个kernel将所有的边提高亮度,而对其他部分进行暗化处理,当我们值关心一副图像的边缘的时候,它非常有用.
 
 ![](http://learnopengl.com/img/advanced/framebuffers_edge_detection.png)
 
-It probably does not come as a surprise that kernels like this are used as image-manipulating tools/filters in tools like Photoshop. Because of a graphic card's ability to process fragments with extreme parallel capabilities, we can manipulate images on a per-pixel basis in real-time with relative ease. Image-editing tools therefore tend to use graphics cards more often for image-processing.
+在一些像Photoshop这样的软件中使用这些kernel作为图像操作工具/过滤器一点都不奇怪.因为掀开可以具有很强的平行处理能力,我们以实时进行针对每个像素的图像操作便相对容易.图像编辑工具因而更经常使用显卡来进行图像处理.
 
-###Exercises
-
-Can you use framebuffers to create a rear-view mirror? For this you'll have to draw your scene twice: one with the camera rotated 180 degrees and the other as normal. Try to create a small quad on the top of your screen to apply the mirror texture on: solution and visual result.
-Play around with the kernel values and create your own interesting post-processing effects. Try searching the internet as well for other interesting kernels.
+###练习
+你可以使用帧缓冲来创建一个后视镜吗?做到它,你必须绘制场景两次:一次正常绘制,另一次摄像机旋转180度后绘制.尝试在你的显示器顶端创建一个小四边形,在上面应用后视镜的镜面纹理:解决方案,视觉效果.
+自己随意调整一下kernel值,创建出你自己后处理特效.尝试在网上搜索其他有趣的kernel.
