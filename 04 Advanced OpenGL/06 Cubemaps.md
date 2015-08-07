@@ -1,8 +1,12 @@
-## Cubemaps
+# Cubemaps
 
-本文作者JoeyDeVries，由Django翻译自http://learnopengl.com
+原文     | [Cubemaps](http://learnopengl.com/#!Advanced-OpenGL/Cubemaps)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | [Geequlim](http://geequlim.com)
 
-我们之前一直使用的是2D纹理，但是还有更多的纹理类型我们没有探索过，本教程中我们讨论的纹理类型是将多个纹理组合起来映射到一个单一纹理，它就是cubemap。
+我们之前一直使用的是2D纹理，还有更多的纹理类型我们没有探索过，本教程中我们讨论的纹理类型是将多个纹理组合起来映射到一个单一纹理，它就是cubemap。
 
 基本上说cubemap它包含6个2D纹理，这每个2D纹理是一个立方体（cube）的一个面，也就是说它是一个有贴图的立方体。你可能会奇怪这样的立方体有什么用？为什么费事地把6个独立纹理结合为一个单独的纹理，只使用6个各自独立的不行吗？这是因为cubemap有自己特有的属性，可以使用方向向量对它们索引和采样。想象一下，我们有一个1×1×1的单位立方体，有个以原点为起点的方向向量在它的中心。
 
@@ -12,14 +16,14 @@
 
 !!! Important
 
-        方向向量的大小无关紧要。一旦提供了方向，OpenGL就会获取方向向量触碰上的相应的纹理像素（texel），这样就返回了正确的纹理采样值。
+        方向向量的大小无关紧要。一旦提供了方向，OpenGL就会获取方向向量触碰到立方体表面上的相应的纹理像素（texel），这样就返回了正确的纹理采样值。
 
 
-方向向量触碰上cubemap的一点，意味着我们也可以使用cubemap的位置向量来对cubemap进行采样，只要cubemap位于原点。然后我们就可以获取所有顶点的纹理坐标，就好像cubemap上有顶点位置一样。所获得的结果是一个纹理坐标，这个纹理坐标获取了cubemap上正确的那个面的纹理。
+方向向量触碰到立方体表面的一点也就是cubemap的纹理位置，这意味着只要立方体的中心位于原点上，我们就可以使用立方体的位置向量来对cubemap进行采样。然后我们就可以获取所有顶点的纹理坐标，就和立方体上的顶点位置一样。所获得的结果是一个纹理坐标，通过这个纹理坐标就能获取到cubemap上正确的纹理。
 
-创建一个cubemap
+### 创建一个Cubemap
 
-cubemap和其他纹理一样，所以要创建一个cubemap，在进行任何纹理操作之前，需要生成一个纹理，激活相应纹理单元然后绑定到合适的纹理目标上。这次要绑定到GL_TEXTURE_CUBE_MAP：
+Cubemap和其他纹理一样，所以要创建一个cubemap，在进行任何纹理操作之前，需要生成一个纹理，激活相应纹理单元然后绑定到合适的纹理目标上。这次要绑定到 `GL_TEXTURE_CUBE_MAP`纹理类型：
 
 ```c++
 GLuint textureID;
@@ -27,11 +31,11 @@ glGenTextures(1, &textureID);
 glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 ```
 
-由于cubemap包含6个纹理，每个面一个，我们必须调用glTexImage2D函数6次，函数的参数和前面教程讲的相似。然而这次我们必须把纹理目标（target）参数设置为cubemap特定的面，这是告诉OpenGL我们创建的纹理是对应cubemap哪个面的。如此我们便需要为cubemap的每个面调用一次glTexImage2D了。
+由于cubemap包含6个纹理，立方体的每个面一个纹理，我们必须调用`glTexImage2D`函数6次，函数的参数和前面教程讲的相似。然而这次我们必须把纹理目标（target）参数设置为cubemap特定的面，这是告诉OpenGL我们创建的纹理是对应立方体哪个面的。因此我们便需要为cubemap的每个面调用一次 `glTexImage2D`。
 
-由于我们有6个面，OpenGL就提供了6个不同的纹理目标，来应对cubemap的面。
+由于cubemap有6个面，OpenGL就提供了6个不同的纹理目标，来应对cubemap的各个面。
 
-纹理目标（Texture target）	   |方位
+纹理目标（Texture target）	   | 方位
                             ---|---
 GL_TEXTURE_CUBE_MAP_POSITIVE_X |	右
 GL_TEXTURE_CUBE_MAP_NEGATIVE_X |	左
@@ -40,10 +44,9 @@ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y |	下
 GL_TEXTURE_CUBE_MAP_POSITIVE_Z |	后
 GL_TEXTURE_CUBE_MAP_NEGATIVE_Z |	前
 
-和很多OpenGL其他枚举一样，对应的int值都是线性增加的，所以我们有一个纹理位置的数组或vector，就可以 GL_TEXTURE_CUBE_MAP_POSITIVE_X为起始来对它们进行遍历，每个迭代枚举值加1，这样循环所有的纹理目标效率较高：
+和很多OpenGL其他枚举一样，对应的int值都是连续增加的，所以我们有一个纹理位置的数组或vector，就能以 `GL_TEXTURE_CUBE_MAP_POSITIVE_X`为起始来对它们进行遍历，每次迭代枚举值加 `1`，这样循环所有的纹理目标效率较高：
 
 ```c++
-
 int width,height;
 unsigned char* image;  
 for(GLuint i = 0; i < textures_faces.size(); i++)
@@ -54,29 +57,30 @@ for(GLuint i = 0; i < textures_faces.size(); i++)
         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
     );
 }
-
 ```
 
-这儿我们有个vector叫textures_faces，它包含cubemap所需所有纹理位置，并且以上表所列的顺序给出。它为每个当前绑定的cubemp的每个面生成一个纹理。
+这儿我们有个vector叫`textures_faces`，它包含cubemap所各个纹理的文件路径，并且以上表所列的顺序排列。它将为每个当前绑定的cubemp的每个面生成一个纹理。
 
-由于cubemap和其他纹理没什么不同，我们也要定义它的放置方式和过滤方式：
+由于cubemap和其他纹理没什么不同，我们也要定义它的环绕方式和过滤方式：
 
 ```c++
-
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
 ```
 
-在片段着色器中，我们也必须使用一个不同的采样器——samplerCube，用它来从texture函数中采样，但是这次使用的是一个vec3方向向量，取代vec2。下面是一个片段着色器使用了cubemap的例子：
+别被 `GL_TEXTURE_WRAP_R`吓到，它只是简单的设置了纹理的R坐标，R坐标对应于纹理的第三个维度（就像位置的z一样）。我们把放置方式设置为 `GL_CLAMP_TO_EDGE` ，由于纹理坐标在两个面之间，所以可能并不能触及哪个面（由于硬件限制），因此使用 `GL_CLAMP_TO_EDGE` 后OpenGL会返回它们的边界的值，尽管我们可能在两个两个面中间进行的采样。
+
+在绘制物体之前，将使用cubemap，而在渲染前我们要激活相应的纹理单元并绑定到cubemap上，这和普通的2D纹理没什么区别。
+
+在片段着色器中，我们也必须使用一个不同的采样器——**samplerCube**，用它来从`texture`函数中采样，但是这次使用的是一个`vec3`方向向量，取代`vec2`。下面是一个片段着色器使用了cubemap的例子：
 
 ```c++
+in vec3 textureDir; // 用一个三维方向向量来表示Cubemap纹理的坐标
 
-in vec3 textureDir; // Direction vector representing a 3D texture coordinate
-uniform samplerCube cubemap;  // Cubemap texture sampler
+uniform samplerCube cubemap;  // Cubemap纹理采样器
 
 void main()
 {
@@ -84,33 +88,29 @@ void main()
 }
 ```
 
-看起来不错，但是何必这么做呢？因为恰巧使用cubemap可以简单的实现很多有意思的技术。其中之一便是天空盒（skybox）。
+看起来不错，但是何必这么做呢？因为恰巧使用cubemap可以简单的实现很多有意思的技术。其中之一便是著名的**天空盒(Skybox)**。
 
 
 
-### 天空盒(Skybox)
+## 天空盒(Skybox)
 
-天空盒是一个包裹整个场景的立方体，它由6个图像构成一个环绕的环境，给玩家一种他所在的场景比实际的要大得多的幻觉。比如有些在视频游戏中使用的天空盒的图像是群山、白云或者满天繁星。比如下面的夜空繁星的图像就来自《上古卷轴》3：
-
-别被GL_TEXTURE_WRAP_R吓到，它只是简单的设置了纹理的R坐标，R坐标对应于纹理的第三个维度（就像位置的z一样）。我们把放置方式设置为GL_CLAMP_TO_EDGE，由于纹理坐标在两个面之间，所以可能并不能触及哪个面（由于硬件限制），因此使用GL_CLAMP_TO_EDGE后OpenGL会返回它们的边界的值，尽管我们可能在两个两个面中间进行的采样。
-
-在绘制物体之前，将使用cubemap，而在渲染前我们要激活相应的纹理单元并绑定到cubemap上，这和普通的2D纹理没什么区别。
+天空盒是一个包裹整个场景的立方体，它由6个图像构成一个环绕的环境，给玩家一种他所在的场景比实际的要大得多的幻觉。比如有些在视频游戏中使用的天空盒的图像是群山、白云或者满天繁星。比如下面的夜空繁星的图像就来自《上古卷轴》：
 
 ![](http://learnopengl.com/img/advanced/cubemaps_morrowind.jpg)
 
 你现在可能已经猜到cubemap完全满足天空盒的要求：我们有一个立方体，它有6个面，每个面需要一个贴图。上图中使用了几个夜空的图片给予玩家一种置身广袤宇宙的感觉，可实际上，他还是在一个小盒子之中。
 
-网上有很多这样的天空盒的资源。这个网站就提供了很多。这些天空盒图像通常有下面的样式：
+网上有很多这样的天空盒的资源。[这个网站](http://www.custommapmakers.org/skyboxes.php)就提供了很多。这些天空盒图像通常有下面的样式：
 
 ![](http://learnopengl.com/img/advanced/cubemaps_skybox.png)
 
 如果你把这6个面折叠到一个立方体中，你机会获得模拟了一个巨大的风景的立方体。有些资源所提供的天空盒比如这个例子6个图是连在一起的，你必须手工它们切割出来，不过大多数情况它们都是6个单独的纹理图像。
 
-这个细致（高精度）的天空盒就是我们将在场景中使用的那个，你可以在这里下载。
+这个细致（高精度）的天空盒就是我们将在场景中使用的那个，你可以[在这里下载](http://learnopengl.com/img/textures/skybox.rar)。
 
-#### 加载一个天空盒
+### 加载一个天空盒
 
-由于天空盒实际上就是一个cubemap，加载天空盒和之前我们看到的没什么大的不同。为了加载天空盒我们将使用下面的函数，它接收一个包含6个纹理位置的vector：
+由于天空盒实际上就是一个cubemap，加载天空盒和之前我们加载cubemap的没什么大的不同。为了加载天空盒我们将使用下面的函数，它接收一个包含6个纹理文件路径的vector：
 
 ```c++
 GLuint loadCubemap(vector<const GLchar*> faces)
@@ -157,13 +157,13 @@ faces.push_back("front.jpg");
 GLuint cubemapTexture = loadCubemap(faces);
 ```
 
-现在我们已经用cubemapTexture作为id把天空盒加载为cubemap。我们现在可以把它绑定到一个立方体来替换不完美的clear color，在前面的所有教程中这个东西做背景已经很久了。
+现在我们已经用`cubemapTexture`作为id把天空盒加载为cubemap。我们现在可以把它绑定到一个立方体来替换不完美的`clear color`，在前面的所有教程中这个东西做背景已经很久了。
 
 
 
-#### 天空盒的显示
+### 天空盒的显示
 
-因为天空盒绘制在了一个立方体上，我们还需要另一个VAO、VBO以及一组全新的顶点，和任何其他物体一样。你可以从这里获得顶点数据。
+因为天空盒绘制在了一个立方体上，我们还需要另一个VAO、VBO以及一组全新的顶点，和任何其他物体一样。你可以[从这里获得顶点数据](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_data)。
 
 cubemap用于给3D立方体帖上纹理，可以用立方体的位置作为纹理坐标进行采样。当一个立方体的中心位于原点(0，0，0)的时候，它的每一个位置向量也就是以原点为起点的方向向量。这个方向向量就是我们要得到的立方体某个位置的相应纹理值。出于这个理由，我们只需要提供位置向量，而无需纹理坐标。为了渲染天空盒，我们需要一组新着色器，它们不会太复杂。因为我们只有一个顶点属性，顶点着色器非常简单：
 
@@ -197,7 +197,7 @@ void main()
 }
 ```
 
-片段着色器比较明了。我们把顶点属性中的位置向量作为纹理的方向向量，使用它们从cubemap采样纹理值。渲染天空盒现在很简单，我们有了一个cubemap纹理，我们简单绑定cubemap纹理，天空盒就自动地用天空盒的cubemap填充了。为了绘制天空盒，我们将把它作为场景中第一个绘制的物体并且关闭深度写入。这样天空盒才能成为所有其他物体的背景来绘制出来。
+片段着色器比较明了，我们把顶点属性中的位置向量作为纹理的方向向量，使用它们从cubemap采样纹理值。渲染天空盒现在很简单，我们有了一个cubemap纹理，我们简单绑定cubemap纹理，天空盒就自动地用天空盒的cubemap填充了。为了绘制天空盒，我们将把它作为场景中第一个绘制的物体并且关闭深度写入。这样天空盒才能成为所有其他物体的背景来绘制出来。
 
 ```c++
 
@@ -226,13 +226,13 @@ glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
 尝试用不同的天空盒实验，看看它们对场景有多大影响。
 
-#### 优化
+### 优化
 
 现在我们在渲染场景中的其他物体之前渲染了天空盒。这么做没错，但是不怎么高效。如果我们先渲染了天空盒，那么我们就是在为每一个屏幕上的像素运行片段着色器，即使天空盒只有部分在显示着；fragment可以使用前置深度测试（early depth testing）简单地被丢弃，这样就节省了我们宝贵的带宽。
 
-所以最后渲染天空盒就能够给我们带来轻微的性能提升。采用这种方式，深度缓冲被全部物体的深度值完全填充，所以我们只需要渲染通过前置深度测试的那部分天空的fragment就行了，而且能显著减少片段着色器的调用。问题是天空盒是个1×1×1的立方体，极有可能会渲染失败，因为极有可能通不过深度测试。简单地不用深度测试渲染它也不是解决方案，这是因为天空盒会在之后覆盖所有的场景中其他物体。我们需要耍个花招让深度缓冲相信天空盒的深度缓冲有着最大深度值1.0，如此只要有个物体存在深度测试就会失败，看似物体就在它前面了。
+所以最后渲染天空盒就能够给我们带来轻微的性能提升。采用这种方式，深度缓冲被全部物体的深度值完全填充，所以我们只需要渲染通过前置深度测试的那部分天空的片段就行了，而且能显著减少片段着色器的调用。问题是天空盒是个1×1×1的立方体，极有可能会渲染失败，因为极有可能通不过深度测试。简单地不用深度测试渲染它也不是解决方案，这是因为天空盒会在之后覆盖所有的场景中其他物体。我们需要耍个花招让深度缓冲相信天空盒的深度缓冲有着最大深度值1.0，如此只要有个物体存在深度测试就会失败，看似物体就在它前面了。
 
-在坐标系教程中我们说过，透视除法（perspective division）是在顶点着色器运行之后执行的，把gl_Position的xyz坐标除以w元素。我们从深度测试教程了解到除法结果的z元素等于顶点的深度值。利用这个信息，我们可以把输出位置的z元素设置为它的w元素，这样就会导致z元素等于1.0了，因为，当透视除法应用后，它的z元素转换为w/w = 1.0：
+在坐标系教程中我们说过，透视除法（perspective division）是在顶点着色器运行之后执行的，把`gl_Position`的xyz坐标除以w元素。我们从深度测试教程了解到除法结果的z元素等于顶点的深度值。利用这个信息，我们可以把输出位置的z元素设置为它的w元素，这样就会导致z元素等于1.0了，因为，当透视除法应用后，它的z元素转换为w/w = 1.0：
 
 ```c++
 void main()
@@ -245,19 +245,19 @@ void main()
 
 最终，标准化设备坐标就总会有个与1.0相等的z值了，1.0就是深度值的最大值。只有在没有任何物体可见的情况下天空盒才会被渲染（只有通过深度测试才渲染，否则假如有任何物体存在，就不会被渲染，只去渲染物体）。
 
-我们必须改变一下深度方程，把它设置为GL_LEQUAL，原来默认的是GL_LESS。深度缓冲会为天空盒用1.0这个值填充深度缓冲，所以我们需要保证天空盒是使用小雨等于深度缓冲来通过深度测试的，而不是小于。
+我们必须改变一下深度方程，把它设置为`GL_LEQUAL`，原来默认的是`GL_LESS`。深度缓冲会为天空盒用1.0这个值填充深度缓冲，所以我们需要保证天空盒是使用小于等于深度缓冲来通过深度测试的，而不是小于。
 
-你可以在这里找到优化过的版本的源码。
+你可以在这里找到优化过的版本的[源码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_optimized)。
 
-#### 环境映射
+### 环境映射
 
-我们现在有了一个把整个环境映射到为一个单独纹理的对象，我们利用这个信息能做的不仅是天空盒。使用带有场景环境的cubemap，我们还可以让物体有一个反射或折射属性。像这样使用了环境cubemap的技术叫做环境贴图技术，其中最重要的两个是反射和折射。
+我们现在有了一个把整个环境映射到为一个单独纹理的对象，我们利用这个信息能做的不仅是天空盒。使用带有场景环境的cubemap，我们还可以让物体有一个反射或折射属性。像这样使用了环境cubemap的技术叫做**环境贴图技术**，其中最重要的两个是**反射(reflection)**和**折射(refraction)**。
 
-##### 反射
+#### 反射(reflection)
 
 凡是是一个物体（或物体的某部分）反射他周围的环境的属性，比如物体的颜色多少有些等于它周围的环境，这要基于观察者的角度。例如一个镜子是一个反射物体：它会基于观察者的角度泛着它周围的环境。
 
-反射的基本思路不难。下麦呢的图片展示了我们如何计算反射向量，然后使用这个向量去从一个cubemap中采样：
+反射的基本思路不难。下图展示了我们如何计算反射向量，然后使用这个向量去从一个cubemap中采样：
 
 ![](http://learnopengl.com/img/advanced/cubemaps_reflection_theory.png)
 
@@ -282,7 +282,7 @@ void main()
 }
 ```
 
-我们先来计算观察/摄像机方向向量I，然后使用它来计算反射向量R，接着我们用R从天空盒cubemap采样。要注意的是，我们有了fragment的插值Normal和Position变量，所以我们需要修正顶点着色器适应它。
+我们先来计算观察/摄像机方向向量I，然后使用它来计算反射向量R，接着我们用R从天空盒cubemap采样。要注意的是，我们有了片段的插值Normal和Position变量，所以我们需要修正顶点着色器适应它。
 
 ```c++
 #version 330 core
@@ -304,9 +304,9 @@ void main()
 }
 ```
 
-我们用了法线向量，所以我们打算使用一个法线矩阵（normal matrix）变换它们。Position输出的向量是一个世界空间位置向量。顶点着色器输出的Position用来在片段着色器计算观察方向向量。
+我们用了法线向量，所以我们打算使用一个**法线矩阵(normal matrix)**变换它们。`Position`输出的向量是一个世界空间位置向量。顶点着色器输出的`Position`用来在片段着色器计算观察方向向量。
 
-因为我们使用法线，你还得更新顶点数据，更新属性指针。还要确保设置cameraPos的uniform。
+因为我们使用法线，你还得更新顶点数据，更新属性指针。还要确保设置`cameraPos`的uniform。
 
 然后在渲染箱子前我们还得绑定cubemap纹理：
 
@@ -323,15 +323,15 @@ glBindVertexArray(0);
 
 你可以[从这里找到全部源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_reflection)。
 
-当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载模型加载教程中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
+当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载[模型教程](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/03%20Model/)中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
 
 ![](http://learnopengl.com/img/advanced/cubemaps_reflection_nanosuit.png)
 
 看起来挺惊艳，但是现实中大多数模型都不是完全反射的。我们可以引进反射贴图（reflection map）来使模型有另一层细节。和diffuse、specular贴图一样，我们可以从反射贴图上采样来决定fragment的反射率。使用反射贴图我们还可以决定模型的哪个部分有反射能力，以及强度是多少。本节的练习中，要由你来在我们早期创建的模型加载器引入反射贴图，这回极大的提升纳米服模型的细节。
 
-#### 折射
+#### 折射(refraction)
 
-环境映射的另一个形式叫做折射，它和反射差不多。折射是光线通过特定材质对光线方向的改变。我们通常看到像水一样的表面，光线并不是直接通过的，而是让光线弯曲了一点。它看起来像当你把半只手伸进水里的效果。
+环境映射的另一个形式叫做折射，它和反射差不多。折射是光线通过特定材质对光线方向的改变。我们通常看到像水一样的表面，光线并不是直接通过的，而是让光线弯曲了一点。它看起来像你把半只手伸进水里的效果。
 
 折射遵守[斯涅尔定律](http://en.wikipedia.org/wiki/Snell%27s_law)，使用环境贴图看起来就像这样：
 
@@ -367,15 +367,7 @@ void main()
 
 通过改变折射指数你可以创建出完全不同的视觉效果。编译运行应用，结果也不是太有趣，因为我们只是用了一个普通箱子，这不能显示出折射的效果，看起来像个放大镜。使用同一个着色器，纳米服模型却可以展示出我们期待的效果：玻璃制物体。
 
-```c++
-void main()
-{
-    float ratio = 1.00 / 1.52;
-    vec3 I = normalize(Position - cameraPos);
-    vec3 R = refract(I, normalize(Normal), ratio);
-    color = texture(skybox, R);
-}
-```
+![](http://learnopengl.com/img/advanced/cubemaps_refraction.png)
 
 你可以向想象一下，如果将光线、反射、折射和顶点的移动合理的结合起来就能创造出漂亮的水的图像。一定要注意，出于物理精确的考虑当光线离开物体的时候还要再次进行折射；现在我们简单的使用了单边（一次）折射，大多数目的都可以得到满足。
 
@@ -389,6 +381,18 @@ void main()
 
 
 
-### 练习
+## 练习
 
-//TODO
+尝试在模型加载中引进反射贴图，你将再次得到很大视觉效果的提升。这其中有几点需要注意：
+
+- Assimp并不支持反射贴图，我们可以使用环境贴图的方式将反射贴图从`aiTextureType_AMBIENT`类型中来加载反射贴图的材质。
+- 我匆忙地使用反射贴图来作为镜面反射的贴图，而反射贴图并没有很好的映射在模型上:)。
+- 由于加载模型已经占用了3个纹理单元，因此你要绑定天空盒到第4个纹理单元上，这样才能在同一个着色器内从天空盒纹理中取样。
+
+You can find the solution source code here together with the updated model and mesh class. The shaders used for rendering the reflection maps can be found here: vertex shader and fragment shader. 
+
+你可以在此获取解决方案的[源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1)，这其中还包括升级过的[Model](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-model)和[Mesh](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-mesh)类，还有用来绘制反射贴图的[顶点着色器](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-fragment)。
+
+如果你一切都做对了，那你应该看到和下图类似的效果：
+
+![](http://learnopengl.com/img/advanced/cubemaps_reflection_map.png)
