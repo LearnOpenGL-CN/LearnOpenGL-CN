@@ -333,7 +333,7 @@ GLfloat lastX = 400, lastY = 300;
 
 ```c++
 GLfloat xoffset = xpos - lastX;
-GLfloat yoffset = lastY - ypos; // Reversed since y-coordinates range from bottom to top
+GLfloat yoffset = lastY - ypos; // 注意这里是相反的，因为y坐标的范围是从下往上的
 lastX = xpos;
 lastY = ypos;
 
@@ -377,7 +377,7 @@ cameraFront = glm::normalize(front);
 如果你现在运行代码，你会发现当程序运行第一次捕捉到鼠标的时候摄像机会突然跳一下。原因是当你的鼠标进入窗口鼠标回调函数会使用这时的`xpos`和`ypos`。这通常是一个距离屏幕中心很远的地方，因而产生一个很大的偏移量，所以就会跳了。我们可以简单的使用一个布尔变量检验我们是否是第一次获取鼠标输入，如果是，那么我们先把鼠标的位置更新为`xpos`和`ypos`，这样就能解决这个问题；最后的鼠标移动会使用进入以后鼠标的位置坐标来计算它的偏移量：
 
 ```c++
-if(firstMouse) // this bool variable is initially set to true
+if(firstMouse) // 这个bool变量一开始是设定为true的
 {
   lastX = xpos;
   lastY = ypos;
