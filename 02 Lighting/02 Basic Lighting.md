@@ -278,7 +278,7 @@ color = vec4(result, 1.0f);
 
 ## 练习
 
-- 目前，我们的光源时静止的，你可以尝试使用`sin`和`cos`函数让光源在场景中来回移动，此时再观察光照效果能让你更容易理解冯氏光照模型。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise1)
+- 目前，我们的光源时静止的，你可以尝试使用`sin`和`cos`函数让光源在场景中来回移动，此时再观察光照效果能让你更容易理解冯氏光照模型。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise1)。
 - 尝试使用不同的环境光、散射镜面强度，观察光照效果。改变镜面光照的`shininess`因子试试。
 - 在观察空间中计算而不是世界空间冯氏光照：[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise2)。
-- 尝试实现一个Gouraud光照来模拟冯氏光照，[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise3)
+- 尝试实现一个Gouraud光照来模拟冯氏光照，[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise3)。
