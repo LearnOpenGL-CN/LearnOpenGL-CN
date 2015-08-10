@@ -1,8 +1,14 @@
-## 几何着色器（Geometry Shader）
+# 几何着色器
 
-本文作者JoeyDeVries，由Django翻译自http://learnopengl.com
+原文     | [Geometry Shader](http://learnopengl.com/#!Advanced-OpenGL/Geometry-Shader)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | [Geequlim](http://geequlim.com)
 
-在顶点和片段着色器张志坚有一个可选的着色器阶段，叫做几何着色器（geometry shader）。几何着色器以一个或多个表示为一个单独基本图形（primitive）的顶点作为输入，比如可以是一个点或者三角形。几何着色器在将这些顶点发送到下一个着色阶段之前，可以将这些顶点转变为它认为合适的内容。几何着色器有意思的地方在于它可以把（一个或多个）顶点转变为完全不同的基本图形（primitive），从而生成比原来多得多的顶点。
+## 几何着色器(Geometry Shader)
+
+在顶点和片段着色器之间有一个可选的着色器，叫做几何着色器（geometry shader）。几何着色器以一个或多个表示为一个单独基本图形（primitive）的顶点作为输入，比如可以是一个点或者三角形。几何着色器在将这些顶点发送到下一个着色阶段之前，可以将这些顶点转变为它认为合适的内容。几何着色器有意思的地方在于它可以把（一个或多个）顶点转变为完全不同的基本图形（primitive），从而生成比原来多得多的顶点。
 
 我们直接用一个例子深入了解一下：
 
@@ -22,7 +28,7 @@ void main() {
 }
 ```
 
-每个几何着色器开始位置我们需要声明输入的基本图形（primitive）类型，这个输入是我们从顶点着色器中接收到的。我们在in关键字前面声明一个layout标识符。这个输入layout修饰符可以从一个顶点着色器接收以下基本图形值：
+每个几何着色器开始位置我们需要声明输入的基本图形(primitive)类型，这个输入是我们从顶点着色器中接收到的。我们在in关键字前面声明一个layout标识符。这个输入layout修饰符可以从一个顶点着色器接收以下基本图形值：
 
 
  基本图形|描述
@@ -31,11 +37,11 @@ points |绘制GL_POINTS基本图形的时候（1）
 lines  |当绘制GL_LINES或GL_LINE_STRIP（2）时
 lines_adjacency | GL_LINES_ADJACENCY或GL_LINE_STRIP_ADJACENCY（4）
 triangles |GL_TRIANGLES, GL_TRIANGLE_STRIP或GL_TRIANGLE_FAN（3）
-triangles_adjacency |GL_TRIANGLES_ADJACENCYGL_TRIANGLE_STRIP_ADJACENCY（6）
+triangles_adjacency |GL_TRIANGLES_ADJACENCY或GL_TRIANGLE_STRIP_ADJACENCY（6）
 
 这是我们能够给渲染函数的几乎所有的基本图形。如果我们选择以GL_TRIANGLES绘制顶点，我们要把输入修饰符设置为triangles。括号里的数字代表一个基本图形所能包含的最少的顶点数。
 
-当我们需要指定一个几何着色器所输出的基本图形类型时，我们就在out关键字前面加一个layout修饰符。和输入layout标识符一样，output的layout标识符也可以接受以下基本图形值：
+当我们需要指定一个几何着色器所输出的基本图形类型时，我们就在out关键字前面加一个layout修饰符。和输入layout标识符一样，输出的layout标识符也可以接受以下基本图形值：
 
 * points
 * line_strip
@@ -49,9 +55,9 @@ triangles_adjacency |GL_TRIANGLES_ADJACENCYGL_TRIANGLE_STRIP_ADJACENCY（6）
 
 ![](http://learnopengl.com/img/advanced/geometry_shader_line_strip.png)
 
-上面的着色器，我们只能输出一个线段，因为顶点的最大值设置的是2。
+上面的着色器，我们只能输出一个线段，因为顶点的最大值设置为2。
 
-为生成更有意义的结果，我们需要某种方式从前一个着色阶段获得输出。GLSL为我们提供了一个内建变量，它叫做gl_in，它的内部看起来可能像这样：
+为生成更有意义的结果，我们需要某种方式从前一个着色阶段获得输出。GLSL为我们提供了一个内建变量，它叫做**gl_in**，它的内部看起来可能像这样：
 
 ```c++
 in gl_Vertex
@@ -63,11 +69,11 @@ in gl_Vertex
 
 ```
 
-这里它被声明为一个interface block（前面的教程已经讨论过），它包含几个有意思的变量，其中最有意思的是gl_Position，它包含着和我们设置的顶点着色器的输出相似的向量。
+这里它被声明为一个接口块(interface block，前面的教程已经讨论过)，它包含几个有意思的变量，其中最有意思的是`gl_Position`，它包含着和我们设置的顶点着色器的输出相似的向量。
 
-要注意的是，它被声明为一个数组，因为大多数渲染基本图形（primitive）由一个以上顶点组成，几何着色器接收一个基本图形的所有顶点作为它的输入。
+要注意的是，它被声明为一个数组，因为大多数渲染基本图形由一个以上顶点组成，几何着色器接收一个基本图形的所有顶点作为它的输入。
 
-使用从前一个顶点着色阶段的顶点数据，我们就可以开始生成新的数据了，这是通过2个几何着色器函数EmitVertex和EndPrimitive来完成的。几何着色器需要你去生成/输出至少一个你定义为输出的基本图形。在我们的例子里我们打算至少生成一个线条（line strip）基本图形。
+使用从前一个顶点着色阶段的顶点数据，我们就可以开始生成新的数据了，这是通过2个几何着色器函数`EmitVertex`和`EndPrimitive`来完成的。几何着色器需要你去生成/输出至少一个你定义为输出的基本图形。在我们的例子里我们打算至少生成一个线条（line strip）基本图形。
 
 ```c++
 void main() {
@@ -81,9 +87,9 @@ void main() {
 }
 ```
 
-每次我们调用EmitVertex，当前设置到gl_Position的向量就会被添加到基本图形上。无论何时调用EndPrimitive，所有为这个基本图形发射出去的顶点都将结合为一个特定的输出渲染基本图形。一个或多个EmitVertex函数调用后，重复调用EndPrimitive就能生成多个基本图形。这个特殊的例子里，发射了两个顶点，它们被从顶点原来的位置平移了一段距离，然后调用EndPrimitive将这两个顶点结合为一个单独的有两个顶点的线条。
+每次我们调用`EmitVertex`，当前设置到`gl_Position`的向量就会被添加到基本图形上。无论何时调用`EndPrimitive`，所有为这个基本图形发射出去的顶点都将结合为一个特定的输出渲染基本图形。一个或多个`EmitVertex`函数调用后，重复调用`EndPrimitive`就能生成多个基本图形。这个特殊的例子里，发射了两个顶点，它们被从顶点原来的位置平移了一段距离，然后调用`EndPrimitive`将这两个顶点结合为一个单独的有两个顶点的线条。
 
-现在你了解了几何着色器的工作方式，你就可能猜出这个几何着色器做了什么。这个几何着色器接收一个point基本图形作为它的输入，使用输入点作为它的中心，创建了一个水平线基本图形。如果我们渲染它，结果就会像这样：
+现在你了解了几何着色器的工作方式，你就可能猜出这个几何着色器做了什么。这个几何着色器接收一个基本图形——点，作为它的输入，使用输入点作为它的中心，创建了一个水平线基本图形。如果我们渲染它，结果就会像这样：
 
 ![](http://bullteacher.com/wp-content/uploads/2015/06/geometry_shader_lines.png)
 
@@ -95,16 +101,16 @@ glDrawArrays(GL_POINTS, 0, 4);
 
 这是个相对简单的例子，它向你展示了我们如何使用几何着色器来动态地在运行时生成新的形状。本章的后面，我们会讨论一些可以使用几何着色器获得有趣的效果，但是现在我们将以创建一个简单的几何着色器开始。
 
-### 使用几何着色器
+## 使用几何着色器
 
 为了展示几何着色器的使用，我们将渲染一个简单的场景，在场景中我们只绘制4个点，这4个点在标准化设备坐标的z平面上。这些点的坐标是：
 
 ```c++
 GLfloat points[] = {
- -0.5f,  0.5f, // Top-left
- 0.5f,  0.5f, // Top-right
- 0.5f, -0.5f, // Bottom-right
- -0.5f, -0.5f  // Bottom-left
+ -0.5f,  0.5f, // 左上方
+ 0.5f,  0.5f,  // 右上方
+ 0.5f, -0.5f,  // 右下方
+ -0.5f, -0.5f  // 左下方
 };
 ```
 
@@ -132,7 +138,7 @@ void main()
 }
 ```
 
-为点（point）的顶点（vertex）生成一个VAO和VBO，然后使用glDrawArrays进行绘制：
+为点的顶点生成一个VAO和VBO，然后使用`glDrawArrays`进行绘制：
 
 ```c++
 shader.Use();
@@ -163,7 +169,7 @@ void main() {
 
 现在这个几何着色器应该很容易理解了。它简单地将它接收到的输入的无修改的顶点位置发射出去，然后生成一个point基本图形。
 
-一个几何着色器需要像顶点和片段着色器一样被编译和链接，但是这次我们将使用GL_GEOMETRY_SHADER作为着色器的类型来创建这个着色器：
+一个几何着色器需要像顶点和片段着色器一样被编译和链接，但是这次我们将使用`GL_GEOMETRY_SHADER`作为着色器的类型来创建这个着色器：
 
 ```c++
 geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
@@ -183,18 +189,17 @@ glLinkProgram(program);
 它和没用几何着色器一样！我承认有点无聊，但是事实上，我们仍能绘制证明几何着色器工作了的点，所以现在是时候来做点更有意思的事了！
 
 
-
 ### 创建几个房子
 
-绘制点和线没什么意思，所以我们将在每个点上使用几何着色器绘制一个房子。我们可以通过把几何着色器的输出设置为triangle_strip来达到这个目的，总共要绘制3个三角形：两个方形和一个屋顶。
+绘制点和线没什么意思，所以我们将在每个点上使用几何着色器绘制一个房子。我们可以通过把几何着色器的输出设置为`triangle_strip`来达到这个目的，总共要绘制3个三角形：两个用来组成方形和另表示一个屋顶。
 
-在OpenGL中triangle strip（三角形带）绘制起来更高效，因为它所使用的顶点更少。第一个三角形绘制完以后，每个后续的顶点会生成一个毗连前一个三角形的新三角形：每3个毗连的顶点都能构成一个三角形。如果我们有6个顶点，它们以triangle strip的方式组合起来，那么我们会得到这些三角形：（1, 2, 3）、（2, 3, 4）、（3, 4, 5）、（4,5,6）因此总共可以表示出4个三角形。一个triangle strip至少要用3个顶点才行，它能生曾N-2个三角形；6个顶点我们就能创建6-2=4个三角形。下面的图片表达了这点：
+在OpenGL中三角形带(triangle strip)绘制起来更高效，因为它所使用的顶点更少。第一个三角形绘制完以后，每个后续的顶点会生成一个毗连前一个三角形的新三角形：每3个毗连的顶点都能构成一个三角形。如果我们有6个顶点，它们以三角形带的方式组合起来，那么我们会得到这些三角形：（1, 2, 3）、（2, 3, 4）、（3, 4, 5）、（4,5,6）因此总共可以表示出4个三角形。一个三角形带至少要用3个顶点才行，它能生曾N-2个三角形；6个顶点我们就能创建6-2=4个三角形。下面的图片表达了这点：
 
 ![](http://learnopengl.com/img/advanced/geometry_shader_triangle_strip.png)
 
-使用一个triangle strip作为一个几何着色器的输出，我们可以轻松创建房子的形状，只要以正确的顺序来生成3个毗连的三角形。下面的图像显示，我们需要以何种顺序来绘制点，才能获得我们需要的三角形，图上的蓝点代表输入点：
+使用一个三角形带作为一个几何着色器的输出，我们可以轻松创建房子的形状，只要以正确的顺序来生成3个毗连的三角形。下面的图像显示，我们需要以何种顺序来绘制点，才能获得我们需要的三角形，图上的蓝点代表输入点：
 
-![](http://bullteacher.com/wp-content/uploads/2015/06/geometry_shader_house.png)
+![](http://learnopengl.com/img/advanced/geometry_shader_house.png)
 
 上图的内容转变为几何着色器：
 
@@ -205,15 +210,15 @@ layout (triangle_strip, max_vertices = 5) out;
 
 void build_house(vec4 position)
 {
-    gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
+    gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);// 1:左下角
     EmitVertex();
-    gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
+    gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);// 2:右下角
     EmitVertex();
-    gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
+    gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);// 3:左上
     EmitVertex();
-    gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);    // 4:top-right
+    gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);// 4:右上
     EmitVertex();
-    gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f);    // 5:top
+    gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f);// 5:屋顶
     EmitVertex();
     EndPrimitive();
 }
@@ -222,27 +227,26 @@ void main()
 {
     build_house(gl_in[0].gl_Position);
 }
-
 ```
 
-这个几何着色器生成5个顶点，每个顶点是点（point）的位置加上一个偏移量，来组成一个大triangle strip。接着最后的基本图形被像素化，片段着色器处理整个triangle strip，结果是为我们绘制的每个点生成一个绿房子：
+这个几何着色器生成5个顶点，每个顶点是点（point）的位置加上一个偏移量，来组成一个大三角形带。接着最后的基本图形被像素化，片段着色器处理整三角形带，结果是为我们绘制的每个点生成一个绿房子：
 
 ![](http://learnopengl.com/img/advanced/geometry_shader_houses.png)
 
-可以看到，每个房子实则是由3个三角形组成，都是仅仅使用空间中一点来绘制的。绿房子绿房子看起来还是不够漂亮，所以我们再给每个房子加一个不同的颜色。我们将在顶点着色器中为每个顶点增加一个额外的代表颜色信息的顶点属性。
+可以看到，每个房子实则是由3个三角形组成，都是仅仅使用空间中一点来绘制的。绿房子看起来还是不够漂亮，所以我们再给每个房子加一个不同的颜色。我们将在顶点着色器中为每个顶点增加一个额外的代表颜色信息的顶点属性。
 
 下面是更新了的顶点数据：
 
 ```c++
 GLfloat points[] = {
-    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // Top-left
-     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // Top-right
-     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-right
-    -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // Bottom-left
+    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // 左上
+     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // 右上
+     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // 右下
+    -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // 左下
 };
 ```
 
-然后我们更新顶点着色器，使用一个interface block来像几何着色器发送颜色属性：
+然后我们更新顶点着色器，使用一个接口块来项几何着色器发送颜色属性：
 
 ```c++
 #version 330 core
@@ -260,7 +264,7 @@ void main()
 }
 ```
 
-接着我们还需要在几何着色器中声明同样的interface block（使用一个不同的接口名）：
+接着我们还需要在几何着色器中声明同样的接口块(使用一个不同的接口名)：
 
 ```c++
 in VS_OUT {
@@ -272,14 +276,14 @@ in VS_OUT {
 
 !!! Important
 
-        我们不是必须使用interface block来把数据发送到几何着色器中。我们还可以这么写：
+        我们不是必须使用接口块来把数据发送到几何着色器中。我们还可以这么写：
 
         in vec3 vColor[];
 
-        如果顶点着色器发送的颜色向量是out vec3 vColor那么interface block就会在比如几何着色器这样的着色器中更轻松地完成工作。事实上，几何着色器的输入可以非常大，把它们组成一个大的interface block数组会更有意义。
+        如果顶点着色器发送的颜色向量是out vec3 vColor那么接口块就会在比如几何着色器这样的着色器中更轻松地完成工作。事实上，几何着色器的输入可以非常大，把它们组成一个大的接口块数组会更有意义。
 
 
-然后我们还要为下一个像素着色阶段僧名一个输出颜色向量：
+然后我们还要为下一个像素着色阶段声明一个输出颜色向量：
 
 ```c++
 out vec3 fColor;
@@ -288,16 +292,16 @@ out vec3 fColor;
 因为片段着色器只需要一个（已进行了插值的）颜色，传送多个颜色没有意义。fColor向量这样就不是一个数组，而是一个单一的向量。当发射一个顶点时，为了它的片段着色器运行，每个顶点都会储存最后在fColor中储存的值。对于这些房子来说，我们可以在第一个顶点被发射，对整个房子上色前，只使用来自顶点着色器的颜色填充fColor一次：
 
 ```c++
-fColor = gs_in[0].color; // gs_in[0] since there's only one input vertex
-gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
+fColor = gs_in[0].color; //只有一个输出颜色，所以直接设置为gs_in[0]
+gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:左下
 EmitVertex();
-gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
+gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:右下
 EmitVertex();
-gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
+gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:左上
 EmitVertex();
-gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);    // 4:top-right
+gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);    // 4:右上
 EmitVertex();
-gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f);    // 5:top
+gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f);    // 5:屋顶
 EmitVertex();
 EndPrimitive();
 ```
@@ -310,15 +314,15 @@ EndPrimitive();
 
 ```c++
 fColor = gs_in[0].color;
-gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f);    // 1:bottom-left
+gl_Position = position + vec4(-0.2f, -0.2f, 0.0f, 0.0f); 
 EmitVertex();
-gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);    // 2:bottom-right
+gl_Position = position + vec4( 0.2f, -0.2f, 0.0f, 0.0f);
 EmitVertex();
-gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f);    // 3:top-left
+gl_Position = position + vec4(-0.2f,  0.2f, 0.0f, 0.0f); 
 EmitVertex();
-gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);    // 4:top-right
+gl_Position = position + vec4( 0.2f,  0.2f, 0.0f, 0.0f);  
 EmitVertex();
-gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f);    // 5:top
+gl_Position = position + vec4( 0.0f,  0.4f, 0.0f, 0.0f); 
 fColor = vec3(1.0f, 1.0f, 1.0f);
 EmitVertex();
 EndPrimitive();
@@ -329,11 +333,11 @@ EndPrimitive();
 
 ![](http://learnopengl.com/img/advanced/geometry_shader_houses_snow.png)
 
-你可以对比一下你的源码和着色器。
+你可以对比一下你的[源码](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_houses)和[着色器](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_houses_shaders)。
 
-你可以看到，使用几何着色器，你可以使用最简单的基本图形就能获得漂亮的新玩意。因为这些形状是在你的GPU超快硬件上动态生成额，这要比使用顶点缓冲自己定义这些形状更为高效。几何缓冲在简单的经常被重复的形状比如体素（voxel）的世界和室外的草地上，是一种非常强大的优化工具。
+你可以看到，使用几何着色器，你可以使用最简单的基本图形就能获得漂亮的新玩意。因为这些形状是在你的GPU超快硬件上动态生成的，这要比使用顶点缓冲自己定义这些形状更为高效。几何缓冲在简单的经常被重复的形状比如体素（voxel）的世界和室外的草地上，是一种非常强大的优化工具。
 
-#### 爆炸式物体
+### 爆炸式物体
 
 绘制房子的确很有趣，但我们不会经常这么用。这就是为什么现在我们将撬起物体缺口，形成爆炸式物体的原因！虽然这个我们也不会经常用到，但是它能向你展示一些几何着色器的强大之处。
 
@@ -412,13 +416,13 @@ void main() {
 glUniform1f(glGetUniformLocation(shader.Program, "time"), glfwGetTime());
  ```
 
-最后的结果是一个随着时间持续不断地爆炸的3D模型（不断爆炸不断回到正常状态）。尽管没什么大用处，它却向你展示出很多几何着色器的高级用法。你可以用完整的源码和着色器对比一下你自己的。
+最后的结果是一个随着时间持续不断地爆炸的3D模型（不断爆炸不断回到正常状态）。尽管没什么大用处，它却向你展示出很多几何着色器的高级用法。你可以用[完整的源码](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_explode)和[着色器](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_explode_shaders)对比一下你自己的。
 
-#### 把法线向量显示出来
+### 把法线向量显示出来
 
-在这部分我们将使用几何着色器写一个例子，非常有用：显示一个法线向量。当编写光照着色器的时候，你最终会遇到奇怪的视频输出问题，你很难决定是什么导致了这个问题。通常导致光照错误的是，不正确的加载顶点数据，以及给它们指定了不合理的顶点属性，又或是在着色器中不合法的管理，导致产生了不正确的法线向量。我们所希望的是有某种方式可以检测出法线向量是否正确。把法线向量显示出来正是这样一种方法，恰好几何着色器能够完美地达成这个目的。
+在这部分我们将使用几何着色器写一个例子，非常有用：显示一个法线向量。当编写光照着色器的时候，你最终会遇到奇怪的视频输出问题，你很难决定是什么导致了这个问题。通常导致光照错误的是，不正确的加载顶点数据，以及给它们指定了不合理的顶点属性，又或是在着色器中不合理的管理，导致产生了不正确的法线向量。我们所希望的是有某种方式可以检测出法线向量是否正确。把法线向量显示出来正是这样一种方法，恰好几何着色器能够完美地达成这个目的。
 
-思路是这样的：我们先不用几何着色器，正常绘制场景，然后我们再次绘制一遍场景，但这次只显示我们通过几何着色器生成的法线向量。几何着色器把一个triangle基本图形作为输入类型，用它们生成3条和法线向量同向的线段，每个顶点一条。伪代码应该是这样的：
+思路是这样的：我们先不用几何着色器，正常绘制场景，然后我们再次绘制一遍场景，但这次只显示我们通过几何着色器生成的法线向量。几何着色器把一个三角形基本图形作为输入类型，用它们生成3条和法线向量同向的线段，每个顶点一条。伪代码应该是这样的：
 
 ```c++
 shader.Use();
@@ -450,7 +454,7 @@ void main()
 }
 ```
 
-经过变换的裁切空间法线向量接着通过一个interface block被传递到下个着色阶段。几何着色器接收每个顶点（带有位置和法线向量），从每个位置向量绘制出一个法线向量：
+经过变换的裁切空间法线向量接着通过一个接口块被传递到下个着色阶段。几何着色器接收每个顶点（带有位置和法线向量），从每个位置向量绘制出一个法线向量：
 
 ```c++
 #version 330 core
