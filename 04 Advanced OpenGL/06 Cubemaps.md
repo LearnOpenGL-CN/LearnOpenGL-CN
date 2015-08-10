@@ -1,4 +1,4 @@
-# Cubemaps
+# 立方体贴图(Cubemap)
 
 原文     | [Cubemaps](http://learnopengl.com/#!Advanced-OpenGL/Cubemaps)
       ---|---

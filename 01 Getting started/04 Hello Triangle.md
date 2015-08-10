@@ -1,4 +1,4 @@
-# 你好三角形
+# 你好，三角形
 
 原文     | [Creating a window](http://www.learnopengl.com/#!Getting-started/Hello-Triangle)
       ---|---

@@ -1,4 +1,4 @@
-# 着色器(Shaders)
+# 着色器(Shader)
 
 原文     | [Shaders](http://learnopengl.com/#!Getting-started/Shaders)
       ---|---

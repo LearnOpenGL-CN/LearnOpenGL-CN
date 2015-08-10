@@ -1,4 +1,6 @@
-## 反走样(Anti Aliasing)
+## 抗锯齿(Anti Aliasing)
+
+// 记得把反走样改成抗锯齿，这名字好难听
 
 本文作者JoeyDeVries，由Django翻译自http://learnopengl.com
 
@@ -54,7 +56,7 @@ MSAA的真正工作方式是，每个像素只运行一次片段着色器，无�
 
 大致上来说，如果更多的采样点被覆盖，那么像素的颜色就会更接近于三角形。如果我们用早期使用的三角形的颜色填充像素，我们会获得这样的结果：
 
-![](http://bullteacher.com/wp-content/uploads/2015/06/anti_aliasing_rasterization_samples_filled.png)
+![](http://learnopengl.com/img/advanced/anti_aliasing_rasterization_samples_filled.png)
 
 对于每个像素来说，被三角形覆盖的子样本越少，像素受到三角形的颜色的影响也越少。现在三角形的硬边被比实际颜色浅一些的颜色所包围，因此观察者从远处看上去就比较平滑了。
 

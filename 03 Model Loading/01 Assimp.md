@@ -1,4 +1,4 @@
-# Assimp (Assimp开源模型导入库)
+# Assimp开源模型导入库
 
 原文     | [Assimp](http://learnopengl.com/#!Model-Loading/Assimp)
       ---|---
