@@ -48,6 +48,8 @@ pages:
     - 泛光: '05 Advanced Lighting/07 Bloom.md'
     - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
     - SSAO: '05 Advanced Lighting/09 SSAO.md'
+  - 实战(In Practice):
+    - 文字渲染: '06 In Practice/02 Text Rendering.md'
 
 site_name: LearnOpenGL-CN
 
