@@ -1,16 +1,16 @@
-## 高级光照
+# 高级光照
 
-原文     | [Text Rendering](http://learnopengl.com/#!In-Practice/Text-Rendering)
+原文     | [Advanced Lighting](http://learnopengl.com/#!Advanced-Lighting/Advanced-Lighting)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Geequlim](http://geequlim.com)
+翻译     | [Django](http://bullteacher.com/)
 校对     | gjy_1992
 
 在光照教程中，我们简单的介绍了Phong光照模型，它给我们的场景带来的基本的现实感。Phong模型看起来还不错，但本章我们把重点放在一些细微差别上。
 
  
 
-### Blinn-Phong
+## Blinn-Phong
 
 Phong光照很棒，而且性能较高，但是它的镜面反射在某些条件下会失效，特别是当发光值属性低的时候，对应一个非常大的粗糙的镜面区域。下面的图片展示了，当我们使用镜面的发光值为1.0时，一个带纹理地板的效果：
 
