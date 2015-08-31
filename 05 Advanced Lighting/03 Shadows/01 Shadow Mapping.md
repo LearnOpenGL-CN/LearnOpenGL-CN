@@ -1,44 +1,52 @@
-本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
-
 ## 阴影映射(Shadow Mapping)
 
-阴影是光线被阻挡的结果；当一个光源的光线由于其他物体的阻挡不能够达到一个物体的表面的时候，那么它就在阴影中了。阴影能够给场景中加入非常显著的真实性，并且观察者能够获得更好的物体之间的空间感。场景和物体的深度感因此能够得到极大提升，下图展示了有阴影和没有阴影的情况下的不同：
+本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
+
+原文     | [Shadow Mapping](http://learnopengl.com/#!Advanced-Lighting/Shadows/Shadow-Mapping)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | gjy_1992
+
+
+
+阴影是光线被阻挡的结果；当一个光源的光线由于其他物体的阻挡不能够达到一个物体的表面的时候，那么这个物体就在阴影中了。阴影能够使场景看起来真实得多，并且可以让观察者获得物体之间的空间位置关系。场景和物体的深度感因此能够得到极大提升，下图展示了有阴影和没有阴影的情况下的不同：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_with_without.png)
 
-你可以看到，有阴影的时候你能更容易地区分出物体之间的关系，例如，当使用阴影的时候浮在地板上的立方体的事实更加清晰。
+你可以看到，有阴影的时候你能更容易地区分出物体之间的位置关系，例如，当使用阴影的时候浮在地板上的立方体的事实更加清晰。
 
-阴影还是比较不好实现的，因为当前实时渲染领域还没找到一种完美的阴影算法。不过有几种近似阴影技术，但它们都有自己的弱点和不足，这点我们必须要考虑到。
+阴影还是比较不好实现的，因为当前实时渲染领域还没找到一种完美的阴影算法。目前有几种近似阴影技术，但它们都有自己的弱点和不足，这点我们必须要考虑到。
 
-视频游戏中较多使用的一种技术是阴影贴图（shadow mapping），效果不错，而且相对容易实现。阴影贴图并不难以理解，性能也不会太低，而且非常容易扩展成更高级的算法（比如 Omnidirectional Shadow Maps和 Cascaded Shadow Maps）。
+视频游戏中较多使用的一种技术是阴影贴图（shadow mapping），效果不错，而且相对容易实现。阴影贴图并不难以理解，性能也不会太低，而且非常容易扩展成更高级的算法（比如 [Omnidirectional Shadow Maps](http://learnopengl.com/#!Advanced-Lighting/Shadows/Point-Shadows)和 [Cascaded Shadow Maps](http://learnopengl.com/#!Advanced-Lighting/Shadows/CSM)）。
 
 ### 阴影映射
 
-阴影映射背后的思路非常简单：我们以光的位置为视角进行渲染，我们从光的位置对场景进行透视，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了。假设有一个地板，在光源和它之间有一个大盒子。由于光源处向光线方向看去，可以看到这个盒子，但看不到地板的一部分，这部分就应该在阴影中了。
+阴影映射背后的思路非常简单：我们以光的位置为视角进行渲染，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了。假设有一个地板，在光源和它之间有一个大盒子。由于光源处向光线方向看去，可以看到这个盒子，但看不到地板的一部分，这部分就应该在阴影中了。
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_theory.png)
 
-这里的所有蓝线代表光源可以看到的fragment。黑线代表被遮挡的fragment：它们应该渲染为带阴影的。如果我们绘制一条从光源出发，到答最右边盒子上的一个fragment上的线段或射线，那么射线将先击中悬浮的盒子，随后才会到达最右侧的盒子。结果就是悬浮的盒子被照亮，而最右侧的盒子将处于阴影之中。
+这里的所有蓝线代表光源可以看到的fragment。黑线代表被遮挡的fragment：它们应该渲染为带阴影的。如果我们绘制一条从光源出发，到达最右边盒子上的一个片元上的线段或射线，那么射线将先击中悬浮的盒子，随后才会到达最右侧的盒子。结果就是悬浮的盒子被照亮，而最右侧的盒子将处于阴影之中。
 
-我们希望得到射线第一次击中的那个物体，然后用这个最近点和涉嫌上其他点进行对比。然后我们将测试一下看看射线上的其他点是否比最近点更远，如果是的话，测试点就在阴影中。对从光源发出的射线上的成千上万个点进行遍历是个极端消耗性能的举措，实时渲染上基本不可取。我们可以采取相似举措，不过不用投射出光的射线。我们所使用的是非常熟悉的东西：深度缓冲。
+我们希望得到射线第一次击中的那个物体，然后用这个最近点和射线上其他点进行对比。然后我们将测试一下看看射线上的其他点是否比最近点更远，如果是的话，这个点就在阴影中。对从光源发出的射线上的成千上万个点进行遍历是个极端消耗性能的举措，实时渲染上基本不可取。我们可以采取相似举措，不用投射出光的射线。我们所使用的是非常熟悉的东西：深度缓冲。
 
-你可能记得在深度测试教程中，在深度缓冲里的一个值是摄像机视角下，对应于一个fragment的一个0到1之间的深度值。如果我们从光源的透视图来渲染场景，并把深度值的结果储存到纹理中会怎样？通过这种方式，我们就能对光源的透视图所见的最近的深度值进行采样。最终，深度值就会显示从光源的透视图下见到的第一个fragment了。我们管储存在纹理中的所有这些深度值，叫做深度贴图（depth map）或阴影贴图。
+你可能记得在[深度测试](http://learnopengl.com/#!Advanced-OpenGL/Depth-testing)教程中，在深度缓冲里的一个值是摄像机视角下，对应于一个片元的一个0到1之间的深度值。如果我们从光源的透视图来渲染场景，并把深度值的结果储存到纹理中会怎样？通过这种方式，我们就能对光源的透视图所见的最近的深度值进行采样。最终，深度值就会显示从光源的透视图下见到的第一个片元了。我们管储存在纹理中的所有这些深度值，叫做深度贴图（depth map）或阴影贴图。
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_theory_spaces.png)
 
-左侧的图片展示了一个定向光源（所有光线都是平行的）在立方体下的表面投射的阴影。通过储存到深度贴图中的深度值，我们就能找到最近点，用以决定fragment是否在阴影中。我们使用一个来自光源的视图和投影矩阵来渲染场景就能创建一个深度贴图。这个投影和视图矩阵结合在一起成为一个T变换，它可以将任何3D位置转变为光的可见坐标空间。
+左侧的图片展示了一个定向光源（所有光线都是平行的）在立方体下的表面投射的阴影。通过储存到深度贴图中的深度值，我们就能找到最近点，用以决定片元是否在阴影中。我们使用一个来自光源的视图和投影矩阵来渲染场景就能创建一个深度贴图。这个投影和视图矩阵结合在一起成为一个T变换，它可以将任何三维位置转变到光源的可见坐标空间。
 
 !!! Important
 
     定向光并没有位置，因为它被规定为无穷远。然而，为了实现阴影贴图，我们得从一个光的透视图渲染场景，这样就得在光的方向的某一点上渲染场景。
 
-我们渲染一个在点P的fragment，我们必须决定它是否在阴影中。我们先得使用T把P变换到光的坐标空间里。因为点P是从光的透视图中看到的，它的z坐标对应于它的深度，现在这个值是0.9。使用点P，我们也可以索引深度贴图，来获得从光的透视图中最近的可见深度，现在它是点C，被采样的深度是0.4。因为索引深度贴图返回的是一个小于点P的深度，我们可以断定P被挡住了，它在阴影中了。
+在右边的图中我们显示出同样的平行光和观察者。我们渲染一个点P处的片元，需要决定它是否在阴影中。我们先得使用T把P变换到光源的坐标空间里。既然点P是从光的透视图中看到的，它的z坐标就对应于它的深度，例子中这个值是0.9。使用点P在光源的坐标空间的坐标，我们可以索引深度贴图，来获得从光的视角中最近的可见深度，结果是点C，最近的深度是0.4。因为索引深度贴图的结果是一个小于点P的深度，我们可以断定P被挡住了，它在阴影中了。
 
-深度映射由两个步骤组成：首先，我们渲染深度贴图，然后我们像往常一样渲染场景，使用生成的深度贴图来计算fragment是否在阴影之中。听起来有点复杂，但随着我们一步一步地讲解这个技术，就能理解了。
+深度映射由两个步骤组成：首先，我们渲染深度贴图，然后我们像往常一样渲染场景，使用生成的深度贴图来计算片元是否在阴影之中。听起来有点复杂，但随着我们一步一步地讲解这个技术，就能理解了。
 
 ### 深度贴图（depth map）
 
-第一步我们需要生成一张深度贴图。深度贴图是哦那个光的透视图里渲染的深度纹理，用它计算阴影。因为我们需要将场景的渲染结果储存到一个纹理中，我们将再次需要帧缓冲。
+第一步我们需要生成一张深度贴图。深度贴图是从光的透视图里渲染的深度纹理，用它计算阴影。因为我们需要将场景的渲染结果储存到一个纹理中，我们将再次需要帧缓冲。
 
 首先，我们要为渲染的深度贴图创建一个帧缓冲对象：
 
@@ -80,14 +88,14 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 合理配置将深度值渲染到纹理的帧缓冲后，我们就可以开始第一步了：生成深度贴图。两个步骤的完整的渲染阶段，看起来有点像这样：
 
 ```c++
-// 1. first render to depth map
+// 1. 首选渲染深度贴图
 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
     ConfigureShaderAndMatrices();
     RenderScene();
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
-// 2. then render scene as normal with shadow mapping (using depth map)
+// 2. 像往常一样渲染场景，但这次使用深度贴图
 glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 ConfigureShaderAndMatrices();
@@ -97,9 +105,7 @@ RenderScene();
 
 这段代码隐去了一些细节，但它表达了阴影映射的基本思路。这里一定要记得调用glViewport。因为阴影贴图经常和我们原来渲染的场景（通常是窗口解析度）有着不同的解析度，我们需要改变视口（viewport）的参数以适应阴影贴图的尺寸。如果我们忘了更新视口参数，最后的深度贴图要么太小要么就不完整。
 
- 
-
-### 光空间的变换（light spacce transform）
+### 光源空间的变换（light spacce transform）
 
 前面那段代码中一个不清楚的函数是COnfigureShaderAndMatrices。它是用来在第二个步骤确保为每个物体设置了合适的投影和视图矩阵，以及相关的模型矩阵。然而，第一个步骤中，我们从光的位置的视野下使用了不同的投影和视图矩阵来渲染的场景。
 
@@ -110,9 +116,9 @@ GLfloat near_plane = 1.0f, far_plane = 7.5f;
 glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 ```
 
-这里有个本节教程的demo场景中使用的正交投影矩阵的例子。因为投影矩阵间接决定可视区域的范围，以及什么东西不会被裁切，你希望能保证投影视锥（frustum）的大小，以包含打算在深度贴图中包含的物体。当物体和fragment不在深度贴图中时，它们就不会产生阴影。
+这里有个本节教程的demo场景中使用的正交投影矩阵的例子。因为投影矩阵间接决定可视区域的范围，以及哪些东西不会被裁切，你需要保证投影视锥（frustum）的大小，以包含打算在深度贴图中包含的物体。当物体和片元不在深度贴图中时，它们就不会产生阴影。
 
-为了创建一个视图矩阵来变换每个物体，这样它们从光的视野看去就是可见的了，我们将使用臭名昭著的glm::lookAt函数；这次从光源的位置看向场景中央。
+为了创建一个视图矩阵来变换每个物体，把它们变换到从光源视角可见的空间中，我们将使用glm::lookAt函数；这次从光源的位置看向场景中央。
 
 ```c++
 glm::mat4 lightView = glm::lookAt(glm::vec(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f), glm::vec3(1.0));
@@ -124,7 +130,7 @@ glm::mat4 lightView = glm::lookAt(glm::vec(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f),
 glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 ```
 
-这个lightSpaceMatrix正是前面我们称为T的那个变换矩阵。有了lightSpaceMatrix只要给shader提供光空间的投影和视图矩阵，我们就能像往常那样渲染场景了。然而，我们只关心深度值，并非所有fragment计算都在我们的着色器中进行。为了提升性能，我们将使用一个与之不同但更为简单的着色器来渲染出深度贴图。
+这个lightSpaceMatrix正是前面我们称为T的那个变换矩阵。有了lightSpaceMatrix只要给shader提供光空间的投影和视图矩阵，我们就能像往常那样渲染场景了。然而，我们只关心深度值，并非所有片元计算都在我们的着色器中进行。为了提升性能，我们将使用一个与之不同但更为简单的着色器来渲染出深度贴图。
 
 ### 渲染出深度贴图
 
@@ -145,7 +151,7 @@ void main()
 
 这个顶点着色器将一个单独模型的一个顶点，使用lightSpaceMatrix变换到光空间中。
 
-由于我们没有颜色缓冲，最后的fragment不需要任何处理，所以我们可以简单地使用一个空像素着色器：
+由于我们没有颜色缓冲，最后的片元不需要任何处理，所以我们可以简单地使用一个空像素着色器：
 
 ```c++
 #version 330 core
@@ -156,7 +162,7 @@ void main()
 }
 ```
 
-这个空像素着色器什么也不干，运行完后，深度缓冲会被更新。我们可以注释掉那行，来显式设置深度，这着呢个是场景私下里所发生的事情。
+这个空像素着色器什么也不干，运行完后，深度缓冲会被更新。我们可以取消那行的注释，来显式设置深度，但是这个（指注释掉那行之后）是更有效率的，因为底层无论如何都会默认去设置深度缓冲。
 
 渲染深度缓冲现在成了：
 
@@ -173,7 +179,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 这里的RenderScene函数的参数是一个着色器程序（shader program），它调用所有相关的绘制函数，并在需要的地方设置相应的模型矩阵。
 
-最后，在光的透视图视角下，很完美地用每个可见fragment的最近深度填充了深度缓冲。通过将这个纹理投射到一个2D四边形上，就能在屏幕上显示出来，我们会获得这样的东西：
+最后，在光的透视图视角下，很完美地用每个可见片元的最近深度填充了深度缓冲。通过将这个纹理投射到一个2D四边形上（和我们在帧缓冲一节做的后处理过程类似），就能在屏幕上显示出来，我们会获得这样的东西：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_depth_map.png)
 
@@ -195,11 +201,11 @@ void main()
 
 要注意的是当用透视投影矩阵取代正交投影矩阵来显示深度时，有一些轻微的改动，因为使用透视投影时，深度是非线性的。本节教程的最后，我们会讨论这些不同之处。
 
-你可以在这里获得把场景渲染成深度贴图的源码。
+你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping_depth_map)获得把场景渲染成深度贴图的源码。
 
 ### 渲染阴影
 
-正确地生成深度贴图以后我们就可以开始生成阴影了。这段代码在像素着色器中执行，用来检验一个fragment是否在阴影之中，不过我们在顶点着色器中进行光空间的变换：
+正确地生成深度贴图以后我们就可以开始生成阴影了。这段代码在像素着色器中执行，用来检验一个片元是否在阴影之中，不过我们在顶点着色器中进行光空间的变换：
 
 ```c++
 #version 330 core
@@ -233,7 +239,7 @@ void main()
 
 这儿的新的地方是FragPosLightSpace这个输出向量。我们用同一个lightSpaceMatrix，把世界空间顶点位置转换为光空间。顶点着色器传递一个普通的经变换的世界空间顶点位置vs_out.FragPos和一个光空间的vs_out.FragPosLightSpace给像素着色器。
 
-像素着色器使用Blinn-Phong光照模型渲染场景。我们接着计算出一个shadow值，当fragment在阴影中时是1.0，在阴影外是0.0。然后，diffuse和specular颜色会乘以这个阴影元素。由于阴影不会是全黑的，我们把ambient颜色从乘法中剔除。
+像素着色器使用Blinn-Phong光照模型渲染场景。我们接着计算出一个shadow值，当fragment在阴影中时是1.0，在阴影外是0.0。然后，diffuse和specular颜色会乘以这个阴影元素。由于阴影不会是全黑的（由于散射），我们把ambient分量从乘法中剔除。
 
 ```c++
 #version 330 core
@@ -275,7 +281,7 @@ void main()
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
     vec3 specular = spec * lightColor;    
-    // Calculate shadow
+    // 计算阴影
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace);       
     vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
     
@@ -283,26 +289,27 @@ void main()
 }
 ```
 
-像素着色器大部分是从高级光照教程中复制过来，只不过加上了个阴影计算。我们声明一个shadowCalculation函数，用它计算阴影。像素着色器的最后，我们我们把diffuse和specular乘以(1-阴影元素)，这表示这个fragment有多少不在阴影中。这个像素着色器还需要两个额外输入，一个是光空间的fragment位置和第一个渲染阶段得到的深度贴图。
+像素着色器大部分是从高级光照教程中复制过来，只不过加上了个阴影计算。我们声明一个shadowCalculation函数，用它计算阴影。像素着色器的最后，我们我们把diffuse和specular乘以(1-阴影元素)，这表示这个片元有多大成分不在阴影中。这个像素着色器还需要两个额外输入，一个是光空间的片元位置和第一个渲染阶段得到的深度贴图。
 
-首先要检查一个fragment是否在阴影中，把光空间fragment位置转换为裁切空间的标准化设备坐标。当我们在像素着色器输出一个裁切空间顶点位置到gl_Position时，OpenGL自动进行一个透视除法，将裁切空间坐标的范围-w到w转为-1到1，这要将x、y、z元素除以向量的w元素来实现。由于裁切空间的FragPosLightSpace并不会通过gl_Position传到像素着色器里，我们必须自己做透视除法：
+首先要检查一个片元是否在阴影中，把光空间片元位置转换为裁切空间的标准化设备坐标。当我们在顶点着色器输出一个裁切空间顶点位置到gl_Position时，OpenGL自动进行一个透视除法，将裁切空间坐标的范围-w到w转为-1到1，这要将x、y、z元素除以向量的w元素来实现。由于裁切空间的FragPosLightSpace并不会通过gl_Position传到像素着色器里，我们必须自己做透视除法：
 
 ```c++
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
-    // perform perspective divide
+    // 执行透视除法
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     [...]
 }
 ```
 
-返回了fragment在光空间的-1到1的范围。
+返回了片元在光空间的-1到1的范围。
 
 !!! Important
 
     当使用正交投影矩阵，顶点w元素仍保持不变，所以这一步实际上毫无意义。可是，当使用透视投影的时候就是必须的了，所以为了保证在两种投影矩阵下都有效就得留着这行。
 
 因为来自深度贴图的深度在0到1的范围，我们也打算使用projCoords从深度贴图中去采样，所以我们将NDC坐标变换为0到1的范围：
+（译者注：这里的意思是，上面的projCoords的xyz分量都是[-1,1]（下面会指出这对于远平面之类的点才成立），而为了和深度贴图的深度相比较，z分量需要变换到[0,1]；为了作为从深度贴图中采样的坐标，xy分量也需要变换到[0,1]。所以整个projCoords向量都需要变换到[0,1]范围。）
 
 ```c++
 projCoords = projCoords * 0.5 + 0.5;
@@ -314,13 +321,13 @@ projCoords = projCoords * 0.5 + 0.5;
 float closestDepth = texture(shadowMap, projCoords.xy).r;
 ```
 
-为了得到fragment的当前深度，我们简单获取投影向量的z坐标，它等于来自光的透视视角的fragment的深度。
+为了得到片元的当前深度，我们简单获取投影向量的z坐标，它等于来自光的透视视角的片元的深度。
 
 ```c++
 float currentDepth = projCoords.z;
 ```
 
-实际的对比就是简单检查currentDepth是否高于closetDepth，如果是，那么fragment就在阴影中。
+实际的对比就是简单检查currentDepth是否高于closetDepth，如果是，那么片元就在阴影中。
 
 ```c++
 float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
@@ -331,15 +338,15 @@ float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 ```c++
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
-    // perform perspective divide
+    // 执行透视除法
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // Transform to [0,1] range
+    // 变换到[0,1]的范围
     projCoords = projCoords * 0.5 + 0.5;
-    // Get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    // 取得最近点的深度(使用[0,1]范围下的fragPosLight当坐标)
     float closestDepth = texture(shadowMap, projCoords.xy).r; 
-    // Get depth of current fragment from light's perspective
+    // 取得当前片元在光源视角下的深度
     float currentDepth = projCoords.z;
-    // Check whether current frag pos is in shadow
+    // 检查当前片元是否在阴影中
     float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
  
     return shadow;
@@ -350,7 +357,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_shadows.png)
 
-如果你做对了，你会看到地板和上有立方体的阴影。你可以从这里找到demo程序的源码。
+如果你做对了，你会看到地板和上有立方体的阴影。你可以从这里找到demo程序的[源码](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping_shadows)。
 
 ### 改进阴影贴图
 
@@ -366,15 +373,15 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne_diagram.png)
 
-因为阴影贴图受限于解析度，在距离光源比较远的情况下，多个fragment可能从深度贴图的同一个值中去采样。图片每个斜坡代表深度贴图一个单独的纹理像素。你可以看到，多个fragment从同一个深度值进行采样。
+因为阴影贴图受限于解析度，在距离光源比较远的情况下，多个片元可能从深度贴图的同一个值中去采样。图片每个斜坡代表深度贴图一个单独的纹理像素。你可以看到，多个片元从同一个深度值进行采样。
 
-虽然很多时候没问题，但是当光源以一个角度朝向表面的时候就会出问题，这种情况下深度贴图也是从一个角度下进行渲染的。多个fragment就会从同一个斜坡的深度纹理像素中采样，有些在地板上面，有些在地板下面；这样我们所得到的阴影就有了差异。因为这个，有些fragment被认为是在阴影之中，有些不在，由此产生了图片中的条纹样式。
+虽然很多时候没问题，但是当光源以一个角度朝向表面的时候就会出问题，这种情况下深度贴图也是从一个角度下进行渲染的。多个片元就会从同一个斜坡的深度纹理像素中采样，有些在地板上面，有些在地板下面；这样我们所得到的阴影就有了差异。因为这个，有些片元被认为是在阴影之中，有些不在，由此产生了图片中的条纹样式。
 
-我们可以用一个叫做shadow bias（阴影偏移）的技巧来解决这个问题，我们简单的对表面的深度（或深度贴图）应用一个偏移量，这样表面之下fragment就不会错了。
+我们可以用一个叫做**阴影偏移**（shadow bias）的技巧来解决这个问题，我们简单的对表面的深度（或深度贴图）应用一个偏移量，这样片元就不会被错误地认为在表面之下了。
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne_bias.png)
 
-使用了偏移量所有样呗都获得了比表面深度更小的深度值，这样整个表面就正确地被照亮，没有任何阴影。我们可以这样实现这个偏移：
+使用了偏移量后，所有采样点都获得了比表面深度更小的深度值，这样整个表面就正确地被照亮，没有任何阴影。我们可以这样实现这个偏移：
 
 ```c++
 float bias = 0.005;
@@ -395,7 +402,7 @@ float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
 #### 悬浮
 
-使用阴影偏移的一个缺点是你对物体的实际深度应用了平移。偏移有可能足够大，以至于可以很清楚的看到阴影和实际物体之间的偏移量，你可以从下图看到这个现象（这是一个夸张的偏移值）：
+使用阴影偏移的一个缺点是你对物体的实际深度应用了平移。偏移有可能足够大，以至于可以看出阴影相对实际物体位置的偏移，你可以从下图看到这个现象（这是一个夸张的偏移值）：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_peter_panning.png)
 
@@ -410,7 +417,7 @@ float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 ```c++
 glCullFace(GL_FRONT);
 RenderSceneToDepthMap();
-glCullFace(GL_BACK); // don't forget to reset original culling face
+glCullFace(GL_BACK); // 不要忘记设回原先的culling face
 ```
 
 这十分有效地解决了peter panning的问题，但只针对实体物体，内部不会对外开口。我们的场景中，在立方体上工作的很好，但在地板上无效，因为正面剔除完全移除了地板。地面是一个单独的平面，不会被完全剔除。如果有人打算使用这个技巧解决peter panning必须考虑到只有剔除物体的正面才有意义。
@@ -440,7 +447,7 @@ glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 仍有一部分是黑暗区域。那里的坐标超出了光的正交视锥的远平面。你可以看到这片黑色区域总是出现在光源视锥的极远处。
 
-一个投影坐标当它的z坐标大于1.0时，它比光的远平面还要远。这种情况下，GL_CLAMP_TO_BORDER环绕方式不起作用，因为我们把坐标的z元素和深度贴图的值进行了对比；它总是为大于1.0的z返回true。
+当一个点比光的远平面还要远时，它的投影坐标的z坐标大于1.0。这种情况下，GL_CLAMP_TO_BORDER环绕方式不起作用，因为我们把坐标的z元素和深度贴图的值进行了对比；它总是为大于1.0的z返回true。
 
 解决这个问题也很简单，我们简单的强制把shadow的值设为0.0，不管投影向量的z坐标是否大于1.0：
 
@@ -455,7 +462,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 }
 ```
 
-检查院平面，并将深度贴图限制为一个手工指定的边界颜色，就能解决深度贴图采样超出的问题，我们最终会得到下面我们所追求的效果：
+检查远平面，并将深度贴图限制为一个手工指定的边界颜色，就能解决深度贴图采样超出的问题，我们最终会得到下面我们所追求的效果：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_over_sampling_fixed.png)
 
@@ -467,13 +474,13 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_zoom.png)
 
-因为深度贴图有一个固定的解析度，多个fragment对应于一个纹理像素。结果就是多个fragment会从深度贴图的同一个深度值进行采样，这几个fragment便得到的是同一个阴影，这就会产生锯齿边。
+因为深度贴图有一个固定的解析度，多个片元对应于一个纹理像素。结果就是多个片元会从深度贴图的同一个深度值进行采样，这几个片元便得到的是同一个阴影，这就会产生锯齿边。
 
 你可以通过增加深度贴图解析度的方式来降低锯齿块，也可以尝试尽可能的让光的视锥接近场景。
 
 另一个（并不完整的）解决方案叫做PCF（percentage-closer filtering），这是一种多个不同过滤方式的组合，它产生柔和阴影，使它们出现更少的锯齿块和硬边。核心思想是从深度贴图中多次采样，每一次采样的纹理坐标都稍有不同。每个独立的样本可能在也可能不再阴影中。所有的次生结果接着结合在一起，进行平均化，我们就得到了柔和阴影。
 
-一个简单的PCF的实现是简单的从纹理像素四周对深度贴图采样，然后平均化结果：
+一个简单的PCF的实现是简单的从纹理像素四周对深度贴图采样，然后把结果平均起来：
 
 ```c++
 float shadow = 0.0;
@@ -497,7 +504,7 @@ shadow /= 9.0;
 
 从稍微远一点的距离看去，阴影效果好多了，也不那么生硬了。如果你放大，仍会看到阴影贴图解析度的不真实感，但通常对于大多数应用来说效果已经很好了。
 
-你可以从这里找到这个例子的全部源码和第二个阶段的像素和顶点着色器。
+你可以从[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping)找到这个例子的全部源码和第二个阶段的[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping&type=fragment)着色器。
 
 实际上PCF还有更多的内容，以及很多技术要点需要考虑以提升柔和阴影的效果，但处于本章内容长度考虑，我们将留在以后讨论。
 
