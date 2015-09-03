@@ -41,7 +41,7 @@ pages:
     - 阴影:
       - 阴影映射: '05 Advanced Lighting/03 Shadows/01 Shadow Mapping.md'
       - 点阴影: '05 Advanced Lighting/03 Shadows/02 Point Shadows.md'
-      - CMS: '05 Advanced Lighting/03 Shadows/03 CMS.md'
+      - CSM: '05 Advanced Lighting/03 Shadows/03 CSM.md'
     - 法线贴图: '05 Advanced Lighting/04 Normal Mapping.md'
     - 视差贴图: '05 Advanced Lighting/05 Parallax Mapping.md'
     - HDR: '05 Advanced Lighting/06 HDR.md'
