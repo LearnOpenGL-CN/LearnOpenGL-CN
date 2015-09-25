@@ -1,5 +1,5 @@
 pages:
-  - 主页: 'index.md'
+  - 主页: 'README.md'
   - 入门(Getting started):
     - OpenGL: '01 Getting started/01 OpenGL.md'
     - 创建窗口: '01 Getting started/02 Creating a window.md'
