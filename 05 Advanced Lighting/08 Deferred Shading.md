@@ -294,3 +294,100 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 为了获取一个光源的体积半径，我们需要解一个对于一个我们认为是**黑暗(Dark)**的亮度(Brightness)的衰减方程，它可以是0.0，或者是更亮一点的但仍被认为黑暗的值，像是0.03。为了展示我们如何计算光源的体积半径，我们将会使用一个在[投光物](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/05%20Light%20casters/)这节中引入的一个更加复杂，但非常灵活的衰减方程：
 
 ![](../img/deferred_shading_1.png)
+
+我们现在想要在![](../img/F_light.png)等于0的前提下解这个方程，也就是说光在该距离完全是黑暗的。然而这个方程永远不会真正等于0.0，所以它没有解。所以，我们不会求表达式等于0.0时候的解，相反我们会求当亮度值靠近于0.0的解，这时候它还是能被看做是黑暗的。在这个教程的演示场景中，我们选择![](../img/5256.png)作为一个合适的光照值；除以256是因为默认的8-bit帧缓冲可以每个分量显示这么多强度值(Intensity)。
+
+!!! Important
+
+	我们使用的衰减方程在它的可视范围内基本都是黑暗的，所以如果我们想要限制它为一个比![](../img/5256.png)更加黑暗的亮度，光体积就会变得太大从而变得低效。只要是用户不能在光体积边缘看到一个突兀的截断，这个参数就没事了。当然它还是依赖于场景的类型，一个高的亮度阀值会产生更小的光体积，从而获得更高的效率，然而它同样会产生一个很容易发现的副作用，那就是光会在光体积边界看起来突然断掉。
+
+我们要求的衰减方程会是这样：
+
+![](../img/deferred_shading_2.png)
+
+在这里，![](../img/I_max.png)是光源最亮的颜色分量。我们之所以使用光源最亮的颜色分量是因为解光源最亮的强度值方程最好地反映了理想光体积半径。
+
+从这里我们继续解方程：
+
+![](../img/deferred_shading_3.png)
+
+![](../img/deferred_shading_4.png)
+
+![](../img/deferred_shading_5.png)
+
+![](../img/deferred_shading_6.png)
+
+![](../img/deferred_shading_7.png)
+
+最后的方程形成了![](../img/quad_formula.png)的形式，我们可以用求根公式来解这个二次方程：
+
+![](../img/deferred_shading_8.png)
+
+它给我们了一个通用公式从而允许我们计算x的值，即光源的光体积半径，只要我们提供了一个常量，线性和二次项参数：
+
+```c++
+GLfloat constant  = 1.0; 
+GLfloat linear    = 0.7;
+GLfloat quadratic = 1.8;
+GLfloat lightMax  = std::fmaxf(std::fmaxf(lightColor.r, lightColor.g), lightColor.b);
+GLfloat radius    = 
+  (-linear +  std::sqrtf(linear * linear - 4 * quadratic * (constant - (256.0 / 5.0) * lightMax))) 
+  / (2 * quadratic);  
+```
+
+它会返回一个大概在1.0到5.0范围内的半径值，它取决于光的最大强度。
+
+对于场景中每一个光源，我们都计算它的半径，并仅在片段在光源的体积内部时才计算该光源的光照。下面是更新过的光照处理阶段片段着色器，它考虑到了计算出来的光体积。注意这种方法仅仅用作教学目的，在实际场景中是不可行的，我们会在后面讨论它：
+
+```c++
+struct Light {
+    [...]
+    float Radius;
+}; 
+  
+void main()
+{
+    [...]
+    for(int i = 0; i < NR_LIGHTS; ++i)
+    {
+        // 计算光源和该片段间距离
+        float distance = length(lights[i].Position - FragPos);
+        if(distance < lights[i].Radius)
+        {
+            // 执行大开销光照
+            [...]
+        }
+    }   
+}
+```
+
+这次的结果和之前一模一样，但是这次物体只对所在光体积的光源计算光照。
+
+你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred_final)找到Demo最终的源码，并且还有更新的光照渲染阶段的[片段着色器](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred_final&type=fragment)
+
+### 真正使用光体积
+
+上面那个片段着色器在实际情况下不能真正地工作，并且它只演示了我们可以**不知怎样**能使用光体积减少光照运算。然而事实上，你的GPU和GLSL并不擅长优化循环和分支。这一缺陷的原因是GPU中着色器的运行是高度并行的，大部分的架构要求对于一个大的线程集合，GPU需要对它运行完全一样的着色器代码从而获得高效率。这通常意味着一个着色器运行时总是执行一个if语句**所有的**分支从而保证着色器运行都是一样的，这使得我们之前的**半径检测**优化完全变得无用，我们仍然在对所有光源计算光照！
+
+使用光体积更好的方法是渲染一个实际的球体，并根据光体积的半径缩放。这些球的中心放置在光源的位置，由于它是根据光体积半径缩放的，这个球体正好覆盖了光的可视体积。这就是我们的技巧：我们使用大体相同的延迟片段着色器来渲染球体。因为球体产生了完全匹配于受影响像素的着色器调用，我们只渲染了受影响的像素而跳过其它的像素。下面这幅图展示了这一技巧：
+
+![](http://learnopengl.com/img/advanced-lighting/deferred_light_volume_rendered.png)
+
+它被应用在场景中每个光源上，并且所得的片段相加混合在一起。这个结果和之前场景是一样的，但这一次只渲染对于光源相关的片段。它有效地减少了从`nr_objects * nr_lights`到`nr_objects + nr_lights`的计算量，这使得多光源场景的渲染变得无比高效。这正是为什么延迟渲染非常适合渲染很大数量光源。
+
+然而这个方法仍然有一个问题：面剔除(Face Culling)需要被启用(否则我们会渲染一个光效果两次)，并且在它启用的时候用户可能进入一个光源的光体积，然而这样之后这个体积就不再被渲染了(由于背面剔除)，这会使得光源的影响消失。这个问题可以通过一个模板缓冲技巧来解决。
+
+渲染光体积确实会带来沉重的性能负担，虽然它通常比普通的延迟渲染更快，这仍然不是最好的优化。另外两个基于延迟渲染的更流行(并且更高效)的拓展叫做**延迟光照(Deferred Lighting)**和**切片式延迟着色法(Tile-based Deferred Shading)**。这些方法会很大程度上提高大量光源渲染的效率，并且也能允许一个相对高效的多重采样抗锯齿(MSAA)。然而受制于这篇教程的长度，我将会在之后的教程中介绍这些优化。
+
+## 延迟渲染 vs 正向渲染
+
+仅仅是延迟着色法它本身(没有光体积)已经是一个很大的优化了，每个像素仅仅运行一个单独的片段着色器，然而对于正向渲染，我们通常会对一个像素运行多次片段着色器。当然，延迟渲染确实带来一些缺点：大内存开销，没有MSAA和混合(仍需要正向渲染的配合)。
+
+当你有一个很小的场景并且没有很多的光源时候，延迟渲染并不一定会更快一点，甚至有些时候由于开销超过了它的优点还会更慢。然而在一个更复杂的场景中，延迟渲染会快速变成一个重要的优化，特别是有了更先进的优化拓展的时候。
+
+最后我仍然想指出，基本上所有能通过正向渲染完成的效果能够同样在延迟渲染场景中实现，这通常需要一些小的翻译步骤。举个例子，如果我们想要在延迟渲染器中使用法线贴图(Normal Mapping)，我们需要改变几何渲染阶段着色器来输出一个世界空间法线(World-space Normal)，它从法线贴图中提取出来(使用一个TBN矩阵)而不是表面法线，光照渲染阶段中的光照运算一点都不需要变。如果你想要让视差贴图工作，首先你需要在采样一个物体的漫反射，镜面，和法线纹理之前首先置换几何渲染阶段中的纹理坐标。一旦你了解了延迟渲染背后的理念，变得有创造力并不是什么难事。
+
+## 附加资源
+
+- [Tutorial 35: Deferred Shading - Part 1](http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html)：OGLDev的一个分成三部分的延迟着色法教程。在Part 2和3中介绍了渲染光体积
+- [Deferred Rendering for Current and Future Rendering Pipelines](https://software.intel.com/sites/default/files/m/d/4/1/d/8/lauritzen_deferred_shading_siggraph_2010.pdf)：Andrew Lauritzen的幻灯片，讨论了高级切片式延迟着色法和延迟光照
