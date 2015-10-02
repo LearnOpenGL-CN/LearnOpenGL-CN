@@ -1,6 +1,6 @@
 # 纹理(Textures)
 
-原文     | [Shaders](http://learnopengl.com/#!Getting-started/Textures)
+原文     | [Textures](http://learnopengl.com/#!Getting-started/Textures)
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
@@ -62,7 +62,7 @@ GL_CLAMP_TO_BORDER  | 超出的部分是用户指定的边缘的颜色
 
 第二个参数需要我们去告知我们希望去设置哪个纹理轴。
 
-我们打算设置的是`WRAP`选项，并且指定S和T轴。最后一个参数需要我们传递放置方式，在这个例子里我们在党建激活纹理上应用`GL_MIRRORED_REPEAT`。
+我们打算设置的是`WRAP`选项，并且指定S和T轴。最后一个参数需要我们传递放置方式，在这个例子里我们在当前激活纹理上应用`GL_MIRRORED_REPEAT`。
 
 如果我们选择`GL_CLAMP_TO_BORDER`选项，我们还要指定一个边缘的颜色。这次使用`glTexParameter`函数的`fv`后缀形式，加上`GL_TEXTURE_BORDER_COLOR`作为选项，这个函数需要我们传递一个边缘颜色的float数组作为颜色值：
 
