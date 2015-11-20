@@ -115,7 +115,7 @@ void main()
 
 如果我们从箱子的一角往里看，就能看到里面用的是另一个纹理。
 
-![](http://bullteacher.com/wp-content/uploads/2015/06/advanced_glsl_frontfacing.png)
+![](http://learnopengl.com/img/advanced/advanced_glsl_frontfacing.png)
 
 注意，如果你开启了面剔除，你就看不到箱子里面有任何东西了，所以此时使用`gl_FrontFacing`毫无意义。
 

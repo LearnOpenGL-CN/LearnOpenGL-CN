@@ -190,7 +190,7 @@ glEnable(GL_DEPTH_TEST);
 
 这个边框的算法的结果在深度测试教程的那个场景中，看起来像这样：
 
-![](http://bullteacher.com/wp-content/uploads/2015/06/stencil_scene_outlined.png)
+![](http://learnopengl.com/img/advanced/stencil_scene_outlined.png)
 
 在这里[查看源码](http://learnopengl.com/code_viewer.php?code=advanced/stencil_testing)和[着色器](http://learnopengl.com/code_viewer.php?code=advanced/depth_testing_func_shaders)，看看完整的物体边框算法是怎样的。
 

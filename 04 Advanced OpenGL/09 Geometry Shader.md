@@ -91,7 +91,7 @@ void main() {
 
 现在你了解了几何着色器的工作方式，你就可能猜出这个几何着色器做了什么。这个几何着色器接收一个基本图形——点，作为它的输入，使用输入点作为它的中心，创建了一个水平线基本图形。如果我们渲染它，结果就会像这样：
 
-![](http://bullteacher.com/wp-content/uploads/2015/06/geometry_shader_lines.png)
+![](http://learnopengl.com/img/advanced/geometry_shader_lines.png)
 
 并不是非常引人注目，但是考虑到它的输出是使用下面的渲染命令生成的就很有意思了：
 
