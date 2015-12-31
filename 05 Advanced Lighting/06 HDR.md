@@ -39,7 +39,7 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGB, GL_F
 
 默认的帧缓冲默认一个颜色分量只占用8位(bits). 当使用一个使用32位每颜色分量的浮点帧缓冲时(使用`GL_RGB32F` 或者`GL_RGBA32F`)，我们需要四倍的内存来存储这些颜色. 所以除非你需要一个非常高的精确度，32位不是必须的，使用`GLRGB16F`就足够了.
 
-有了一个带有浮点颜色缓冲的帧缓冲，我们可以放心渲染场景到这个帧缓冲中. 在这个教程的例子当中，我们先渲染一个光照的场景到浮点帧缓冲中，之后再在一个填充屏幕的四方形上应用这个帧缓冲的颜色缓冲，代码会是这样子:
+有了一个带有浮点颜色缓冲的帧缓冲，我们可以放心渲染场景到这个帧缓冲中. 在这个教程的例子当中，我们先渲染一个光照的场景到浮点帧缓冲中，之后再在一个铺屏四边形(Screen-filling Quad)上应用这个帧缓冲的颜色缓冲，代码会是这样子:
 
 ```c++
 glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
@@ -47,7 +47,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
     // [...] 渲染(光照的)场景
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-// 现在使用一个不同的着色器将HDR颜色缓冲渲染至2D填充屏幕的四方形上
+// 现在使用一个不同的着色器将HDR颜色缓冲渲染至2D铺屏四边形上
 hdrShader.Use();
 glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, hdrColorBufferTexture);
@@ -64,7 +64,7 @@ lightColors.push_back(glm::vec3(0.0f, 0.0f, 0.2f));
 lightColors.push_back(glm::vec3(0.0f, 0.1f, 0.0f));  
 ```
 
-渲染至浮点帧缓冲和渲染至一个普通的帧缓冲是一样的. 新的东西就是这个的`hdrShader`的片段着色器，用来渲染最终拥有浮点颜色缓冲纹理的2D四方形. 我们来定义一个简单的直通片段着色器(Pass-through Fragment Shader):
+渲染至浮点帧缓冲和渲染至一个普通的帧缓冲是一样的. 新的东西就是这个的`hdrShader`的片段着色器，用来渲染最终拥有浮点颜色缓冲纹理的2D四边形. 我们来定义一个简单的直通片段着色器(Pass-through Fragment Shader):
 
 ```c++
 #version 330 core
@@ -80,7 +80,7 @@ void main()
 }  
 ```
 
-这里我们直接采样了浮点颜色缓冲并将其作为片段着色器的输出. 然而，这个2D四方形的输出是被直接渲染到默认的帧缓冲中，导致所有片段着色器的输出值被约束在0.0到1.0间，尽管我们已经有了一些存在浮点颜色纹理的值超过了1.0.
+这里我们直接采样了浮点颜色缓冲并将其作为片段着色器的输出. 然而，这个2D四边形的输出是被直接渲染到默认的帧缓冲中，导致所有片段着色器的输出值被约束在0.0到1.0间，尽管我们已经有了一些存在浮点颜色纹理的值超过了1.0.
 
 ![](http://learnopengl.com/img/advanced-lighting/hdr_direct.png)
 

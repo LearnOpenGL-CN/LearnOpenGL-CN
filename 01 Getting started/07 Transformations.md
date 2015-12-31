@@ -1,7 +1,5 @@
 # 变换(Transformations)
 
-// TODO 校对过程中有对原来的翻译大段大段重写，变动比较大(特别前半部分)，可能还需要重新校对一遍
-
 原文     | [Transformations](http://learnopengl.com/#!Getting-started/Transformations)
       ---|---
 作者     | JoeyDeVries

@@ -1,7 +1,5 @@
 # 你好，窗口
 
-//TODO 注意仔细检查翻译，错误有点多，可能还要继续校对
-
 原文     | [Hello Window](http://learnopengl.com/#!Getting-started/Hello-Window)
       ---|---
 作者     | JoeyDeVries

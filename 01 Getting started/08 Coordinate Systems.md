@@ -1,12 +1,5 @@
 # 坐标系统(Coordinate System)
 
-// TODO 翻译太生硬，可能还要重写。并且可能还有漏掉的地方。  
-// 简单说下问题，供再次校对的时候参考:  
-// 1.术语翻译不统一  
-// 2.从句还保留着英语语序，翻译出来很奇怪  
-// 3.To do很多未翻译出来  
-// 4.某些地方很不通顺，特别是遇上连词的时候  
-
 原文     | [Coordinate Systems](http://learnopengl.com/#!Getting-started/Coordinate-Systems)
       ---|---
 作者     | JoeyDeVries
