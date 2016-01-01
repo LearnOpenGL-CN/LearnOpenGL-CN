@@ -469,6 +469,7 @@ void main()
 ![](http://learnopengl.com/img/advanced-lighting/ssao_final.png)
 
 你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao)找到完整的源代码，和以下着色器：
+
 - 几何：[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao_geometry&type=vertex)，[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao_geometry&type=fragment)
 - SSAO：[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao&type=vertex)，[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao&type=fragment)
 - 模糊：[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao&type=vertex)，[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao_blur&type=fragment)
