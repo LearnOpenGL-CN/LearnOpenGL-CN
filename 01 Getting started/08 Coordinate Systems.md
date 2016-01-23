@@ -232,7 +232,7 @@ glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 ![coordinate_systems_result](http://learnopengl.com/img/getting-started/coordinate_systems_result.png)
 
-它看起来就像是一个三维的平面，是静止在一些虚构的地板上的。如果你不是得到相同的结果，请检查下完整的[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/cube_vertices) 以及[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=fragment)着色器。
+它看起来就像是一个三维的平面，是静止在一些虚构的地板上的。如果你不是得到相同的结果，请检查下完整的[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems) 以及[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=fragment)着色器。
 
 ## 更多的3D
 
