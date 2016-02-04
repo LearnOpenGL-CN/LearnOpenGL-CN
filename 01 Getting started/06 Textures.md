@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim
+校对     | Geequlim [BLumia](https://github.com/blumia/)
 
 我们已经了解到，我们可以为每个顶点使用颜色来增加图形的细节，从而创建出有趣的图像。但是，如果想让图形看起来更真实我们就必须有足够多的顶点，从而指定足够多的颜色。这将会产生很多额外开销，因为每个模型都会需求更多的顶点和顶点颜色。
 
@@ -45,7 +45,7 @@ GLfloat texCoords[] = {
 环绕方式            | 描述
                  ---|---
 GL_REPEAT           | 纹理的默认行为，重复纹理图像
-GL_MIRRORED_REPEAET |和`GL_REPEAT`一样，除了重复的图片是镜像放置的
+GL_MIRRORED_REPEAT  | 和`GL_REPEAT`一样，除了重复的图片是镜像放置的
 GL_CLAMP_TO_EDGE    | 纹理坐标会在0到1之间，超出的部分会重复纹理坐标的边缘，就是边缘被拉伸
 GL_CLAMP_TO_BORDER  | 超出的部分是用户指定的边缘的颜色
 
@@ -141,7 +141,7 @@ SOIL是Simple OpenGL Image Library(简易OpenGL图像库)的缩写，它支持�
 
 ```c++
 int width, height;
-unsigned char* image = SOIL_load_image(“container..jpg”, &width, &height, 0, SOIL_LOAD_RGB);
+unsigned char* image = SOIL_load_image("container..jpg", &width, &height, 0, SOIL_LOAD_RGB);
 ```
 
 函数首先需要输入图片文件的路径。然后需要两个int指针作为第二个和第三个参数，SOIL会返回图片的宽度和高度到其中。之后，我们需要图片的宽度和高度来生成纹理。第四个参数指定图片的通道(Channel)数量，但是这里我们只需留`0`。最后一个参数告诉SOIL如何来加载图片：我们只对图片的RGB感兴趣。结果储存为一个大的char/byte数组。
@@ -329,10 +329,10 @@ void main()
 ```c++
 glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, texture1);
-glUniform1i(glGetUniformLocation(ourShader.Program, “ourTexture1”), 0);
+glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
 glActiveTexture(GL_TEXTURE1);
 glBindTexture(GL_TEXTURE_2D, texture2);
-glUniform1i(glGetUniformLocation(ourShader.Program, “ourTexture2”), 1);
+glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
  
 glBindVertexArray(VAO);
 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_IN, 0);
@@ -352,11 +352,13 @@ glBindVertexArray(0);
 
 !!! Attention
 
-        这个提供的解决方案对图片翻转进行了一点hack。大多数情况都能工作，但是仍然执行起来以来纹理，所以最好的解决方案是换一个图片加载器，或者以一种y原点符合OpenGL需求的方式编辑你的纹理图像。
+        这个提供的解决方案对图片翻转进行了一点hack。大多数情况都能工作，而实际上这种做法是否总能正常工作依然取决于你的纹理和应用环境，所以最好的解决方案是换一个图片加载器，或者以一种y原点符合OpenGL需求的方式编辑你的纹理图像。
         
 如果你编辑了顶点数据，在顶点着色器中翻转了纵坐标，你会得到下面的结果：
 
 ![](http://learnopengl.com/img/getting-started/textures_combined2.png)
+
+如果你看到了如图的“快乐容器”，你就做对了。你可以对比[程序源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)源码。
 
 ### 练习
 
