@@ -352,13 +352,13 @@ glBindVertexArray(0);
 
 !!! Attention
 
-        这个提供的解决方案对图片翻转进行了一点hack。大多数情况都能工作，而实际上这种做法是否总能正常工作依然取决于你的纹理和应用环境，所以最好的解决方案是换一个图片加载器，或者以一种y原点符合OpenGL需求的方式编辑你的纹理图像。
+        上面提供的解决方案仅仅通过一些hacks让图片翻转。它们在大多数情况下都能正常工作，然而实际上这种方案的效果取决于你的实现和纹理，所以最好的解决方案是调整你的图片加载器，或者以一种y原点符合OpenGL需求的方式编辑你的纹理图像。
         
 如果你编辑了顶点数据，在顶点着色器中翻转了纵坐标，你会得到下面的结果：
 
 ![](http://learnopengl.com/img/getting-started/textures_combined2.png)
 
-如果你看到了如图的“快乐容器”，你就做对了。你可以对比[程序源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)源码。
+如果你看到了图片上的笑脸容器，你就做对了。你可以对比[程序源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)。
 
 ### 练习
 
