@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | linkoln
-校对     | Geequlim, Meow J
+校对     | Geequlim, Meow J, [BLumia](https://github.com/blumia/)
 
 在上一个教程中，我们学习了如何有效地利用矩阵变换来对所有顶点进行转换。OpenGL希望在所有顶点着色器运行后，所有我们可见的顶点都变为标准化设备坐标(Normalized Device Coordinate, NDC)。也就是说，每个顶点的x，y，z坐标都应该在-1.0到1.0之间，超出这个坐标范围的顶点都将不可见。我们通常会自己设定一个坐标的范围，之后再在顶点着色器中将这些坐标转换为标准化设备坐标。然后将这些标准化设备坐标传入光栅器(Rasterizer)，再将他们转换为屏幕上的二维坐标或像素。
 
@@ -217,7 +217,7 @@ void main()
 我们应该将矩阵传入着色器(这通常在每次渲染的时候即转换矩阵将要改变的时候完成)：
 
 ```c++
-GLint modelLoc = glGetUniformLocation(ourShader.Program, "model"));
+GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 ... // 观察矩阵和投影矩阵与之类似
 ```
@@ -254,7 +254,7 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 
 <video src="http://learnopengl.com/video/getting-started/coordinate_system_no_depth.mp4" controls="controls"></video>
 
-这有点像一个立方体，但又有种说不出的奇怪。立方体的某些面是通过其它面绘制的。之所以这样是因为OpenGL是通过画一个一个三角形来画你的立方体的，所以它将会覆盖之前已经画在那里的像素。因为这个原因，有些三角形会画在其它三角形上面，虽然它们本不应该是被覆盖的。
+这有点像一个立方体，但又有种说不出的奇怪。立方体的某些本应被遮挡住的面被绘制在了这个立方体的其他面的上面。之所以这样是因为OpenGL是通过画一个一个三角形来画你的立方体的，所以它将会覆盖之前已经画在那里的像素。因为这个原因，有些三角形会画在其它三角形上面，虽然它们本不应该是被覆盖的。
 
 幸运的是，OpenGL存储深度信息在z缓冲区(Z-buffer)里面，它允许OpenGL决定何时覆盖一个像素何时不覆盖。通过使用z缓冲区我们可以设置OpenGL来进行深度测试。
 

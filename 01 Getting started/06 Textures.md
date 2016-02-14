@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim [BLumia](https://github.com/blumia/)
+校对     | Geequlim, [BLumia](https://github.com/blumia/)
 
 我们已经了解到，我们可以为每个顶点使用颜色来增加图形的细节，从而创建出有趣的图像。但是，如果想让图形看起来更真实我们就必须有足够多的顶点，从而指定足够多的颜色。这将会产生很多额外开销，因为每个模型都会需求更多的顶点和顶点颜色。
 
@@ -141,7 +141,7 @@ SOIL是Simple OpenGL Image Library(简易OpenGL图像库)的缩写，它支持�
 
 ```c++
 int width, height;
-unsigned char* image = SOIL_load_image("container..jpg", &width, &height, 0, SOIL_LOAD_RGB);
+unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 ```
 
 函数首先需要输入图片文件的路径。然后需要两个int指针作为第二个和第三个参数，SOIL会返回图片的宽度和高度到其中。之后，我们需要图片的宽度和高度来生成纹理。第四个参数指定图片的通道(Channel)数量，但是这里我们只需留`0`。最后一个参数告诉SOIL如何来加载图片：我们只对图片的RGB感兴趣。结果储存为一个大的char/byte数组。
@@ -197,7 +197,7 @@ glBindTexture(GL_TEXTURE_2D, texture);
 ...
 //加载并生成纹理
 int width, height;
-unsigned char * image = SOIL_load_image("container.jpg", &width, &eight, 0, SOIL_LOAD_RGB);
+unsigned char * image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 glGenerateMipmap(GL_TEXTURE_2D);
 SOIL_free_image_data(image);
@@ -348,7 +348,7 @@ glBindVertexArray(0);
 所以修复我们的小问题，有两个选择：
 
 1. 我们切换顶点数据的纹理坐标，翻转`y`值(用1减去y坐标)。
-2. 我们可以编辑顶点着色器来翻转`y`坐标，自动替换`TexCoord`赋值：`TexCoord = vec2(texCoord.x, 1 – texCoord.y);`
+2. 我们可以编辑顶点着色器来翻转`y`坐标，自动替换`TexCoord`赋值：`TexCoord = vec2(texCoord.x, 1 - texCoord.y);`
 
 !!! Attention
 
