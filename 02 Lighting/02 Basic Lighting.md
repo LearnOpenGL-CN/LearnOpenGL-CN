@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim
+校对     | Geequlim, [BLumia](https://github.com/blumia/)
 
 现实世界的光照是极其复杂的，而且会受到诸多因素的影响，这是以目前我们所拥有的处理能力无法模拟的。因此OpenGL的光照仅仅使用了简化的模型并基于对现实的估计来进行模拟，这样处理起来会更容易一些，而且看起来也差不多一样。这些光照模型都是基于我们对光的物理特性的理解。其中一个模型被称为冯氏光照模型(Phong Lighting Model)。冯氏光照模型的主要结构由3个元素组成：环境(Ambient)、漫反射(Diffuse)和镜面(Specular)光照。这些光照元素看起来像下面这样：
 
@@ -113,11 +113,11 @@ uniform vec3 lightPos;
 然后再游戏循环中(外面也可以，因为它不会变)更新uniform。我们使用在前面教程中声明的`lightPos`向量作为光源位置：
 
 ```c++
-GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, “lightPos”);
-glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos,z);
+GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "lightPos");
+glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 ```
 
-最后，我们还需要片段的位置(Position)。我们会在世界空间中进行所有的光照计算，因此我们需要一个在世界空间中的顶点位置。我们可以通过把顶点位置属性乘以模型矩阵(Model Matrix,只用模型矩阵不需要用观察和投影矩阵)来把它变换到世界空间坐标。这个在顶点着色器中很容易完成，所以让我们就声明一个输出(out)变量，然后计算它的世界空间空间坐标：
+最后，我们还需要片段的位置(Position)。我们会在世界空间中进行所有的光照计算，因此我们需要一个在世界空间中的顶点位置。我们可以通过把顶点位置属性乘以模型矩阵(Model Matrix,只用模型矩阵不需要用观察和投影矩阵)来把它变换到世界空间坐标。这个在顶点着色器中很容易完成，所以让我们就声明一个输出(out)变量，然后计算它的世界空间坐标：
 
 ```c++
 out vec3 FragPos;
@@ -280,5 +280,5 @@ color = vec4(result, 1.0f);
 
 - 目前，我们的光源时静止的，你可以尝试使用`sin`和`cos`函数让光源在场景中来回移动，此时再观察光照效果能让你更容易理解冯氏光照模型。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise1)。
 - 尝试使用不同的环境光、散射镜面强度，观察光照效果。改变镜面光照的`shininess`因子试试。
-- 在观察空间中计算而不是世界空间冯氏光照：[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise2)。
+- 在观察空间(而不是世界空间)中计算冯氏光照：[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise2)。
 - 尝试实现一个Gouraud光照来模拟冯氏光照，[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting-exercise3)。
