@@ -4,11 +4,11 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+校对     | [Geequlim](http://geequlim.com), [BLumia](https://github.com/blumia/)
 
-前面的教程，我们讨论了每个物体都拥有各自不同的材质，因而会对光做出不同的反应。在一个光照场景中，给每个物体和其他物体不同的外观很棒，但是这仍然不会对一个物体的图像输出提供很多的伸缩性。
+前面的教程，我们讨论了让不同的物体拥有各自不同的材质并对光照做出不同的反应的方法。在一个光照场景中，让每个物体拥有和其他物体不同的外观很棒，但是这仍然不能对一个物体的图像输出提供足够多的灵活性。
 
-前面的教程我们为一个物体的作为一个整体定义了一个材质，但是现实世界的物体通常不会只有这么一种材质，而是由多种材质组成。想象一辆车：它的外表质地光亮，车窗会部分反射环境，它的轮胎没有specular高光，轮彀却非常闪亮（在洗过之后）。汽车同样有diffuse和ambient颜色，它们在整个车上都不相同；一辆车显示了多种不同的ambient/diffuse颜色。总之，这样一个物体每个部分都有多种材质属性。
+前面的教程中我们将一个物体自身作为一个整体为其定义了一个材质，但是现实世界的物体通常不会只有这么一种材质，而是由多种材质组成。想象一辆车：它的外表质地光亮，车窗会部分反射环境，它的轮胎没有specular高光，轮彀却非常闪亮（在洗过之后）。汽车同样有diffuse和ambient颜色，它们在整个车上都不相同；一辆车显示了多种不同的ambient/diffuse颜色。总之，这样一个物体每个部分都有多种材质属性。
 
 所以，前面的材质系统对于除了最简单的模型以外都是不够的，所以我们需要扩展前面的系统，我们要介绍diffuse和specular贴图。它们允许你对一个物体的diffuse（而对于简洁的ambient成分来说，它们几乎总是是一样的）和specular成分能够有更精确的影响。
 
@@ -16,13 +16,13 @@
 
 我们希望通过某种方式对每个原始像素独立设置diffuse颜色。有可以让我们基于物体原始像素的位置来获取颜色值的系统吗？
 
-这可能听起来极其相似，坦白来讲我们我们使用这样的系统已经有一会儿了。听起来很像在一个较早的教程中谈论的纹理，它基本就是一个纹理。我们其实是使用同一个潜在原则下的不同名称：使用一张图片包裹住物体，我们为每个原始像素索引独立颜色值。在有光的场景里，通常叫做漫反射贴图(Diffuse texture)，因为这个纹理图像表现了所有物体的diffuse颜色。
+这可能听起来极其相似，坦白来讲我们使用这样的系统已经有一段时间了。听起来很像在一个[之前的教程](https://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/)中谈论的**纹理**，它基本就是一个纹理。我们其实是使用同一个潜在原则下的不同名称：使用一张图片覆盖住物体，以便我们为每个原始像素索引独立颜色值。在光照场景中，通过纹理来呈现一个物体的diffuse颜色，这个做法被称做**漫反射贴图(Diffuse texture)**(因为3D建模师就是这么称呼这个做法的)。
 
-为了强调漫反射贴图，我们将会使用下面的图片，它是一个有一圈钢边的木箱：
+为了演示漫反射贴图，我们将会使用[下面的图片](http://learnopengl.com/img/textures/container2.png)，它是一个有一圈钢边的木箱：
 
 ![](http://www.learnopengl.com/img/textures/container2.png)
 
-在着色器中使用漫反射贴图和纹理教程介绍的一样。这次我们把纹理储存为sampler2D，并在Material结构体中。我们使用diffuse贴图替代早期定义的vec3类型的diffuse颜色。
+在着色器中使用漫反射贴图和纹理教程介绍的一样。这次我们把纹理以sampler2D类型储存在Material结构体中。我们使用diffuse贴图替代早期定义的vec3类型的diffuse颜色。
 
 !!! Attention
     
@@ -41,7 +41,7 @@ in vec2 TexCoords;
 ```
 !!! Important
 
-    如果你非把ambient颜色设置为不同的值不可（不同于diffuse值），你可以继续保持ambient的vec3，但是整个物体的ambient颜色会继续保持不变。为了使每个原始像素得到不同ambient值，你需要对ambient值单独使用另一个纹理。
+    如果你非把ambient颜色设置为不同的值不可（不同于diffuse值），你可以继续保留ambient的vec3，但是整个物体的ambient颜色会继续保持不变。为了使每个原始像素得到不同ambient值，你需要对ambient值单独使用另一个纹理。
 
 注意，在片段着色器中我们将会再次需要纹理坐标，所以我们声明一个额外输入变量。然后我们简单地从纹理采样，来获得原始像素的diffuse颜色值：
     
@@ -94,22 +94,22 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 你可能注意到，specular高光看起来不怎么样，由于我们的物体是个箱子，大部分是木头，我们知道木头是不应该有镜面高光的。我们通过把物体设置specular材质设置为vec3(0.0f)来修正它。但是这样意味着铁边会不再显示镜面高光，我们知道钢铁是会显示一些镜面高光的。我们会想要控制物体部分地显示镜面高光，它带有修改了的亮度。这个问题看起来和diffuse贴图的讨论一样。这是巧合吗？我想不是。
 
-我们同样用一个纹理贴图，来获得镜面高光。这意味着我们需要生成一个黑白（或者你喜欢的颜色）纹理来定义specular亮度，把它应用到物体的每个部分。下面是一个specular贴图的例子：
+我们同样用一个纹理贴图，来获得镜面高光。这意味着我们需要生成一个黑白（或者你喜欢的颜色）纹理来定义specular亮度，把它应用到物体的每个部分。下面是一个[specular贴图](http://learnopengl.com/img/textures/container2_specular.png)的例子：
 
 ![](http://www.learnopengl.com/img/textures/container2_specular.png)
 
 一个specular高光的亮度可以通过图片中每个纹理的亮度来获得。specular贴图的每个像素可以显示为一个颜色向量，比如：在那里黑色代表颜色向量vec3(0.0f)，灰色是vec3(0.5f)。在片段着色器中，我们采样相应的颜色值，把它乘以光的specular亮度。像素越“白”，乘积的结果越大，物体的specualr部分越亮。
 
-由于箱子几乎是由木头组成，木头作为一个材质不会有镜面高光，整个不透部分的diffuse纹理被用黑色覆盖：黑色部分不会包含任何specular高光。箱子的铁边有一个修改的specular亮度，它自身更容易受到镜面高光影响，木纹部分则不会。
+由于箱子几乎是由木头组成，木头作为一个材质不会有镜面高光，整个木头部分的diffuse纹理被用黑色覆盖：黑色部分不会包含任何specular高光。箱子的铁边有一个修改的specular亮度，它自身更容易受到镜面高光影响，木纹部分则不会。
 
 从技术上来讲，木头也有镜面高光，尽管这个闪亮值很小（更多的光被散射），影响很小，但是为了学习目的，我们可以假装木头不会有任何specular光反射。
 
-使用Photoshop或Gimp之类的工具，剪切一些部分，非常容易变换一个diffuse纹理，为specular图片，以增加亮度/对比度的方式，可以把这个部分变换为黑色或白色。
+使用Photoshop或Gimp之类的工具，通过将图片进行裁剪，将某部分调整成黑白图样，并调整亮度/对比度的做法，可以非常容易将一个diffuse纹理贴图处理为specular贴图。
 
 
 ### 镜面贴图采样
 
-一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（查看纹理），所以在渲染前让我们把它绑定到合适的纹理单元
+一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（参见[纹理](http://www.learnopengl.com/#!Getting-started/Textures)），所以在渲染前让我们把它绑定到合适的纹理单元
 
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1);
@@ -149,3 +149,11 @@ color = vec4(ambient + diffuse + specular, 1.0f);
 你可以在这里找到[全部源码](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps_specular)。也对比一下你的[顶点着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=fragment)。
 
 使用diffuse和specular贴图，我们可以给相关但简单物体添加一个极为明显的细节。我们可以使用其他纹理贴图，比如法线/bump贴图或者反射贴图，给物体添加更多的细节。但是这些在后面教程才会涉及。把你的箱子给你所有的朋友和家人看，有一天你会很满足，我们的箱子会比现在更漂亮！
+
+## 练习
+
+- 调整光源的ambient, diffuse 和 specular向量值，看看它们如何影响实际输出的箱子外观。
+- 尝试在片段着色器中反转镜面贴图(specular map)的颜色值，然后木头就会变得反光而边框不会反光了（由于贴图中钢边依然有一些残余颜色，所以钢边依然会有一些高光，不过反光明显小了很多）。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise2)
+- 使用漫反射贴图(diffuse texture)原本的颜色而不是黑白色来创建镜面贴图(specular map)，并观察，结果显得并不那么真实了。如果你不会处理图片，你可以使用这个[带颜色的镜面贴图](http://learnopengl.com/img/lighting/lighting_maps_specular_color.png)。[最终效果](learnopengl.com/img/lighting/lighting_maps_exercise3.png)
+- 添加一个叫做**emission map**的东西，即记录每个fragment发光值大小的贴图，发光值即一个物体可以自身发出的光的颜色，就像物体本身是个光源一样会发光。这样的话物体就可以忽略环境光自身发光。通常在你看到游戏里某个东西(比如 [机器人的眼](http://www.witchbeam.com.au/unityboard/shaders_enemy.jpg),或是[箱子上的小灯](http://www.tomdalling.com/images/posts/modern-opengl-08/emissive.png))在发光时，使用的就是emission map。使用[这个](http://learnopengl.com/img/textures/matrix.jpg)贴图(作者为 creativesam)作为emission map并使用在箱子上，你就会看到箱子上有会发光的字了。[参考解答]
+(http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4),[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4_fragment), [最终效果](http://learnopengl.com/img/lighting/lighting_maps_exercise4.png)
