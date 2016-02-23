@@ -152,8 +152,7 @@ color = vec4(ambient + diffuse + specular, 1.0f);
 
 ## 练习
 
-- 调整光源的ambient, diffuse 和 specular向量值，看看它们如何影响实际输出的箱子外观。
-- 尝试在片段着色器中反转镜面贴图(specular map)的颜色值，然后木头就会变得反光而边框不会反光了（由于贴图中钢边依然有一些残余颜色，所以钢边依然会有一些高光，不过反光明显小了很多）。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise2)
-- 使用漫反射贴图(diffuse texture)原本的颜色而不是黑白色来创建镜面贴图(specular map)，并观察，结果显得并不那么真实了。如果你不会处理图片，你可以使用这个[带颜色的镜面贴图](http://learnopengl.com/img/lighting/lighting_maps_specular_color.png)。[最终效果](learnopengl.com/img/lighting/lighting_maps_exercise3.png)
-- 添加一个叫做**emission map**的东西，即记录每个fragment发光值大小的贴图，发光值即一个物体可以自身发出的光的颜色，就像物体本身是个光源一样会发光。这样的话物体就可以忽略环境光自身发光。通常在你看到游戏里某个东西(比如 [机器人的眼](http://www.witchbeam.com.au/unityboard/shaders_enemy.jpg),或是[箱子上的小灯](http://www.tomdalling.com/images/posts/modern-opengl-08/emissive.png))在发光时，使用的就是emission map。使用[这个](http://learnopengl.com/img/textures/matrix.jpg)贴图(作者为 creativesam)作为emission map并使用在箱子上，你就会看到箱子上有会发光的字了。[参考解答]
-(http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4),[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4_fragment), [最终效果](http://learnopengl.com/img/lighting/lighting_maps_exercise4.png)
+- 调整光源的ambient，diffuse和specular向量值，看看它们如何影响实际输出的箱子外观。
+- 尝试在片段着色器中反转镜面贴图(Specular Map)的颜色值，然后木头就会变得反光而边框不会反光了（由于贴图中钢边依然有一些残余颜色，所以钢边依然会有一些高光，不过反光明显小了很多）。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise2)
+- 使用漫反射纹理(Diffuse Texture)原本的颜色而不是黑白色来创建镜面贴图，并观察，你会发现结果显得并不那么真实了。如果你不会处理图片，你可以使用这个[带颜色的镜面贴图](http://learnopengl.com/img/lighting/lighting_maps_specular_color.png)。[最终效果](learnopengl.com/img/lighting/lighting_maps_exercise3.png)
+- 添加一个叫做**放射光贴图(Emission Map)**的东西，即记录每个片段发光值(Emission Value)大小的贴图，发光值是(模拟)物体自身**发光(Emit)**时可能产生的颜色。这样的话物体就可以忽略环境光自身发光。通常在你看到游戏里某个东西(比如 [机器人的眼](http://www.witchbeam.com.au/unityboard/shaders_enemy.jpg),或是[箱子上的小灯](http://www.tomdalling.com/images/posts/modern-opengl-08/emissive.png))在发光时，使用的就是放射光贴图。使用[这个](http://learnopengl.com/img/textures/matrix.jpg)贴图(作者为 creativesam)作为放射光贴图并使用在箱子上，你就会看到箱子上有会发光的字了。[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4),[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps-exercise4_fragment), [最终效果](http://learnopengl.com/img/lighting/lighting_maps_exercise4.png)
