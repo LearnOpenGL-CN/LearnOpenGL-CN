@@ -57,7 +57,7 @@ vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 
 这就是diffuse贴图的全部内容了。就像你看到的，这不是什么新的东西，但是它却极大提升了视觉品质。为了让它工作，我们需要用到纹理坐标更新顶点数据，把它们作为顶点属性传递到片段着色器，把纹理加载并绑定到合适的纹理单元。
 
-[更新的顶点数据可以从这里找到](http://learnopengl.com/code_viewer.php?code=lighting/vertex_data_textures)。顶点数据现在包括了顶点位置，法线向量和纹理坐标，每个立方体的顶点都有这些属性。让我们更新顶点着色器来接受纹理坐标作为顶点属性，然后发送到片段着色器：
+更新的顶点数据可以从[这里](http://learnopengl.com/code_viewer.php?code=lighting/vertex_data_textures)找到。顶点数据现在包括了顶点位置，法线向量和纹理坐标，每个立方体的顶点都有这些属性。让我们更新顶点着色器来接受纹理坐标作为顶点属性，然后发送到片段着色器：
 
 ```c++
 #version 330 core
@@ -109,7 +109,7 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 ### 镜面贴图采样
 
-一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元（参见[纹理](http://www.learnopengl.com/#!Getting-started/Textures)），所以在渲染前让我们把它绑定到合适的纹理单元
+一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元(参见[纹理](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/))，所以在渲染前让我们把它绑定到合适的纹理单元
 
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1);
