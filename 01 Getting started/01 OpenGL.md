@@ -120,7 +120,7 @@ glBindObject(GL_WINDOW_TARGET, 0);
 
 ## 让我们开始吧
 
-你现在已经知道一些OpenGL的相关知识了，包括OpenGL作为规范和库，OpenGL大致的操作流程，以及一些使用扩展的小技巧。不要担心没有你还完全消化它们，通过后面的教程我们会仔细地讲解每一步，你会通过足够的例子来把握OpenGL。如果你已经做好了开始下一步的准备，我们可以开始建立OpenGL上下文以及我们的第一个窗口了。[点击这里](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/02%20Creating%20a%20window/)(第一章第二节)
+你现在已经知道一些OpenGL的相关知识了，包括OpenGL作为规范和库，OpenGL大致的操作流程，以及一些使用扩展的小技巧。不要担心你还没有完全消化它们，通过后面的教程我们会仔细地讲解每一步，你会通过足够的例子来把握OpenGL。如果你已经做好了开始下一步的准备，我们可以开始建立OpenGL上下文以及我们的第一个窗口了。[点击这里](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/02%20Creating%20a%20window/)(第一章第二节)
 
 ## 额外的资源
 
