@@ -531,4 +531,4 @@ glBindVertexArray(0);
 
 - 尝试使用`glDrawArrays`以在你的数据中添加更多顶点的方式，绘制两个彼此相连的三角形：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise1)
 - 现在，使用不同的VAO(和VBO)创建同样的2个三角形，每个三角形的数据要不同(提示：创建2个顶点数据数组，而不是1个)：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise2)
-- 创建连个着色器程序(Shader Program)，第二个程序使用不同的片段着色器，它输出黄色；绘制这两个三角形，其中一个输出为黄色：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise3)
+- 创建两个着色器程序(Shader Program)，第二个程序使用不同的片段着色器，它输出黄色；绘制这两个三角形，其中一个输出为黄色：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/hello-triangle-exercise3)
