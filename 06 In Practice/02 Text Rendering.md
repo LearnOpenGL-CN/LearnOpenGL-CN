@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Geequlim](http://geequlim.com)
-校对     | gjy_1992
+校对     | gjy_1992, [BLumia](https://github.com/blumia/)
 
 当你在图形计算领域冒险到了一定阶段以后你可能会想使用OpenGL来绘制文字。然而，可能与你想象的并不一样，使用像OpenGL这样的底层库来把文字渲染到屏幕上并不是一件简单的事情。如果你你只需要绘制128种字符，那么事情可能会简单一些。但是当我们要绘制的字符有着不同的宽、高和边距；如果你使用的语言中不止包含128个字符；当你要绘制音乐符、数学符号；以及考虑把如何处理文本自动转行等等情况考虑进来的时候...事情马上就会变得复杂得多，你甚至觉得这些工作并不属于像OpenGL这样的底层图形库该讨论的范畴。
 
@@ -274,7 +274,7 @@ void RenderText(Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         // 绘制方块
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        //  更新位置到下一个字形的原点，注意单位是1/64像素
+        // 更新位置到下一个字形的原点，注意单位是1/64像素
         x += (ch.Advance >> 6) * scale; //(2^6 = 64)
     }
     glBindVertexArray(0);
@@ -282,7 +282,7 @@ void RenderText(Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale
 }
 ```
 
-这个函数的内容注释的比较详细了：我们首先计算出方块的起点坐标和它的大小，并为该方块生成一个6个顶点；注意我们在缩放的同时会将部分度量值也进行缩放。接着我们更新方块的VBO、绑定字形纹理来渲染它。
+这个函数的内容注释的比较详细了：我们首先计算出方块的起点坐标（即`xpos`和`ypos`）和它的大小（即`w`和`h`），并为该方块生成6个顶点；注意我们在缩放的同时会将部分度量值也进行缩放。接着我们更新方块的VBO、绑定字形纹理来渲染它。
 
 其中这行代码需要加倍留意：
 
@@ -290,7 +290,7 @@ void RenderText(Shader &s, std::string text, GLfloat x, GLfloat y, GLfloat scale
 GLfloat ypos = y - (ch.Size.y - ch.Bearing.y);   
 ```
 
-一些字符(诸如'p'或'q')需要被渲染到基线一下，因此字形方块也应该讲y位置往下调整。调整的量就是便是字形度量值中字形的高度和BearingY的差：
+一些字符(诸如'p'或'q')需要被渲染到基线以下，因此字形方块也应该讲y位置往下调整。调整的量就是便是字形度量值中字形的高度和BearingY的差：
 
 ![](http://learnopengl.com/img/in-practice/glyph_offset.png)
 
@@ -314,10 +314,10 @@ RenderText(shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0
 
 ![](http://learnopengl.com/img/in-practice/text_rendering_quads.png)
 
-这样你就能清楚地看到那条传说中的基线了。
+可以看出，对应'p'和'('等字形的方块明显向下偏移了一些，通过这些你就能清楚地看到那条传说中的基线了。
 
 ## 关于未来
 
 本教程演示了如何使用FreeType绘制TrueType文字。这种方式灵活、可缩放并支持多种字符编码。然而，你的应用程序可能并不需要这么强大的功能，性能更好的点阵字体也许是更可取的。当然你可以结合这两种方法通过动态生成位图字体中所有字符字形。这节省了从大量的纹理渲染器开关和基于每个字形紧密包装可以节省相当的一些性能。
 
-另一个使用FreeType字体的问题是字形纹理是对应着一个固定的字体大小的，因此直接对其放大就会出现锯齿边缘。此外，对字形进行旋转还会使它们看上去变得模糊。可以通过将每个像素设为最近的字形轮廓的像素，而不是直接设为实际栅格化的像素，可以减轻这些问题。这项技术被称为**signed distance fields**，Valve在几年前发表过一篇了[论文](http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf)，探讨了他们通过这项技术来获得好得惊人的3D渲染效果。
+另一个使用FreeType字体的问题是字形纹理是对应着一个固定的字体大小的，因此直接对其放大就会出现锯齿边缘。此外，对字形进行旋转还会使它们看上去变得模糊。通过将每个像素设为最近的字形轮廓的像素，而不是直接设为实际栅格化的像素，可以减轻这些问题。这项技术被称为**signed distance fields**，Valve在几年前发表过一篇了[论文](http://www.valvesoftware.com/publications/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf)，探讨了他们通过这项技术来获得好得惊人的3D渲染效果。
