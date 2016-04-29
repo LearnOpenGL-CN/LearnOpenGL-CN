@@ -5,7 +5,7 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 ![Progress](http://progressed.io/bar/70?title=40/57)
 
 
-**In Practice最后再弄，现在先把前面的校对完**
+**现在可以认领一下In Practice了**
 
 ##如何认领翻译？
 
