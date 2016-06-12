@@ -50,6 +50,8 @@ pages:
     - SSAO: '05 Advanced Lighting/09 SSAO.md'
   - 实战(In Practice):
     - 文字渲染: '06 In Practice/02 Text Rendering.md'
+    - 2D游戏:
+      - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
 
 site_name: LearnOpenGL-CN
 
