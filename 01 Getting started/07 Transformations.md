@@ -22,7 +22,9 @@
 
 数学家喜欢在字母上面加一横表示向量，比如说![](../img/trans/v_black.png)。当用在公式中时它们通常是这样的：
 
-![](../img/trans/transformations1.png)
+$$
+\bar{v} = \begin{pmatrix} \color{red}x \\ \color{green}y \\ \color{blue}z \end{pmatrix}
+$$
 
 由于向量是一个方向，所以有些时候会很难形象地将它们用位置(Position)表示出来。我们通常设定这个方向的原点为(0,0,0)，然后指向对应坐标的点，使其变为**位置向量(Position Vector)**来表示(你也可以把起点设置为其他的点，然后说：这个向量从这个点起始指向另一个点)。位置向量(3, 5)的在图像中起点是(0, 0)，指向(3, 5)。我们可以使用向量在2D或3D空间中表示方向**与**位置.
 
@@ -32,9 +34,7 @@
 
 **标量(Scalar)**只是一个数字(或者说是仅有一个分量的矢量)。当把一个向量加/减/乘/除一个标量，我们可以简单的把向量的每个分量分别进行该运算。对于加法来说会像这样:
 
-$$$
-\bar{v} = \begin{pmatrix} \color{red}x \\ \color{green}y \\ \color{blue}z \end{pmatrix}
-$$$
+![](../img/trans/transformations2.png)
 
 其中的+可以是+，-，·或÷，其中·是乘号。注意－和÷运算时不能颠倒，因为颠倒的运算是没有定义的(标量-/÷矢量)
 
