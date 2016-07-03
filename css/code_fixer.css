@@ -51,3 +51,8 @@ div.admonition code {
     text-align: left;
 	}
 }
+
+.hljs-comment {
+	font-style: normal;
+	font-size: 85%;
+}
