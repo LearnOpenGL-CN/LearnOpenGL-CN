@@ -9,6 +9,8 @@
 
 在开始这段旅程之前我们先了解一下OpenGL到底是什么。一般它被认为是一个API(**Application Programming Interface**, 应用程序编程接口)，包含了一系列可以操作图形、图像的函数。然而，OpenGL本身并不是一个API，它仅仅是一个由[Khronos组织](http://www.khronos.org/)制定并维护的规范(Specification)。
 
+[http://learnopengl.com/img/getting-started/opengl.jpg](http://learnopengl.com/img/getting-started/opengl.jpg "OpenGL Logo")
+
 OpenGL规范严格规定了每个函数该如何执行，以及它们的输出值。至于内部具体每个函数是如何实现(Implement)的，将由OpenGL库的开发者自行决定(注：这里开发者是指编写OpenGL库的人)。因为OpenGL规范并没有规定实现的细节，具体的OpenGL库允许使用不同的实现，只要其功能和结果与规范相匹配(亦即，作为用户不会感受到功能上的差异)。
 
 实际的OpenGL库的开发者通常是显卡的生产商。你购买的显卡所支持的OpenGL版本都为这个系列的显卡专门开发的。当你使用Apple系统的时候，OpenGL库是由Apple自身维护的。在Linux下，有显卡生产商提供的OpenGL库，也有一些爱好者改编的版本。这也意味着任何时候OpenGL库表现的行为与规范规定的不一致时，基本都是库的开发者留下的bug。
