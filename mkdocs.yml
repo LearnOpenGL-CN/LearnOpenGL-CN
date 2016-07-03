@@ -55,6 +55,10 @@ pages:
 
 site_name: LearnOpenGL-CN
 
+python:
+   version: 2
+   setup_py_install: true
+
 markdown_extensions:
   - admonition
   - smarty
