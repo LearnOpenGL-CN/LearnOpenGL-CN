@@ -59,6 +59,10 @@ markdown_extensions:
   - admonition
   - smarty
   - sane_lists
+  - mdx_math
+
+extra_javascript:
+- 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML'
 
 extra_css:
   - css/code_fixer.css
