@@ -46,6 +46,12 @@ div.admonition code {
   font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
+.rst-content img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 @media screen and (max-width: 800px) {
 	p, ol, ul {
     text-align: left;
