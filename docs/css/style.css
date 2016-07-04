@@ -43,10 +43,46 @@ div.admonition code {
 }
 
 img {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 7px;
+    border: 3px solid #bbb;
 }
+
+img.clean {
+    border: 0px;
+}
+
+img.left {
+    float: left;
+    margin: 10px;
+    border: 2px solid #bbb;
+    border-radius: 3px;
+    margin-right: 20px;
+}
+
+img.right {
+    float: right;
+    margin: 10px;
+    margin-left: 20px;
+}
+
+img.small {
+	width: 150px;
+	height: auto;
+}
+
+img.medium {
+	width: 300px;
+	height: auto;
+}
+
+img.large {
+	width: 500px;
+	height: auto;
+}
+
 
 video {
 	display: block;
