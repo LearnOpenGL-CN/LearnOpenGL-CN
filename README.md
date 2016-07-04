@@ -46,6 +46,29 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 之后请联系我们，将您加入LearnOpenGL-CN组织，然后提交并Push您的翻译。或者您也可以Fork这个工程在本地编辑之后发送Pull Request。
 
+## 构建
+
+首先请安装Python，2和3都可以，之后初始化环境：
+
+```bash
+$ pip install mkdocs
+$ python setup.py install
+```
+
+初始化以后，每次构建只需要输入以下指令即可，构建后的文件在`site`文件夹内：
+
+```bash
+$ mkdocs build
+```
+
+如果只是想测试的话，请输入以下指令：
+
+```bash
+$ mkdocs serve
+```
+
+部署的网页可以通过`127.0.0.1:8000`来访问。
+
 ## 建议
 
 如果您发现文档有任何错误的话，欢迎Fork这个工程并发送Pull Request到 `master` 分支。如果您不想修改的话，可以点击页面上方的 `Issues` 按钮提交一个Issue，我们看到后会及时更正。
