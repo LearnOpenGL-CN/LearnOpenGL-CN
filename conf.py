@@ -1,1 +1,1 @@
-html_style = /default.css
+html_style = '/default.css'
