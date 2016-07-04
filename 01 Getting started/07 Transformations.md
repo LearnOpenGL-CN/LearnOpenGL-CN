@@ -127,7 +127,7 @@ $$
 	译注：通过上面点乘定义式可推出：
 
 	$$
-	\cos \theta = \frac{||\bar{v}|| \cdot ||\bar{k}||}{\bar{v} \cdot \bar{k}}
+	\cos \theta = \frac{\bar{v} \cdot \bar{k}}{||\bar{v}|| \cdot ||\bar{k}||}
 	$$
 
 所以，我们如何计算点乘？点乘是按分量逐个相乘，然后再把结果相加。两个单位向量点乘就像这样(你可以用两个长度为1的验证)：
