@@ -69,6 +69,6 @@ extra_css:
   - css/style.css
   - css/admonition_fix.css
 
-docs_dir: docs
+docs_dir: 'docs'
 
-theme: yeti
+theme_dir: 'yeti'
