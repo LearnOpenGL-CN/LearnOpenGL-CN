@@ -1,12 +1,24 @@
-.admonition-title {
+.important .admonition-title, .attention .admonition-title {
 	display: none;
+}
+
+.note .admonition-title {
+	font-weight: bold;
+	font-size: 16px;
+	background: #6ab0de;
+	color: #FFF;
+	display: block;
+	margin: -12px;
+	margin-bottom: 10px !important;
+	padding: 6px 12px;
+	line-height: 1;
 }
 
 .admonition p{
 	margin: auto;
 }
 
-.important, .note, .attention {
+.important, .attention {
 	display: block;
 	margin: 20px;
 	padding: 15px;
@@ -24,6 +36,12 @@
 	border: 2px solid #E0B3B3;
 }
 
-.important {
-	background: #dbfaf4;
+.note {
+	display: block;
+	padding: 12px;
+	margin-bottom: 24px;
+	color: #444;
+	border-radius: 5px;
+	background-color: #E7F2FA;
+	border: 2px solid #6AB0DE;
 }
