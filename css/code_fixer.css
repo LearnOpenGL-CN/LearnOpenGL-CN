@@ -52,6 +52,12 @@ div.admonition code {
 	margin-right: auto;
 }
 
+video {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 @media screen and (max-width: 800px) {
 	p, ol, ul {
     text-align: left;
