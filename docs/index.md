@@ -1,95 +1,23 @@
-# LearnOpenGL-CN
-learnopengl.com系列教程的中文翻译，目前正在翻译中。
+# 欢迎来到OpenGL的世界
 
-**当前翻译进度：**
-![Progress](http://progressed.io/bar/70?title=40/57)
+欢迎来到OpenGL的世界。这个工程只是我([JoeyDeVries](http://joeydevries.com/))的一次小小的尝试，希望能够建立起一个完善的OpenGL教学平台。无论你学习OpenGL是为了学业，找工作，或仅仅是因为兴趣，这个网站都将能够教会你**现代**(Core-profile) OpenGL的基础，中级，以及高级知识。LearnOpenGL的目标是使用易于理解的形式，使用清晰的例子，展现现代OpenGL的所有知识点，与此同时为以后的学习提供有用的参考。
 
+## 为什么要阅读这些教程呢？
 
-**In Practice最后再弄，现在先把前面的校对完**
+在互联网上，关于学习OpenGL的有成千上万的文档与资源，然而其中大部分的资源仅仅讨论了OpenGL的立即渲染模式(Immediate Mode，通常会说旧OpenGL)，亦或是不完整，缺少适当的文档，或仅仅不适合你的口味。所以我的目标是提供一个既完整，又易懂的平台供人们学习。
 
-##如何认领翻译？
+<img alt="Image of smiling textured containers in OpenGL" src="img/index_image2.png" align="right" />
 
-由于我们的志愿者来自五湖四海，为了避免冲突。请志愿者们先clone这个Repository 。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的Markdown文件：
+如果你很享受那些提供手把手指导的教程，那些提供清晰例子的教程，和那些不会一下将你淹没在细节中的教程，我的这些教程很可能就会适合你。这些教程旨在让那些没有图形编程经验的人们能够理解，又让那些有经验的读者有阅读下去的兴趣。这些教程同样也讨论了一些常用的概念，只需要你再有一点创造力，就能将你的想法变成真正的3D程序。如果如果你觉得前面这些讲的都是你，欢迎继续阅读我的教程。
 
-    本文作者JoeyDeVries，由Geequlim翻译自http://learnopengl.com
+## 你将学会什么呢？
 
-译文的文件命名统一规范为：
+我这些教程的核心是现代OpenGL。学习（和使用）现代OpenGL需要用户对图形编程以及OpenGL的幕后运作有非常高的理解才能在编程中有很好的发挥。所以，我们会先讨论核心的图形概念，OpenGL怎样画像素到屏幕上，还有如何利用黑科技做出一些很酷的效果。
 
-    <两位数的章序列> <章名称>/<两位数节序列> 节名称/<两位数小节序列> 小节名称.md
+除了核心概念之外，我们将会讨论许多有用的技巧，它们都可以用在你的程序中，比如说在你的场景中移动，做出漂亮的光效，加载一些建模软件导出的一些自定义的模型，做一些很酷的后期处理技巧等。最后，我们也将会使用我们已学的知识从头开始做一个小游戏，让你真正体验一把图形编程的魅力。
 
-例如：
+## 中文翻译
 
-	05 Advanced Lighting/03 Shadows/02 Point Shadows.md
+这里是LearnOpenGL教程的中文翻译，英文版的地址为：[http://learnopengl.com/](http://learnopengl.com/)
 
-加入LearnOpenGL-CN组织，然后提交并push您的文章。
-
-###欢迎志愿者们加入翻译组交流QQ群：383745868
-
-
-
-##专业词汇对照表
-
-
-1. [《游戏引擎架构》中英词汇索引表](http://www.cnblogs.com/miloyip/p/GameEngineArchitectureIndex.html)
-
-2. 摘抄自《OpenGL超级宝典第五版》
-
-
-英文词 | 对应翻译
----|---
-Aliasing | 锯齿
-Alpha | 透明度
-Ambient Light|环境光
-Antialiasing|抗锯齿
-Aspect Ratio|纵横比
-Bezier curve|贝塞尔曲线
-Bitplane|位平面
-Buffer|缓冲区
-Cartesian|笛卡尔
-Clip coordinates|裁剪坐标
-Clipping|裁剪
-Convex|凸
-Culling|剔除
-Destination color|目标颜色
-Dithering|抖动
-Double buffered|双缓冲
-Extruded|拉伸
-Eye coordinates|视觉坐标
-Frustum|平头截体
-Immediate mode|立即模式
-Implementation|实现
-Khronos|OpenGL维护小组
-Literal|字面值
-Matrix|矩阵
-Mipmapping|Mip贴图
-Modelview Matrix|模型视图矩阵
-Normal|法线
-Normalize|规范化
-Orthographic|正交
-Prespective|透视
-Piexl|像素
-Pixmap|像素图
-Polygon|多边形
-Primitive|图元
-Projection|投影
-Quadrilateral|四边形
-Resterize|光栅化
-Retained mode|保留模式
-Render|渲染
-Scintillation|闪烁
-Shader|着色器
-Source Color|源颜色
-Specification|说明
-Spline|样条
-Stipple|点画
-Tessellation|镶嵌
-Texel|纹理单元
-Texture|纹理
-Transformation|变换
-Translucence|半透明
-Vector|向量
-Vertex|顶点
-Viewing Volume|可视区域
-Viewport|视口
-Wireframe|线框
-pipeline | 渲染管线
+由于翻译可能无法做到精确表达原文意思，我们推荐您在对问题有疑惑的时候去阅读一下英文版的教程。如果您对翻译有更好的建议，可以去我们的[GitHub工程](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)上提交Issue或者Pull Request。
