@@ -65,4 +65,6 @@ extra_javascript:
 - 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML'
 
 extra_css:
-  - css/code_fixer.css
+  - css/style.css
+
+docs_dir: 'docs'
