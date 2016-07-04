@@ -10,7 +10,7 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 ## 阅读地址
 
-目前Host在Read The Docs上，可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
+目前Host在Read The Docs上，可以[点击这里](https://learnopengl-cn.github.io/)进行阅读。
 
 ## 认领翻译
 
