@@ -12,6 +12,8 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 目前Host在Read The Docs上，可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
 
+还有一份在GitHub上采用新的主题，可以[点击这里](https://learnopengl-cn.github.io/)阅读。
+
 ## 认领翻译
 
 由于我们的志愿者来自五湖四海，为了避免冲突。请志愿者们先Clone这个Repository 。同步到本地后找到要翻译的文章，创建一个如下所示的只包含作者、翻译者和原文链接信息的Markdown文件：
@@ -45,6 +47,29 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 ```
 
 之后请联系我们，将您加入LearnOpenGL-CN组织，然后提交并Push您的翻译。或者您也可以Fork这个工程在本地编辑之后发送Pull Request。
+
+## 构建
+
+首先请安装Python，2和3都可以，之后初始化环境：
+
+```bash
+$ pip install mkdocs
+$ python setup.py install
+```
+
+初始化以后，每次构建只需要输入以下指令即可，构建后的文件在`site`文件夹内：
+
+```bash
+$ mkdocs build
+```
+
+如果只是想测试的话，请输入以下指令：
+
+```bash
+$ mkdocs serve
+```
+
+部署的网页可以通过`127.0.0.1:8000`来访问。
 
 ## 建议
 
