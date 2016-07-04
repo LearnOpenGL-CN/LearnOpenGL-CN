@@ -71,4 +71,4 @@ extra_css:
 
 docs_dir: 'docs'
 
-theme: yeti
+theme_dir: 'yeti'
