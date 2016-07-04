@@ -4,9 +4,9 @@
 
 ## 为什么要阅读这些教程呢？
 
-在互联网上，关于学习OpenGL的有成千上万的文档与资源，然而其中大部分的资源仅仅讨论了OpenGL的立即渲染模式(Immediate Mode，通常会说旧OpenGL)，亦或是不完整，缺少适当的文档，或仅仅不适合你的口味。所以我的目标是提供一个既完整，又易懂的平台供人们学习。
+<img alt="Image of smiling textured containers in OpenGL" src="img/index_image2.png" class="right medium" />
 
-<img alt="Image of smiling textured containers in OpenGL" src="img/index_image2.png" align="right" />
+在互联网上，关于学习OpenGL的有成千上万的文档与资源，然而其中大部分的资源仅仅讨论了OpenGL的立即渲染模式(Immediate Mode，通常会说旧OpenGL)，亦或是不完整，缺少适当的文档，或仅仅不适合你的口味。所以我的目标是提供一个既完整，又易懂的平台供人们学习。
 
 如果你很享受那些提供手把手指导的教程，那些提供清晰例子的教程，和那些不会一下将你淹没在细节中的教程，我的这些教程很可能就会适合你。这些教程旨在让那些没有图形编程经验的人们能够理解，又让那些有经验的读者有阅读下去的兴趣。这些教程同样也讨论了一些常用的概念，只需要你再有一点创造力，就能将你的想法变成真正的3D程序。如果如果你觉得前面这些讲的都是你，欢迎继续阅读我的教程。
 
