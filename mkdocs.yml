@@ -56,10 +56,6 @@ pages:
 
 site_name: LearnOpenGL-CN
 
-docs_dir: 'docs'
-
-theme_dir: 'yeti'
-
 markdown_extensions:
   - admonition
   - smarty
@@ -73,3 +69,6 @@ extra_css:
   - css/style.css
   - css/admonition_fix.css
 
+docs_dir: 'docs'
+
+theme_dir: 'yeti'
