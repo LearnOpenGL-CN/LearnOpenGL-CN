@@ -17,6 +17,10 @@ h1, h2 {
 	line-height: 180%;
 }
 
+.col-md-9 li {
+	margin-bottom: 3px;
+}
+
 table td, table th {
 	font-size: 100% !important;
 }
