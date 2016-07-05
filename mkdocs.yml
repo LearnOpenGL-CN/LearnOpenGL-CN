@@ -57,6 +57,10 @@ pages:
 
 site_name: 'LearnOpenGL CN'
 
+site_url: https://learnopengl-cn.github.io/
+
+repo_url: https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/tree/new-theme
+
 markdown_extensions:
   - admonition
   - smarty
