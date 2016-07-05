@@ -44,8 +44,8 @@
 
 ## 图片
 
-- 图片请尽量搬运到`docs/img`目录，之后在文中引用的时候地址填写`../../img/filename.jpg`
-- 如果想要让图片放在页面一侧，可以使用HTML代码：
+- 图片请尽量搬运到`docs/img`目录，之后在文中引用的时候地址填写`../img/filename.jpg`
+- 如果想要让图片放在页面一侧，可以使用HTML代码，注意HTML代码中要多一层`../`：
 
 ```html
 <img alt="OpenGL Logo" src="../../img/opengl.jpg" class="right" />
