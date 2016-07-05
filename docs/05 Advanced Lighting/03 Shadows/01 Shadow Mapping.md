@@ -1,6 +1,4 @@
-## 阴影映射(Shadow Mapping)
-
-本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
+# 阴影映射
 
 原文     | [Shadow Mapping](http://learnopengl.com/#!Advanced-Lighting/Shadows/Shadow-Mapping)
       ---|---
@@ -20,9 +18,9 @@
 
 视频游戏中较多使用的一种技术是阴影贴图（shadow mapping），效果不错，而且相对容易实现。阴影贴图并不难以理解，性能也不会太低，而且非常容易扩展成更高级的算法（比如 [Omnidirectional Shadow Maps](http://learnopengl.com/#!Advanced-Lighting/Shadows/Point-Shadows)和 [Cascaded Shadow Maps](http://learnopengl.com/#!Advanced-Lighting/Shadows/CSM)）。
 
-### 阴影映射
+## 阴影映射
 
-阴影映射背后的思路非常简单：我们以光的位置为视角进行渲染，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了。假设有一个地板，在光源和它之间有一个大盒子。由于光源处向光线方向看去，可以看到这个盒子，但看不到地板的一部分，这部分就应该在阴影中了。
+阴影映射(Shadow Mapping)背后的思路非常简单：我们以光的位置为视角进行渲染，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了。假设有一个地板，在光源和它之间有一个大盒子。由于光源处向光线方向看去，可以看到这个盒子，但看不到地板的一部分，这部分就应该在阴影中了。
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_theory.png)
 
@@ -44,9 +42,9 @@
 
 深度映射由两个步骤组成：首先，我们渲染深度贴图，然后我们像往常一样渲染场景，使用生成的深度贴图来计算片元是否在阴影之中。听起来有点复杂，但随着我们一步一步地讲解这个技术，就能理解了。
 
-### 深度贴图（depth map）
+## 深度贴图
 
-第一步我们需要生成一张深度贴图。深度贴图是从光的透视图里渲染的深度纹理，用它计算阴影。因为我们需要将场景的渲染结果储存到一个纹理中，我们将再次需要帧缓冲。
+第一步我们需要生成一张深度贴图(Depth Map)。深度贴图是从光的透视图里渲染的深度纹理，用它计算阴影。因为我们需要将场景的渲染结果储存到一个纹理中，我们将再次需要帧缓冲。
 
 首先，我们要为渲染的深度贴图创建一个帧缓冲对象：
 
@@ -105,9 +103,9 @@ RenderScene();
 
 这段代码隐去了一些细节，但它表达了阴影映射的基本思路。这里一定要记得调用glViewport。因为阴影贴图经常和我们原来渲染的场景（通常是窗口解析度）有着不同的解析度，我们需要改变视口（viewport）的参数以适应阴影贴图的尺寸。如果我们忘了更新视口参数，最后的深度贴图要么太小要么就不完整。
 
-### 光源空间的变换（light spacce transform）
+### 光源空间的变换
 
-前面那段代码中一个不清楚的函数是COnfigureShaderAndMatrices。它是用来在第二个步骤确保为每个物体设置了合适的投影和视图矩阵，以及相关的模型矩阵。然而，第一个步骤中，我们从光的位置的视野下使用了不同的投影和视图矩阵来渲染的场景。
+前面那段代码中一个不清楚的函数是`ConfigureShaderAndMatrices`。它是用来在第二个步骤确保为每个物体设置了合适的投影和视图矩阵，以及相关的模型矩阵。然而，第一个步骤中，我们从光的位置的视野下使用了不同的投影和视图矩阵来渲染的场景。
 
 因为我们使用的是一个所有光线都平行的定向光。出于这个原因，我们将为光源使用正交投影矩阵，透视图将没有任何变形：
 
@@ -132,9 +130,9 @@ glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 这个lightSpaceMatrix正是前面我们称为\(T\)的那个变换矩阵。有了lightSpaceMatrix只要给shader提供光空间的投影和视图矩阵，我们就能像往常那样渲染场景了。然而，我们只关心深度值，并非所有片元计算都在我们的着色器中进行。为了提升性能，我们将使用一个与之不同但更为简单的着色器来渲染出深度贴图。
 
-### 渲染出深度贴图
+### 渲染至深度贴图
 
-当我们以光的透视图进行场景渲染的时候，我们会用一个比较简单的着色器，这个着色器除了把顶点变换到光空间以外，不会做得更多了。这个简单的着色器叫做simpleDepthShader，就是使用下面的这个着色器：
+当我们以光的透视图进行场景渲染的时候，我们会用一个比较简单的着色器，这个着色器除了把顶点变换到光空间以外，不会做得更多了。这个简单的着色器叫做`simpleDepthShader`，就是使用下面的这个着色器：
 
 ```c++
 #version 330 core
@@ -203,7 +201,7 @@ void main()
 
 你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping_depth_map)获得把场景渲染成深度贴图的源码。
 
-### 渲染阴影
+## 渲染阴影
 
 正确地生成深度贴图以后我们就可以开始生成阴影了。这段代码在像素着色器中执行，用来检验一个片元是否在阴影之中，不过我们在顶点着色器中进行光空间的变换：
 
@@ -359,17 +357,17 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 如果你做对了，你会看到地板和上有立方体的阴影。你可以从这里找到demo程序的[源码](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping_shadows)。
 
-### 改进阴影贴图
+## 改进阴影贴图
 
 我们试图让阴影映射工作，但是你也看到了，阴影映射还是有点不真实，我们修复它才能获得更好的效果，这是下面的部分所关注的焦点。
 
-#### 阴影失真（shadow acne）
+### 阴影失真
 
 前面的图片中明显有不对的地方。放大看会发现明显的线条样式：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne.png)
 
-我们可以看到地板四边形渲染出很大一块交替黑线。这种阴影贴图的不真实感叫做阴影失真，下图解释了成因：
+我们可以看到地板四边形渲染出很大一块交替黑线。这种阴影贴图的不真实感叫做**阴影失真(Shadow Acne)**，下图解释了成因：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne_diagram.png)
 
@@ -400,13 +398,13 @@ float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
 选用正确的偏移数值，在不同的场景中需要一些像这样的轻微调校，但大多情况下，实际上就是增加偏移量直到所有失真都被移除的问题。
 
-#### 悬浮
+### 悬浮
 
 使用阴影偏移的一个缺点是你对物体的实际深度应用了平移。偏移有可能足够大，以至于可以看出阴影相对实际物体位置的偏移，你可以从下图看到这个现象（这是一个夸张的偏移值）：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_peter_panning.png)
 
-这个阴影失真叫做Peter panning，因为物体看起来轻轻悬浮在表面之上（译注Peter Pan就是童话彼得潘，而panning有平移、悬浮之意，而且彼得潘是个会飞的男孩…）。我们可以使用一个叫技巧解决大部分的Peter panning问题：当渲染深度贴图时候使用正面剔除（front face culling）你也许记得在面剔除教程中OpenGL默认是背面剔除。我们要告诉OpenGL我们要剔除正面。
+这个阴影失真叫做悬浮(Peter Panning)，因为物体看起来轻轻悬浮在表面之上（译注Peter Pan就是童话彼得潘，而panning有平移、悬浮之意，而且彼得潘是个会飞的男孩…）。我们可以使用一个叫技巧解决大部分的Peter panning问题：当渲染深度贴图时候使用正面剔除（front face culling）你也许记得在面剔除教程中OpenGL默认是背面剔除。我们要告诉OpenGL我们要剔除正面。
 
 因为我们只需要深度贴图的深度值，对于实体物体无论我们用它们的正面还是背面都没问题。使用背面深度不会有错误，因为阴影在物体内部有错误我们也看不见。
 
@@ -424,7 +422,7 @@ glCullFace(GL_BACK); // 不要忘记设回原先的culling face
 
 另一个要考虑到的地方是接近阴影的物体仍然会出现不正确的效果。必须考虑到何时使用正面剔除对物体才有意义。不过使用普通的偏移值通常就能避免peter panning。
 
-#### 采样超出
+### 采样过多
 
 无论你喜不喜欢还有一个视觉差异，就是光的视锥不可见的区域一律被认为是处于阴影中，不管它真的处于阴影之中。出现这个状况是因为超出光的视锥的投影坐标比1.0大，这样采样的深度纹理就会超出他默认的0到1的范围。根据纹理环绕方式，我们将会得到不正确的深度结果，它不是基于真实的来自光源的深度值。
 
@@ -468,7 +466,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 这些结果意味着，只有在深度贴图范围以内的被投影的fragment坐标才有阴影，所以任何超出范围的都将会没有阴影。由于在游戏中通常这只发生在远处，就会比我们之前的那个明显的黑色区域效果更真实。
 
-#### PCF
+## PCF
 
 阴影现在已经附着到场景中了，不过这仍不是我们想要的。如果你放大看阴影，阴影映射对解析度的依赖很快变得很明显。
 
@@ -509,10 +507,9 @@ shadow /= 9.0;
 实际上PCF还有更多的内容，以及很多技术要点需要考虑以提升柔和阴影的效果，但处于本章内容长度考虑，我们将留在以后讨论。
 
  
-
 ### 正交 vs 投影
 
-在渲染深度贴图的时候，正交和投影矩阵之间有所不同。正交投影矩阵并不会将场景用透视图进行变形，所有视线/光线都是平行的，这使它对于定向光来说是个很好的投影矩阵。然而透视投影矩阵，会将所有顶点根据透视关系进行变形，结果因此而不同。下图展示了两种投影方式所产生的不同阴影区域：
+在渲染深度贴图的时候，正交(Orthographic)和投影(Projection)矩阵之间有所不同。正交投影矩阵并不会将场景用透视图进行变形，所有视线/光线都是平行的，这使它对于定向光来说是个很好的投影矩阵。然而透视投影矩阵，会将所有顶点根据透视关系进行变形，结果因此而不同。下图展示了两种投影方式所产生的不同阴影区域：
 
 ![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_projection.png)
 
@@ -545,14 +542,9 @@ void main()
 
 这个深度值与我们见到的用正交投影的很相似。需要注意的是，这个只适用于调试；正交或投影矩阵的深度检查仍然保持原样，因为相关的深度并没有改变。
 
-### 附加资源
+## 附加资源
 
-[Tutorial 16 : Shadow](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/)
-
-[mapping：opengl-tutorial.org](http://ogldev.atspace.co.uk/www/tutorial23/tutorial23.html) 提供的类似的阴影映射教程，里面有一些额外的解释。
-
-[Shadow Mapping – Part 1：ogldev](http://ogldev.atspace.co.uk/www/tutorial23/tutorial23.html)提供的另一个阴影映射教程。
-
-[How Shadow Mapping Works](https://www.youtube.com/watch?v=EsccgeUpdsM)：的一个第三方YouTube视频教程，里面解释了阴影映射及其实现。
-
-[Common Techniques to Improve Shadow Depth Maps](https://msdn.microsoft.com/en-us/library/windows/desktop/ee416324%28v=vs.85%29.aspx)：微软的一篇好文章，其中理出了很多提升阴影贴图质量的技术。
+- [Tutorial 16 : Shadow mapping](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/)：提供的类似的阴影映射教程，里面有一些额外的解释。
+- [Shadow Mapping – Part 1：ogldev](http://ogldev.atspace.co.uk/www/tutorial23/tutorial23.html)：提供的另一个阴影映射教程。
+- [How Shadow Mapping Works](https://www.youtube.com/watch?v=EsccgeUpdsM)：的一个第三方YouTube视频教程，里面解释了阴影映射及其实现。
+- [Common Techniques to Improve Shadow Depth Maps](https://msdn.microsoft.com/en-us/library/windows/desktop/ee416324%28v=vs.85%29.aspx)：微软的一篇好文章，其中理出了很多提升阴影贴图质量的技术。

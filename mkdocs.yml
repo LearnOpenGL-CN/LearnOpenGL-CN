@@ -21,7 +21,7 @@ pages:
     - 多光源: '02 Lighting/06 Multiple lights.md'
     - 复习: '02 Lighting/07 Review.md'
   - 加载模型(Model Loading):
-    - Assimp开源模型导入库: '03 Model Loading/01 Assimp.md'
+    - Assimp: '03 Model Loading/01 Assimp.md'
     - 网格: '03 Model Loading/02 Mesh.md'
     - 模型: '03 Model Loading/03 Model.md'
   - 高级OpenGL(Advanced OpenGL):

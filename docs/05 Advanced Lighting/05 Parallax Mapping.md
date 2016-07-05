@@ -1,10 +1,14 @@
-本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
+# 视差贴图
 
-## 视差贴图(Parallax Mapping)
+原文     | [Parallax Mapping](http://learnopengl.com/#!Advanced-Lighting/Parallax-Mapping)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | 暂无
 
-视差贴图技术和法线贴图差不多，但它有着不同的原则。和法线贴图一样视差贴图能够极大提升表面细节，使之具有深度感。它也是利用了视错觉，然而对深度有着更好的表达，与法线贴图一起用能够产生难以置信的效果。视差贴图和光照无关，我在这里是作为法线贴图的技术延续来讨论它的。需要注意的是在开始学习视差贴图之前强烈建议先对法线贴图，特别是切线空间有较好的理解。
+视差贴图(Parallax Mapping)技术和法线贴图差不多，但它有着不同的原则。和法线贴图一样视差贴图能够极大提升表面细节，使之具有深度感。它也是利用了视错觉，然而对深度有着更好的表达，与法线贴图一起用能够产生难以置信的效果。视差贴图和光照无关，我在这里是作为法线贴图的技术延续来讨论它的。需要注意的是在开始学习视差贴图之前强烈建议先对法线贴图，特别是切线空间有较好的理解。
 
-视差贴图属于位移贴图（译注：displacement mapping也叫置换贴图）技术的一种，它对根据储存在纹理中的几何信息对顶点进行位移或偏移。一种实现的方式是比如有1000个顶点，更具纹理中的数据对平面特定区域的顶点的高度进行位移。这样的每个纹理像素包含了高度值纹理叫做高度贴图。一张简单的砖块表面的告诉贴图如下所示：
+视差贴图属于位移贴图(Displacement Mapping)技术的一种，它对根据储存在纹理中的几何信息对顶点进行位移或偏移。一种实现的方式是比如有1000个顶点，更具纹理中的数据对平面特定区域的顶点的高度进行位移。这样的每个纹理像素包含了高度值纹理叫做高度贴图。一张简单的砖块表面的告诉贴图如下所示：
 
 ![](http://learnopengl.com/img/advanced-lighting/parallax_mapping_height_map.png)
 
@@ -36,9 +40,7 @@
 
 理论都有了，下面我们来动手实现视差贴图。
 
- 
-
-### 视差贴图
+## 视差贴图
 
 我们将使用一个简单的2D平面，在把它发送给GPU之前我们先计算它的切线和副切线向量；和法线贴图教程做的差不多。我们将向平面贴diffuse纹理、法线贴图以及一个位移贴图，你可以点击链接下载。这个例子中我们将视差贴图和法线贴图连用。因为视差贴图生成表面位移了的幻觉，当光照不匹配时这种幻觉就被破坏了。法线贴图通常根据高度贴图生成，法线贴图和高度贴图一起用能保证光照能和位移想匹配。
 
@@ -174,11 +176,9 @@ if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 
 
 问题的原因是这只是一个大致近似的视差映射。还有一些技巧让我们在陡峭的高度上能够获得几乎完美的结果，即使当以一定角度观看的时候。例如，我们不再使用单一样本，取而代之使用多样本来找到最近点\(\color{blue}B\)会得到怎样的结果？
 
- 
+## 陡峭视差映射
 
-### 陡峭视差映射（Steep Parallax Mapping）
-
-陡峭视差映射是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。它能得到更好的结果，它将总深度范围分布到同一个深度/高度的多个层中。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到了一个采样得到的低于当前层的深度值的深度值。看看下面的图片：
+陡峭视差映射(Steep Parallax Mapping)是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。它能得到更好的结果，它将总深度范围分布到同一个深度/高度的多个层中。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到了一个采样得到的低于当前层的深度值的深度值。看看下面的图片：
 
 ![](http://learnopengl.com/img/advanced-lighting/parallax_mapping_steep_parallax_mapping_diagram.png)
 
@@ -256,15 +256,15 @@ float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0, 0.0, 1.0), viewDir
 
  
 
-### Parallax Occlusion Mapping
+## 视差遮蔽映射
 
-Parallax Occlusion Mapping和陡峭视差映射的原则相同，但不是用触碰的第一个深度层的纹理坐标，而是在触碰之前和之后，在深度层之间进行线性插值。我们根据表面的高度距离啷个深度层的深度层值的距离来确定线性插值的大小。看看下面的图pain就能了解它是如何工作的：
+视差遮蔽映射(Parallax Occlusion Mapping)和陡峭视差映射的原则相同，但不是用触碰的第一个深度层的纹理坐标，而是在触碰之前和之后，在深度层之间进行线性插值。我们根据表面的高度距离啷个深度层的深度层值的距离来确定线性插值的大小。看看下面的图片就能了解它是如何工作的：
 
 [](http://learnopengl.com/img/advanced-lighting/parallax_mapping_parallax_occlusion_mapping_diagram.png)
 
 你可以看到大部分和陡峭视差映射一样，不一样的地方是有个额外的步骤，两个深度层的纹理坐标围绕着交叉点的线性插值。这也是近似的，但是比陡峭视差映射更精确。
 
-Parallax Occlusion Mapping的代码基于陡峭视差映射，所以并不难：
+视差遮蔽映射的代码基于陡峭视差映射，所以并不难：
 
 ```c++
 [...] // steep parallax mapping code here
@@ -285,7 +285,7 @@ return finalTexCoords;
 
 在对（位移的）表面几何进行交叉，找到深度层之后，我们获取交叉前的纹理坐标。然后我们计算来自相应深度层的几何之间的深度之间的距离，并在两个值之间进行插值。线性插值的方式是在两个层的纹理坐标之间进行的基础插值。函数最后返回最终的经过插值的纹理坐标。
 
-Parallax Occlusion Mapping的效果非常好，尽管有一些可以看到的轻微的不真实和锯齿的问题，这仍是一个好交易，因为除非是放得非常大或者观察角度特别陡，否则也看不到。
+视差遮蔽映射的效果非常好，尽管有一些可以看到的轻微的不真实和锯齿的问题，这仍是一个好交易，因为除非是放得非常大或者观察角度特别陡，否则也看不到。
 
 ![](http://learnopengl.com/img/advanced-lighting/parallax_mapping_parallax_occlusion_mapping.png)
 
@@ -295,8 +295,7 @@ Parallax Occlusion Mapping的效果非常好，尽管有一些可以看到的轻
 
  
 
-### 附加资源
+## 附加资源
 
-[Parallax Occlusion Mapping in GLSL](http://sunandblackcat.com/tipFullView.php?topicid=28)：sunandblackcat.com上的视差贴图教程。
-
-[How Parallax Displacement Mapping Works](https://www.youtube.com/watch?v=xvOT62L-fQI)：TheBennyBox的关于视差贴图原理的视频教程。
+- [Parallax Occlusion Mapping in GLSL](http://sunandblackcat.com/tipFullView.php?topicid=28)：sunandblackcat.com上的视差贴图教程。
+- [How Parallax Displacement Mapping Works](https://www.youtube.com/watch?v=xvOT62L-fQI)：TheBennyBox的关于视差贴图原理的视频教程。

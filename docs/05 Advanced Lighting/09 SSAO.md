@@ -38,7 +38,7 @@ Crytek公司开发的SSAO技术会产生一种特殊的视觉风格。因为使�
 
 通过在**法向半球体(Normal-oriented Hemisphere)**周围采样，我们将不会考虑到片段底部的几何体.它消除了环境光遮蔽灰蒙蒙的感觉，从而产生更真实的结果。这个SSAO教程将会基于法向半球法和John Chapman出色的[SSAO教程](http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html)。
 
-## 样本缓冲(Sample buffers)
+## 样本缓冲
 
 SSAO需要获取几何体的信息，因为我们需要一些方式来确定一个片段的遮蔽因子。对于每一个片段，我们将需要这些数据：
 - 逐片段**位置**向量
@@ -112,7 +112,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 接下来我们需要真正的半球采样核心和一些方法来随机旋转它。
 
-## 法向半球(Normal-oriented Hemisphere)
+## 法向半球
 
 我们需要沿着表面法线方向生成大量的样本。就像我们在这个教程的开始介绍的那样，我们想要生成形成半球形的样本。由于对每个表面法线方向生成采样核心非常困难，也不合实际，我们将在[切线空间](http://learnopengl-cn.readthedocs.org/zh/latest/05%20Advanced%20Lighting/04%20Normal%20Mapping/)(Tangent Space)内生成采样核心，法向量将指向正z方向。
 
