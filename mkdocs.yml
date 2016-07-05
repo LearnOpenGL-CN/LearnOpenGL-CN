@@ -2,7 +2,7 @@ pages:
   - 主页: 'index.md'
   - 目录:
     - 简介: 'intro.md'
-    - 入门(Getting started):
+    - 入门:
       - OpenGL: '01 Getting started/01 OpenGL.md'
       - 创建窗口: '01 Getting started/02 Creating a window.md'
       - 你好，窗口: '01 Getting started/03 Hello Window.md'
@@ -13,7 +13,7 @@ pages:
       - 坐标系统: '01 Getting started/08 Coordinate Systems.md'
       - 摄像机: '01 Getting started/09 Camera.md'
       - 复习: '01 Getting started/10 Review.md'
-    - 光照(Lighting):
+    - 光照:
       - 颜色: '02 Lighting/01 Colors.md'
       - 光照基础: '02 Lighting/02 Basic Lighting.md'
       - 材质: '02 Lighting/03 Materials.md'
@@ -21,11 +21,11 @@ pages:
       - 投光物: '02 Lighting/05 Light casters.md'
       - 多光源: '02 Lighting/06 Multiple lights.md'
       - 复习: '02 Lighting/07 Review.md'
-    - 加载模型(Model Loading):
+    - 模型加载:
       - Assimp: '03 Model Loading/01 Assimp.md'
       - 网格: '03 Model Loading/02 Mesh.md'
       - 模型: '03 Model Loading/03 Model.md'
-    - 高级OpenGL(Advanced OpenGL):
+    - 高级OpenGL:
       - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
       - 模板测试: '04 Advanced OpenGL/02 Stencil testing.md'
       - 混合: '04 Advanced OpenGL/03 Blending.md'
@@ -37,7 +37,7 @@ pages:
       - 几何着色器: '04 Advanced OpenGL/09 Geometry Shader.md'
       - 实例化: '04 Advanced OpenGL/10 Instancing.md'
       - 抗锯齿: '04 Advanced OpenGL/11 Anti Aliasing.md'
-    - 高级光照(Advanced Lighting):
+    - 高级光照:
       - 高级光照: '05 Advanced Lighting/01 Advanced Lighting.md'
       - Gamma校正: '05 Advanced Lighting/02 Gamma Correction.md'
       - 阴影:
@@ -50,7 +50,7 @@ pages:
       - 泛光: '05 Advanced Lighting/07 Bloom.md'
       - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
       - SSAO: '05 Advanced Lighting/09 SSAO.md'
-    - 实战(In Practice):
+    - 实战:
       - 文字渲染: '06 In Practice/02 Text Rendering.md'
       - 2D游戏:
         - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
