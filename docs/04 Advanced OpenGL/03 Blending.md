@@ -130,12 +130,14 @@ glEnable(GL_BLEND);
 
 OpenGL以下面的方程进行混合：
 
-C¯result = C¯source ∗ Fsource + C¯destination ∗ Fdestination
+$$
+\begin{equation}\bar{C}_{result} = \bar{\color{green}C}_{source} * \color{green}F_{source} + \bar{\color{red}C}_{destination} * \color{red}F_{destination}\end{equation}
+$$
 
-* C¯source：源颜色向量。这是来自纹理的本来的颜色向量。
-* C¯destination：目标颜色向量。这是储存在颜色缓冲中当前位置的颜色向量。
-* Fsource：源因子。设置了对源颜色的alpha值影响。
-* Fdestination：目标因子。设置了对目标颜色的alpha影响。
+* \(\bar{\color{green}C}_{source}\)：源颜色向量。这是来自纹理的本来的颜色向量。
+* \(\bar{\color{red}C}_{destination}\)：目标颜色向量。这是储存在颜色缓冲中当前位置的颜色向量。
+* \(\color{green}F_{source}\)：源因子。设置了对源颜色的alpha值影响。
+* \(\color{red}F_{destination}\)：目标因子。设置了对目标颜色的alpha影响。
 
 片段着色器运行完成并且所有的测试都通过以后，混合方程才能自由执行片段的颜色输出，当前它在颜色缓冲中（前面片段的颜色在当前片段之前储存）。源和目标颜色会自动被OpenGL设置，而源和目标因子可以让我们自由设置。我们来看一个简单的例子：
 
@@ -143,9 +145,11 @@ C¯result = C¯source ∗ Fsource + C¯destination ∗ Fdestination
 
 我们有两个方块，我们希望在红色方块上绘制绿色方块。红色方块会成为源颜色（它会先进入颜色缓冲），我们将在红色方块上绘制绿色方块。
 
-那么问题来了：我们怎样来设置因子呢？我们起码要把绿色方块乘以它的alpha值，所以我们打算把Fsource设置为源颜色向量的alpha值：0.6。接着，让目标方块的浓度等于剩下的alpha值。如果最终的颜色中绿色方块的浓度为60%，我们就把红色的浓度设为40%（1.0 – 0.6）。所以我们把Fdestination设置为1减去源颜色向量的alpha值。方程将变成：
+那么问题来了：我们怎样来设置因子呢？我们起码要把绿色方块乘以它的alpha值，所以我们打算把\(F_{src}\)设置为源颜色向量的alpha值：0.6。接着，让目标方块的浓度等于剩下的alpha值。如果最终的颜色中绿色方块的浓度为60%，我们就把红色的浓度设为40%（1.0 – 0.6）。所以我们把\(F_{destination}\)设置为1减去源颜色向量的alpha值。方程将变成：
 
-![](../img/blending_C_result.png)
+$$
+\begin{equation}\bar{C}_{result} = \begin{pmatrix} \color{red}{0.0} \\ \color{green}{1.0} \\ \color{blue}{0.0} \\ \color{purple}{0.6} \end{pmatrix} * \color{green}{0.6} + \begin{pmatrix} \color{red}{1.0} \\ \color{green}{0.0} \\ \color{blue}{0.0} \\ \color{purple}{1.0} \end{pmatrix} * \color{red}{(1 - 0.6)} \end{equation}
+$$
 
 最终方块结合部分包含了60%的绿色和40%的红色，得到一种脏兮兮的颜色：
 
@@ -155,27 +159,27 @@ C¯result = C¯source ∗ Fsource + C¯destination ∗ Fdestination
 
 这个方案不错，但我们怎样告诉OpenGL来使用这样的因子呢？恰好有一个叫做`glBlendFunc`的函数。
 
-`void glBlendFunc(GLenum sfactor, GLenum dfactor)`接收两个参数，来设置源（source）和目标（destination）因子。OpenGL为我们定义了很多选项，我们把最常用的列在下面。注意，颜色常数向量C¯constant可以用`glBlendColor`函数分开来设置。
+`void glBlendFunc(GLenum sfactor, GLenum dfactor)`接收两个参数，来设置源（source）和目标（destination）因子。OpenGL为我们定义了很多选项，我们把最常用的列在下面。注意，颜色常数向量\(\bar{\color{blue}C}_{constant}\)可以用`glBlendColor`函数分开来设置。
 
 
-Option |	Value
+选项 |	值
 ---|---
-GL_ZERO  |	0
-GL_ONE	 |  1
-GL_SRC_COLOR |	颜色C¯source.
-GL_ONE_MINUS_SRC_COLOR | 1 − C¯source.
-GL_DST_COLOR |	 C¯destination
-GL_ONE_MINUS_DST_COLOR | 1 − C¯destination.
-GL_SRC_ALPHA |	C¯source的alpha值
-GL_ONE_MINUS_SRC_ALPHA | 1 - C¯source的alpha值
-GL_DST_ALPHA |	C¯destination的alpha值
-GL_ONE_MINUS_DST_ALPHA | 1 - C¯destination的alpha值
-GL_CONSTANT_COLOR	   | C¯constant.
-GL_ONE_MINUS_CONSTANT_COLOR |	1 - C¯constant
-GL_CONSTANT_ALPHA	   | C¯constant的alpha值
-GL_ONE_MINUS_CONSTANT_ALPHA |	1 − C¯constant的alpha值
+GL_ZERO  |	\(0\)
+GL_ONE	 |  \(1\)
+GL_SRC_COLOR |	源颜色向量\(\bar{\color{green}C}_{source}\)
+GL_ONE_MINUS_SRC_COLOR | \(1 - \bar{\color{green}C}_{source}\)
+GL_DST_COLOR |	 目标颜色向量\(\bar{\color{red}C}_{destination}\)
+GL_ONE_MINUS_DST_COLOR | \(1 - \bar{\color{red}C}_{destination}\)
+GL_SRC_ALPHA |	\(\bar{\color{green}C}_{source}\)的\(alpha\)值
+GL_ONE_MINUS_SRC_ALPHA | \(1 -\) \(\bar{\color{green}C}_{source}\)的\(alpha\)值
+GL_DST_ALPHA |	\(\bar{\color{red}C}_{destination}\)的\(alpha\)值
+GL_ONE_MINUS_DST_ALPHA | \(1 -\) \(\bar{\color{red}C}_{destination}\)的\(alpha\)值
+GL_CONSTANT_COLOR	   | 常颜色向量\(\bar{\color{blue}C}_{constant}\)
+GL_ONE_MINUS_CONSTANT_COLOR |	\(1 - \bar{\color{blue}C}_{constant}\)
+GL_CONSTANT_ALPHA	   | \(\bar{\color{blue}C}_{constant}\)的\(alpha\)值
+GL_ONE_MINUS_CONSTANT_ALPHA |	\(1 -\) \(\bar{\color{blue}C}_{constant}\)的\(alpha\)值
 
-为从两个方块获得混合结果，我们打算把源颜色的alpha给源因子，1-alpha给目标因子。调整到`glBlendFunc`之后就像这样：
+为从两个方块获得混合结果，我们打算把源颜色的\(alpha\)给源因子，\(1 - alpha\)给目标因子。调整到`glBlendFunc`之后就像这样：
 
 ```c++
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -193,9 +197,9 @@ OpenGL给了我们更多的自由，我们可以改变方程源和目标部分�
 
 `void glBlendEquation(GLenum mode)`允许我们设置这个操作，有3种可行的选项：
 
-* GL_FUNC_ADD：默认的，彼此元素相加：C¯result = Src + Dst.
-* GL_FUNC_SUBTRACT：彼此元素相减： C¯result = Src – Dst.
-* GL_FUNC_REVERSE_SUBTRACT：彼此元素相减，但顺序相反：C¯result = Dst – Src.
+* GL_FUNC_ADD：默认的，彼此元素相加：\(\bar{C}_{result} = \color{green}{Src} + \color{red}{Dst}\)
+* GL_FUNC_SUBTRACT：彼此元素相减： \(\bar{C}_{result} = \color{green}{Src} - \color{red}{Dst}\)
+* GL_FUNC_REVERSE_SUBTRACT：彼此元素相减，但顺序相反：\(\bar{C}_{result} = \color{red}{Dst} - \color{green}{Src}\).
 
 通常我们可以简单地省略`glBlendEquation`因为GL_FUNC_ADD在大多数时候就是我们想要的，但是如果你如果你真想尝试努力打破主流常规，其他的方程或许符合你的要求。
 

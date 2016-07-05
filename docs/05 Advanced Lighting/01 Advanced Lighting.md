@@ -34,7 +34,7 @@ Phong光照很棒，而且性能较高，但是它的镜面反射在某些条件
 
 得到半程向量很容易，我们将光的方向向量和视线向量相加，然后将结果归一化（normalize）；
 
-![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_01_01.png)
+\(\bar{H} = \frac{\bar{L} + \bar{V}}{||\bar{L} + \bar{V}||}\)
 
 翻译成GLSL代码如下：
 

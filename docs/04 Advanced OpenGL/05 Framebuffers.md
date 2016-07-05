@@ -332,7 +332,9 @@ void main()
 
 kernel是一个长得有点像一个小矩阵的数值数组，它中间的值中心可以映射到一个像素上，这个像素和这个像素周围的值再乘以kernel，最后再把结果相加就能得到一个值。所以，我们基本上就是给当前纹理坐标加上一个它四周的偏移量，然后基于kernel把它们结合起来。下面是一个kernel的例子：
 
-![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_05framebuffers_ kernel_sample.png)
+$$
+\begin{bmatrix}2 & 2 & 2 \\ 2 & -15 & 2 \\ 2 & 2 & 2 \end{bmatrix}
+$$
 
 这个kernel表示一个像素周围八个像素乘以2，它自己乘以-15。这个例子基本上就是把周围像素乘上2，中间像素去乘以一个比较大的负数来进行平衡。
 
@@ -390,7 +392,7 @@ void main()
 
 创建模糊效果的kernel定义如下：
 
-![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_05_blur_sample.png)
+\(\begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} / 16\)
 
 由于所有数值加起来的总和为16,简单返回结合起来的采样颜色是非常亮的,所以我们必须将kernel的每个值除以16.最终的kernel数组会是这样的:
 
@@ -414,7 +416,9 @@ float kernel[9] = float[](
 
 下面的边检测kernel与锐化kernel类似:
 
-![](http://learnopengl-cn.readthedocs.org/zh/latest/img/05_05_Edge_detection.png)
+$$
+\begin{bmatrix} 1 & 1 & 1 \\ 1 & -8 & 1 \\ 1 & 1 & 1 \end{bmatrix}
+$$
 
 这个kernel将所有的边提高亮度,而对其他部分进行暗化处理,当我们值关心一副图像的边缘的时候,它非常有用.
 
