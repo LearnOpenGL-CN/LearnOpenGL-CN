@@ -21,6 +21,10 @@ h1, h2 {
 	margin-bottom: 3px;
 }
 
+.col-md-9 pre {
+	  background-color: #f5f7ff;
+}
+
 table td, table th {
 	font-size: 100% !important;
 }
