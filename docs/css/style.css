@@ -104,10 +104,10 @@ video {
 	font-size: 85%;
 }
 
-.attention {
+.rst-content .attention {
 	background: #FFD2D2;
 }
 
-.attention-title {
+.rst-content .attention .admonition-title {
 	background: #E0B3B3;
 }
