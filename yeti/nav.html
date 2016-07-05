@@ -41,17 +41,17 @@
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
+                        <i class="fa fa-search"></i> 搜索
                     </a>
                 </li>
                 <li {% if not previous_page %}class="disabled"{% endif %}>
                     <a rel="next" {% if previous_page %}href="{{ previous_page.url }}"{% endif %}>
-                        <i class="fa fa-arrow-left"></i> Previous
+                        <i class="fa fa-arrow-left"></i> 上一节
                     </a>
                 </li>
                 <li {% if not next_page %}class="disabled"{% endif %}>
                     <a rel="prev" {% if next_page %}href="{{ next_page.url }}"{% endif %}>
-                        Next <i class="fa fa-arrow-right"></i>
+                        下一节 <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
                 {% if repo_url %}
