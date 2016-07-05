@@ -104,13 +104,16 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
 
 幸运的是一些聪明人已经早就把它想到了。下面的方程把一个片段的光的亮度除以一个已经计算出来的衰减值，这个值根据光源的远近得到：
 
-![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.png)
+$$
+\begin{equation} F_{att} = \frac{1.0}{K_c + K_l * d + K_q * d^2} \end{equation}
+$$
 
-在这里![I](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/I.png)是当前片段的光的亮度，![d](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/d.png)代表片段到光源的距离。为了计算衰减值，我们定义3个项：常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)，一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)和二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)。
+在这里\(d\)代表片段到光源的距离。为了计算衰减值，我们定义3个（可配置）项：**常数**项\(K_c\)，**一次**项\(K_l\)和**二次**项\(K_q\)。
 
-常数项通常是1.0，它的作用是保证坟墓永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
-一次项用于与距离值相称，这回以线性的方式减少亮度。
-二次项用于与距离的平方相乘，为光源设置一个亮度的二次递减。二次项在距离比较近的时候相比一次项会比一次项更小，但是当距离更远的时候比一次项更大。
+- 常数项通常是1.0，它的作用是保证坟墓永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
+- 一次项用于与距离值相称，这回以线性的方式减少亮度。
+- 二次项用于与距离的平方相乘，为光源设置一个亮度的二次递减。二次项在距离比较近的时候相比一次项会比一次项更小，但是当距离更远的时候比一次项更大。
+
 由于二次项的光会以线性方式减少，指导距离足够大的时候，就会超过一次项，之后，光的亮度会减少的更快。最后的效果就是光在近距离时，非常量，但是距离变远亮度迅速降低，最后亮度降低速度再次变慢。下面的图展示了在100以内的范围，这样的衰减效果。
 
 ![](http://www.learnopengl.com/img/lighting/attenuation.png)
@@ -123,7 +126,7 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
 
 但是，我们把这三个项设置为什么值呢？正确的值的设置由很多因素决定：环境、你希望光所覆盖的距离范围、光的类型等。大多数场合，这是经验的问题，也要适度调整。下面的表格展示一些各项的值，它们模拟现实（某种类型的）光源，覆盖特定的半径（距离）。第一栏定义一个光的距离，它覆盖所给定的项。这些值是大多数光的良好开始，它是来自Ogre3D的维基的礼物：
 
-Distance|Constant|Linear|Quadratic
+距离|常数项|一次项|二次项
 -------|------|-----|------
 7|1.0|0.7|1.8
 13|1.0|0.35|0.44
@@ -138,7 +141,7 @@ Distance|Constant|Linear|Quadratic
 600|1.0|0.007|0.0002
 3250|1.0|0.0014|0.000007
 
-就像你所看到的，常数项![Kc](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kc.png)一直都是1.0。一次项![Kl](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kl.png)为了覆盖更远的距离通常很小，二次项![Kq](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Kq.png)就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
+就像你所看到的，常数项\(K_c\)一直都是1.0。一次项\(K_l\)为了覆盖更远的距离通常很小，二次项\(K_q\)就更小了。尝试用这些值进行实验，看看它们在你的实现中各自的效果。我们的环境中，32到100的距离对大多数光通常就足够了。
 
 #### 实现衰减
 
@@ -205,10 +208,10 @@ OpenGL中的聚光灯用世界空间位置，一个方向和一个指定了聚�
 
 * `LightDir`：从片段指向光源的向量。
 * `SpotDir`：聚光灯所指向的方向。
-* `Phiφ`：定义聚光灯半径的切光角。每个落在这个角度之外的，聚光灯都不会照亮。
-* `Thetaθ`：`LightDir`向量和`SpotDir向`量之间的角度。θ值应该比φ值小，这样才会在聚光灯内。
+* `Phi\(\phi\)`：定义聚光灯半径的切光角。每个落在这个角度之外的，聚光灯都不会照亮。
+* `Theta\(\theta\)`：`LightDir`向量和`SpotDir`向量之间的角度。\(\theta\)值应该比\(\Phi\)值小，这样才会在聚光灯内。
 
-所以我们大致要做的是，计算`LightDir`向量和`SpotDir`向量的点乘（返回两个单位向量的点乘，还记得吗？），然后在和遮光角φ对比。现在你应该明白聚光灯是我们下面将创建的手电筒的范例。
+所以我们大致要做的是，计算`LightDir`向量和`SpotDir`向量的点乘（返回两个单位向量的点乘，还记得吗？），然后在和切光角\(\phi\)对比。现在你应该明白聚光灯是我们下面将创建的手电筒的范例。
 
 
 
@@ -216,7 +219,7 @@ OpenGL中的聚光灯用世界空间位置，一个方向和一个指定了聚�
 
 手电筒是一个坐落在观察者位置的聚光灯，通常瞄准玩家透视图的前面。基本上说，一个手电筒是一个普通的聚光灯，但是根据玩家的位置和方向持续的更新它的位置和方向。
 
-所以我们需要为片段着色器提供的值，是聚光灯的位置向量（来计算光的方向坐标），聚光灯的方向向量和遮光角。我们可以把这些值储存在`Light`结构体中：
+所以我们需要为片段着色器提供的值，是聚光灯的位置向量（来计算光的方向坐标），聚光灯的方向向量和切光角。我们可以把这些值储存在`Light`结构体中：
 
 ```c++
 struct Light
@@ -236,9 +239,9 @@ glUniform3f(lightSpotdirLoc, camera.Front.x, camera.Front.y, camera.Front.z);
 glUniform1f(lightSpotCutOffLoc, glm::cos(glm::radians(12.5f)));
 ```
 
-你可以看到，我们为遮光角设置一个角度，但是我们根据一个角度计算了余弦值，把这个余弦结果传给了片段着色器。这么做的原因是在片段着色器中，我们计算`LightDir`和`SpotDir`向量的点乘，而点乘返回一个余弦值，不是一个角度，所以我们不能直接把一个角度和余弦值对比。为了获得这个角度，我们必须计算点乘结果的反余弦，这个操作开销是很大的。所以为了节约一些性能，我们先计算给定切光角的余弦值，然后把结果传递给片段着色器。由于每个角度都被表示为余弦了，我们可以直接对比它们，而不用进行任何开销高昂的操作。
+你可以看到，我们为切光角设置一个角度，但是我们根据一个角度计算了余弦值，把这个余弦结果传给了片段着色器。这么做的原因是在片段着色器中，我们计算`LightDir`和`SpotDir`向量的点乘，而点乘返回一个余弦值，不是一个角度，所以我们不能直接把一个角度和余弦值对比。为了获得这个角度，我们必须计算点乘结果的反余弦，这个操作开销是很大的。所以为了节约一些性能，我们先计算给定切光角的余弦值，然后把结果传递给片段着色器。由于每个角度都被表示为余弦了，我们可以直接对比它们，而不用进行任何开销高昂的操作。
 
-现在剩下要做的是计算θ值，用它和φ值对比，以决定我们是否在或不在聚光灯的内部：
+现在剩下要做的是计算\(\theta\)值，用它和\(\phi\)值对比，以决定我们是否在或不在聚光灯的内部：
 
 ```c++
 float theta = dot(lightDir, normalize(-light.direction));
@@ -254,7 +257,7 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 
 !!! Important
 
-    你可能奇怪为什么if条件中使用>符号而不是<符号。为了在聚光灯以内，θ不是应该比光的遮光值更小吗？这没错，但是不要忘了，角度值是以余弦值来表示的，一个0度的角表示为1.0的余弦值，当一个角是90度的时候被表示为0.0的余弦值，你可以在这里看到：
+    你可能奇怪为什么if条件中使用>符号而不是<符号。为了在聚光灯以内，`theta`不是应该比光的切光值更小吗？这没错，但是不要忘了，角度值是以余弦值来表示的，一个0度的角表示为1.0的余弦值，当一个角是90度的时候被表示为0.0的余弦值，你可以在这里看到：
 
     ![](http://www.learnopengl.com/img/lighting/light_casters_cos.png)
 
@@ -275,13 +278,17 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 为创建外圆锥，我们简单定义另一个余弦值，它代表聚光灯的方向向量和外圆锥的向量（等于它的半径）的角度。然后，如果片段在内圆锥和外圆锥之间，就会给它计算出一个0.0到1.0之间的亮度。如果片段在内圆锥以内这个亮度就等于1.0，如果在外面就是0.0。
 
 我们可以使用下面的公式计算这样的值：
-![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters1.png)
-这里![Epsilon](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/epsilon.png)是内部（![Phi](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/phi.png)）和外部圆锥(![Gamma](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/gamma.png))![Latex Formula](https://raw.githubusercontent.com/LearnOpenGL-CN/LearnOpenGL-CN/master/img/Light_casters3.png)的差。结果I的值是聚光灯在当前片段的亮度。
+
+$$
+\begin{equation} I = \frac{\theta - \gamma}{\epsilon} \end{equation}
+$$
+
+这里\(\epsilon\)是内部（\(\phi\)）和外部圆锥（\(\gamma\)）（\epsilon =  \phi - \gamma）的差。结果\(I\)的值是聚光灯在当前片段的亮度。
 
 很难用图画描述出这个公式是怎样工作的，所以我们尝试使用一个例子：
 
 
-θ|θ in degrees|φ (inner cutoff)|φ in degrees|γ (outer cutoff)|γ in degrees|ε|l
+\(\theta\)|角度制\(\theta\)|\(\phi\)（内切）|角度制\(\phi\)|\(\gamma\)（外切）|角度制\(\gamma\)|\(\epsilon\)|\(I\)
 --|---|---|---|---|---|---|---
 0.87|30|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.87 - 0.82 / 0.09 = 0.56
 0.9|26|0.91|25|0.82|35|0.91 - 0.82 = 0.09|0.9 - 0.82 / 0.09 = 0.89
@@ -308,14 +315,14 @@ specular* = intensity;
 
 注意，我们使用了`clamp`函数，它把第一个参数固定在0.0和1.0之间。这保证了亮度值不会超出[0, 1]以外。
 
-确定你把`outerCutOff`值添加到了`Light`结构体，并在应用中设置了它的uniform值。对于下面的图片，内部遮光角`12.5f`，外部遮光角是`17.5f`：
+确定你把`outerCutOff`值添加到了`Light`结构体，并在应用中设置了它的uniform值。对于下面的图片，内部切光角`12.5f`，外部切光角是`17.5f`：
 
 ![](http://www.learnopengl.com/img/lighting/light_casters_spotlight.png)
 
-看起来好多了。仔细看看内部和外部遮光角，尝试创建一个符合你求的聚光灯。可以在这里找到应用源码，以及片段的源代码。
+看起来好多了。仔细看看内部和外部切光角，尝试创建一个符合你求的聚光灯。可以在这里找到应用源码，以及片段的源代码。
 
 这样的一个手电筒/聚光灯类型的灯光非常适合恐怖游戏，结合定向和点光，环境会真的开始被照亮了。[下一个教程](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/06%20Multiple%20lights/)，我们会结合所有我们目前讨论了的光和技巧。
 
 ## 练习
 
- - 试着修改上面的各种不同种类的光源及其片段着色器。试着将部分矢量进行反向并尝试使用 < 来代替 > 。试着解释这些修改导致不同显示效果的原因。
+- 试着修改上面的各种不同种类的光源及其片段着色器。试着将部分矢量进行反向并尝试使用 < 来代替 > 。试着解释这些修改导致不同显示效果的原因。
