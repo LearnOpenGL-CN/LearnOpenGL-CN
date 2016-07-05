@@ -1,4 +1,4 @@
-# 面剔除（Face culling）
+# 面剔除
 
 原文     | [Face culling](http://learnopengl.com/#!Advanced-OpenGL/Face-culling)
       ---|---
@@ -18,9 +18,9 @@
 这正是**面剔除**(Face culling)所要做的。OpenGL允许检查所有正面朝向（Front facing）观察者的面，并渲染它们，而丢弃所有背面朝向（Back facing）的面，这样就节约了我们很多片段着色器的命令（它们很昂贵！）。我们必须告诉OpenGL我们使用的哪个面是正面，哪个面是反面。OpenGL使用一种聪明的手段解决这个问题——分析顶点数据的连接顺序（Winding order）。
 
 
-## 顶点连接顺序（Winding order）
+## 顶点连接顺序
 
-当我们定义一系列的三角顶点时，我们会把它们定义为一个特定的连接顺序，它们可能是顺时针的或逆时针的。每个三角形由3个顶点组成，我们从三角形的中间去看，从而把这三个顶点指定一个连接顺序。
+当我们定义一系列的三角顶点时，我们会把它们定义为一个特定的连接顺序(Winding Order)，它们可能是**顺时针**的或**逆时针**的。每个三角形由3个顶点组成，我们从三角形的中间去看，从而把这三个顶点指定一个连接顺序。
 
 ![](http://learnopengl.com/img/advanced/faceculling_windingorder.png)
 

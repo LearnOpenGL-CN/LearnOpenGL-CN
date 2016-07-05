@@ -58,7 +58,7 @@ CMake是一个工程文件生成工具，可以使用预定义好的CMake脚本�
 
 现在，让我们打开Visual Studio，创建一个新的工程。如果提供了多个选项，选择Visual C++，然后选择**空工程(Empty Project)**，别忘了给你的工程起一个合适的名字。现在我们有了一个空的工程去创建我们的OpenGL程序。
 
-## 链接(Linking)
+## 链接
 
 为了使我们的程序使用GLFW，我们需要把GLFW库**链接(Link)**进工程。于是我们需要在链接器的设置里写上**glfw3.lib**。但是我们的工程还不知道在哪寻找这个文件，于是我们首先需要将我们放第三方库的目录添加进设置。
 
@@ -138,7 +138,7 @@ GLEW是OpenGL Extension Wrangler Library的缩写，它管理我们上面提到�
 
 我们现在成功编译了GLFW和GLEW库，我们将进入[下一节](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/03%20Hello%20Window/)去使用GLFW和GLEW来设置OpenGL上下文并创建窗口。记住确保你的头文件和库文件的目录设置正确，以及链接器里引用的库文件名正确。如果仍然遇到错误，请参考额外资源中的例子。
 
-##额外的资源
+## 额外的资源
 
 - [Building applications](http://www.opengl-tutorial.org/miscellaneous/building-your-own-c-application/): 提供了很多编译链接相关的信息以及一大批错误的解决方法。
 - [GLFW with Code::Blocks](http://wiki.codeblocks.org/index.php?title=Using_GLFW_with_Code::Blocks):使用Code::Blocks IDE编译GLFW。

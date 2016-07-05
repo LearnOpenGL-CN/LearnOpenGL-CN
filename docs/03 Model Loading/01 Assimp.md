@@ -1,4 +1,4 @@
-# Assimp开源模型导入库
+# Assimp
 
 原文     | [Assimp](http://learnopengl.com/#!Model-Loading/Assimp)
       ---|---
@@ -33,9 +33,9 @@
 
 !!! Important
 
-    **Mesh(网格,或被译为“模型点云”)**
+    **网格(Mesh)**
     
-    用建模工具构建物体时，美工通常不会直接使用单个形状来构建一个完整的模型。一般来说，一个模型会由几个子模型/形状组合拼接而成。而模型中的那些子模型/形状就是我们所说的一个Mesh。例如一个人形模型，美工通常会把头、四肢、衣服、武器这些组件都分别构建出来，然后在把所有的组件拼合在一起，形成最终的完整模型。一个Mesh（包含顶点、索引和材质属性）是我们在OpenGL中绘制物体的最小单位。一个模型通常有多个Mesh组成。
+    用建模工具构建物体时，美工通常不会直接使用单个形状来构建一个完整的模型。一般来说，一个模型会由几个子模型/形状组合拼接而成。而模型中的那些子模型/形状就是我们所说的一个网格。例如一个人形模型，美工通常会把头、四肢、衣服、武器这些组件都分别构建出来，然后在把所有的组件拼合在一起，形成最终的完整模型。一个网格（包含顶点、索引和材质属性）是我们在OpenGL中绘制物体的最小单位。一个模型通常有多个网格组成。
 
 下一节教程中，我们将用上述描述的数据结构来创建我们自己的Model类和Mesh类，用于加载和保存那些导入的模型。如果我们想要绘制一个模型，我们不会去渲染整个模型，而是去渲染这个模型所包含的所有独立的Mesh。不管怎样，我们开始导入模型之前，我们需要先把Assimp导入到我们的工程中。
 
@@ -67,4 +67,4 @@ Required library DirectX not found! Install the library (including dev packages)
 
     如果你想要让Assimp使用多线程支持来提高性能，你可以使用<b>Boost</b>库来编译 Assimp。在[Boost安装页面](http://assimp.sourceforge.net/lib_html/install.html)，你能找到关于Boost的完整安装介绍。
 
-现在，你应该已经能够编译Assimp库，并链接Assimp到你的工程里去了。下一节内容：[导入完美的3D物件！](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/02%20Mesh/)
+现在，你应该已经能够编译Assimp库，并链接Assimp到你的工程里去了。下一步：[导入完美的3D物件！](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/02%20Mesh/)

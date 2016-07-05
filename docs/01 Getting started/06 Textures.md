@@ -1,4 +1,4 @@
-# 纹理(Textures)
+# 纹理
 
 原文     | [Textures](http://learnopengl.com/#!Getting-started/Textures)
       ---|---
@@ -38,11 +38,11 @@ GLfloat texCoords[] = {
 
 纹理采样有几种不同的插值方式。我们需要自己告诉OpenGL在纹理中采用哪种采样方式。
 
-### 纹理环绕方式(Texture Wrapping)
+## 纹理环绕方式
 
 纹理坐标通常的范围是从(0, 0)到(1, 1)，如果我们把纹理坐标设置为范围以外会发生什么？OpenGL默认的行为是重复这个纹理图像(我们简单地忽略浮点纹理坐标的整数部分)，但OpenGL提供了更多的选择：
 
-环绕方式            | 描述
+环绕方式(Wrapping)            | 描述
                  ---|---
 GL_REPEAT           | 纹理的默认行为，重复纹理图像
 GL_MIRRORED_REPEAT  | 和`GL_REPEAT`一样，除了重复的图片是镜像放置的
@@ -71,11 +71,13 @@ float borderColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
 glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 ```
 
-### 纹理过滤(Texture Filtering)
+## 纹理过滤
 
-纹理坐标不依赖于解析度，它可以是任何浮点数值，这样OpenGL需要描述出哪个纹理像素对应哪个纹理坐标(Texture Pixel，也叫Texel，[译注1])。当你有一个很大的物体但是纹理解析度很低的时候这就变得很重要了。你可能已经猜到了，OpenGL也有一个叫做纹理过滤的选项。有多种不同的选项可用，但是现在我们只讨论最重要的两种：`GL_NEAREST`和`GL_LINEAR`。
+纹理坐标不依赖于解析度，它可以是任何浮点数值，这样OpenGL需要描述出哪个纹理像素对应哪个纹理坐标(Texture Pixel，也叫Texel，译注1)。当你有一个很大的物体但是纹理解析度很低的时候这就变得很重要了。你可能已经猜到了，OpenGL也有一个叫做纹理过滤(Texture Filtering)的选项。有多种不同的选项可用，但是现在我们只讨论最重要的两种：`GL_NEAREST`和`GL_LINEAR`。
 
-[译注1]: http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/ "Texture Pixel也叫Texel，你可以想象你打开一张.jpg格式图片不断放大你会发现它是由无数像素点组成的，这个点就是纹理像素；注意不要和纹理坐标搞混，纹理坐标是你给模型顶点设置的那个数组，OpenGL以这个顶点的纹理坐标数据去查找纹理图像上的像素，然后进行采样提取纹理像素的颜色"
+!!! note "译注1"
+
+	Texture Pixel也叫Texel，你可以想象你打开一张.jpg格式图片不断放大你会发现它是由无数像素点组成的，这个点就是纹理像素；注意不要和纹理坐标搞混，纹理坐标是你给模型顶点设置的那个数组，OpenGL以这个顶点的纹理坐标数据去查找纹理图像上的像素，然后进行采样提取纹理像素的颜色
 
 **GL_NEAREST(Nearest Neighbor Filtering，邻近过滤)** 是一种OpenGL默认的纹理过滤方式。当设置为`GL_NEAREST`的时候，OpenGL选择最接近纹理坐标中心点的那个像素。下图你会看到四个像素，加号代表纹理坐标。左上角的纹理像素是距离纹理坐标最近的那个，这样它就会选择这个作为采样颜色：
 
@@ -98,7 +100,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 ```
 
-#### 多级渐远纹理(Mipmaps)
+### 多级渐远纹理
 
 想象一下，如果我们在一个有着上千物体的大房间，每个物体上都有纹理。距离观察者远的与距离近的物体的纹理的解析度是相同的。由于远处的物体可能只产生很少的片段，OpenGL从高解析度纹理中为这些片段获取正确的颜色值就很困难。这是因为它不得不拾为一个纹理跨度很大的片段取纹理颜色。在小物体上这会产生人工感，更不用说在小物体上使用高解析度纹理浪费内存的问题了。
 
@@ -127,13 +129,13 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 常见的错误是，为多级渐远纹理过滤选项设置放大过滤。这样没有任何效果，因为多级渐远纹理主要使用在纹理被缩小的情况下的：纹理放大不会使用多级渐远纹理，为多级渐远纹理设置放大过滤选项会产生一个`GL_INVALID_ENUM`错误。
 
-## 加载和创建纹理
+# 加载和创建纹理
 
 使用纹理之前要做的第一件事是把它们加载到应用中。纹理图像可能储存为各种各样的格式，每种都有自己的数据结构和排列，所以我们如何才能把这些图像加载到应用中呢？一个解决方案是写一个我们自己的某种图像格式加载器比如.PNG，用它来把图像转化为byte序列。写自己的图像加载器虽然不难，但是仍然挺烦人的，而且如果要支持更多文件格式呢？你就不得不为每种你希望支持的格式写加载器了。
 
 另一个解决方案是，也许是更好的一种选择，就是使用一个支持多种流行格式的图像加载库，来为我们解决这个问题。就像SOIL这种库①。
 
-### SOIL
+## SOIL
 
 SOIL是Simple OpenGL Image Library(简易OpenGL图像库)的缩写，它支持大多数流行的图像格式，使用起来也很简单，你可以从他们的主页下载。像大多数其他库一样，你必须自己生成**.lib**。你可以使用**/projects**文件夹里的解决方案(Solution)文件之一(不用担心他们的Visual Studio版本太老，你可以把它们转变为新的版本；这总是可行的。译注：用VS2010的时候，你要用VC8而不是VC9的解决方案，想必更高版本的情况亦是如此)，你也可以使用CMake自己生成。你还要添加**src**文件夹里面的文件到你的**includes**文件夹；对了，不要忘记添加**SOIL.lib**到你的连接器选项，并在你代码文件的开头加上`#include <SOIL.h>`。
 
@@ -146,7 +148,7 @@ unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL
 
 函数首先需要输入图片文件的路径。然后需要两个int指针作为第二个和第三个参数，SOIL会返回图片的宽度和高度到其中。之后，我们需要图片的宽度和高度来生成纹理。第四个参数指定图片的通道(Channel)数量，但是这里我们只需留`0`。最后一个参数告诉SOIL如何来加载图片：我们只对图片的RGB感兴趣。结果储存为一个大的char/byte数组。
 
-### 生成纹理
+## 生成纹理
 
 和之前生成的OpenGL对象一样，纹理也是使用ID引用的。
 
@@ -204,7 +206,7 @@ SOIL_free_image_data(image);
 glBindTexture(GL_TEXTURE_2D, 0);
 ```
 
-### 应用纹理
+## 应用纹理
 
 后面的部分我们会使用`glDrawElements`绘制[Hello Triangle](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/04%20Hello%20Triangle/)教程的最后一部分的矩形。我们需要告知OpenGL如何采样纹理，这样我们必须更新顶点纹理坐标数据：
 
@@ -290,9 +292,9 @@ color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);
 
 这个箱子看起来有点70年代迪斯科风格。
 
-### 纹理单元(Texture Units)
+## 纹理单元
 
-你可能感到奇怪为什么`sampler2D`是个uniform变量，你却不用`glUniform`给它赋值，使用`glUniform1i`我们就可以给纹理采样器确定一个位置，这样的话我们能够一次在一个片段着色器中设置多纹理。一个纹理的位置通常称为一个纹理单元。一个纹理的默认纹理单元是0，它是默认激活的纹理单元，所以教程前面部分我们不用给它确定一个位置。
+你可能感到奇怪为什么`sampler2D`是个uniform变量，你却不用`glUniform`给它赋值，使用`glUniform1i`我们就可以给纹理采样器确定一个位置，这样的话我们能够一次在一个片段着色器中设置多纹理。一个纹理的位置通常称为一个纹理单元(Texture Units)。一个纹理的默认纹理单元是0，它是默认激活的纹理单元，所以教程前面部分我们不用给它确定一个位置。
 
 纹理单元的主要目的是让我们在着色器中可以使用多于一个的纹理。通过把纹理单元赋值给采样器，我们可以一次绑定多纹理，只要我们首先激活相应的纹理单元。就像`glBindTexture`一样，我们可以使用`glActiveTexture`激活纹理单元，传入我们需要使用的纹理单元：
 
@@ -360,7 +362,7 @@ glBindVertexArray(0);
 
 如果你看到了图片上的笑脸容器，你就做对了。你可以对比[程序源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)。
 
-### 练习
+## 练习
 
 为了更熟练地使用纹理，建议在继续之后的学习之前做完这些练习：
 

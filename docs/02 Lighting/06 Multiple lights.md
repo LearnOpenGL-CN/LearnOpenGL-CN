@@ -1,4 +1,4 @@
-# 多光源(Multiple lights)
+# 多光源
 
 原文     | [Multiple lights](http://learnopengl.com/#!Lighting/Multiple-lights)
       ---|---
@@ -35,9 +35,9 @@ void main()
 
 即使对每一种光源的运算实现不同，但此算法的结构一般是与上述出入不大的。我们将定义几个用于计算各个光源的函数，并将这些函数的结算结果（返回颜色）添加到输出颜色向量中。例如，靠近被照射物体的光源计算结果将返回比远离背照射物体的光源更明亮的颜色。
 
-## 平行光（Directional light）
+## 平行光
 
-我们要在片段着色器中定义一个函数用来计算平行光在对应的照射点上的光照颜色，这个函数需要几个参数并返回一个计算平行光照结果的颜色。
+我们要在片段着色器中定义一个函数用来计算平行光(Directional light)在对应的照射点上的光照颜色，这个函数需要几个参数并返回一个计算平行光照结果的颜色。
 
 首先我们需要设置一系列用于表示平行光的变量，正如上一节中所讲过的，我们可以将这些变量定义在一个叫做**DirLight**的结构体中，并定义一个这个结构体类型的uniform变量。
 
@@ -83,9 +83,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 
 我们从之前的教程中复制了代码，并用两个向量来作为函数参数来计算出平行光的光照颜色向量，该结果是一个由该平行光的环境反射、漫反射和镜面反射的各个分量组成的一个向量。
 
-## 定点光（Point light）
+## 点光源
 
-和计算平行光一样，我们同样需要定义一个函数用于计算定点光照。同样的，我们定义一个包含定点光源所需属性的结构体：
+和计算平行光一样，我们同样需要定义一个函数用于计算点光源(Point Light)。同样的，我们定义一个包含点光源所需属性的结构体：
 
 ```c++
 struct PointLight {
@@ -103,7 +103,7 @@ struct PointLight {
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 ```
 
-如你所见，我们在GLSL中使用预处理器指令来定义定点光源的数目。之后我们使用这个`NR_POINT_LIGHTS`常量来创建一个`PointLight`结构体的数组。和C语言一样，GLSL也是用一对中括号来创建数组的。现在我们有了4个`PointLight`结构体对象了。
+如你所见，我们在GLSL中使用预处理器指令来定义点光源的数目。之后我们使用这个`NR_POINT_LIGHTS`常量来创建一个`PointLight`结构体的数组。和C语言一样，GLSL也是用一对中括号来创建数组的。现在我们有了4个`PointLight`结构体对象了。
 
 !!! Important
 
@@ -144,7 +144,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 ## 把它们放到一起
 
-我们现在定义了用于计算平行光和定点光的函数，现在我们把这些代码放到一起，写入文开始的一般结构中：
+我们现在定义了用于计算平行光和点光源的函数，现在我们把这些代码放到一起，写入文开始的一般结构中：
 
 ```c++
 void main()

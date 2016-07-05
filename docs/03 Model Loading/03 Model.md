@@ -1,4 +1,4 @@
-# 模型(Model)
+# 模型
 
 原文     | [Model](http://learnopengl.com/#!Model-Loading/Model)
       ---|---
@@ -6,7 +6,7 @@
 翻译     | [Django](http://bullteacher.com/)
 校对     | [Geequlim](http://geequlim.com)
 
-现在是时候着手启用Assimp，并开始创建实际的加载和转换代码了。本教程的目标是创建另一个类，这个类可以表达模型的全部。更确切的说，一个模型包含多个网格(Mesh)，一个网格可能带有多个对象。一个别墅，包含一个木制阳台，一个尖顶或许也有一个游泳池，它仍然被加载为一个单一模型。我们通过Assimp加载模型，把它们转变为多个网格（Mesh）对象，这些对象是是先前教程里创建的。
+现在是时候着手启用Assimp，并开始创建实际的加载和转换代码了。本教程的目标是创建另一个类，这个类可以表达模型(Model)的全部。更确切的说，一个模型包含多个网格(Mesh)，一个网格可能带有多个对象。一个别墅，包含一个木制阳台，一个尖顶或许也有一个游泳池，它仍然被加载为一个单一模型。我们通过Assimp加载模型，把它们转变为多个`Mesh`对象，这些对象是是上一节教程里创建的。
 
 闲话少说，我把Model类的结构呈现给你：
 
@@ -46,7 +46,7 @@ void Draw(Shader shader)
 }
 ```
 
-## 把一个3D模型导入到OpenGL
+## 导入3D模型到OpenGL
 
 为了导入一个模型，并把它转换为我们自己的数据结构，第一件需要做的事是包含合适的Assimp头文件，这样编译器就不会对我们抱怨了。
 
@@ -133,7 +133,7 @@ void processNode(aiNode* node, const aiScene* scene)
 
 下一步是用上个教程创建的`Mesh`类开始真正处理Assimp的数据。
 
-## 从Assimp到网格
+### 从Assimp到网格
 
 把一个`aiMesh`对象转换为一个我们自己定义的网格对象并不难。我们所要做的全部是获取每个网格相关的属性并把这些属性储存到我们自己的对象。通常`processMesh`函数的结构会是这样：
 
@@ -210,7 +210,7 @@ else
 
 `Vertex`结构体现在完全被所需的顶点属性填充了，我们能把它添加到`vertices`向量的尾部。要对每个网格的顶点做相同的处理。
 
-## 顶点
+### 顶点
 
 Assimp的接口定义每个网格有一个以面（faces）为单位的数组，每个面代表一个单独的图元，在我们的例子中（由于`aiProcess_Triangulate`选项）总是三角形，一个面包含索引，这些索引定义我们需要绘制的顶点以在那样的顺序提供给每个图元，所以如果我们遍历所有面，把所有面的索引储存到`indices`向量，我们需要这么做：
 
@@ -228,7 +228,7 @@ for(GLuint i = 0; i < mesh->mNumFaces; i++)
 
  
 
-## 材质
+### 材质
 
 如同节点，一个网格只有一个指向材质对象的索引，获取网格实际的材质，我们需要索引场景的`mMaterials`数组。网格的材质索引被设置在`mMaterialIndex`属性中，通过这个属性我们同样能够检验一个网格是否包含一个材质：
 
@@ -278,7 +278,7 @@ vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string
 
 这就是使用Assimp来导入一个模型的全部了。你可以在这里找到[Model类的代码](http://learnopengl.com/code_viewer.php?code=model_loading/model_unoptimized)。
 
-## 重大优化
+# 重大优化
 
 我们现在还没做完。因为我们还想做一个重大的优化（但是不是必须的）。大多数场景重用若干纹理，把它们应用到网格；还是思考那个别墅，它有个花岗岩的纹理作为墙面。这个纹理也可能应用到地板、天花板，楼梯，或者一张桌子、一个附近的小物件。加载纹理需要不少操作，当前的实现中一个新的纹理被加载和生成，来为每个网格使用，即使同样的纹理之前已经被加载了好几次。这会很快转变为你的模型加载实现的瓶颈。
 
@@ -343,7 +343,7 @@ vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string
 
 你可以从这里获得优化的[Model类的完整源代码](http://learnopengl.com/code_viewer.php?code=model&type=header)。
 
-## 和箱子模型告别!
+# 和箱子模型告别
 
 现在给我们导入一个天才艺术家创建的模型看看效果，不是我这个天才做的（你不得不承认，这个箱子也许是你见过的最漂亮的立体图形）。因为我不想过于自夸，所以我会时不时的给其他艺术家进入这个行列的机会，这次我们会加载Crytek原版的孤岛危机游戏中的纳米铠甲。这个模型被输出为obj和mtl文件，mtl包含模型的diffuse和specular以及法线贴图（后面会讲）。你可以下载这个模型，注意，所有的纹理和模型文件都应该放在同一个目录，以便载入纹理。
 

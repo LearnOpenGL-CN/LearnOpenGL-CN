@@ -12,7 +12,7 @@
 
 所以，前面的材质系统对于除了最简单的模型以外都是不够的，所以我们需要扩展前面的系统，我们要介绍diffuse和specular贴图。它们允许你对一个物体的diffuse（而对于简洁的ambient成分来说，它们几乎总是是一样的）和specular成分能够有更精确的影响。
 
-## 漫反射贴图
+# 漫反射贴图
 
 我们希望通过某种方式对每个原始像素独立设置diffuse颜色。有可以让我们基于物体原始像素的位置来获取颜色值的系统吗？
 
@@ -90,11 +90,11 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 你可以在这里得到应用的[全部代码](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps_diffuse)。
 
 
-## 镜面贴图
+# 镜面贴图
 
 你可能注意到，specular高光看起来不怎么样，由于我们的物体是个箱子，大部分是木头，我们知道木头是不应该有镜面高光的。我们通过把物体设置specular材质设置为vec3(0.0f)来修正它。但是这样意味着铁边会不再显示镜面高光，我们知道钢铁是会显示一些镜面高光的。我们会想要控制物体部分地显示镜面高光，它带有修改了的亮度。这个问题看起来和diffuse贴图的讨论一样。这是巧合吗？我想不是。
 
-我们同样用一个纹理贴图，来获得镜面高光。这意味着我们需要生成一个黑白（或者你喜欢的颜色）纹理来定义specular亮度，把它应用到物体的每个部分。下面是一个[specular贴图](http://learnopengl.com/img/textures/container2_specular.png)的例子：
+我们同样用一个纹理贴图，来获得镜面高光。这意味着我们需要生成一个黑白（或者你喜欢的颜色）纹理来定义specular亮度，把它应用到物体的每个部分。下面是一个[镜面贴图(Specular Map)](http://learnopengl.com/img/textures/container2_specular.png)的例子：
 
 ![](http://www.learnopengl.com/img/textures/container2_specular.png)
 
@@ -107,7 +107,7 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 使用Photoshop或Gimp之类的工具，通过将图片进行裁剪，将某部分调整成黑白图样，并调整亮度/对比度的做法，可以非常容易将一个diffuse纹理贴图处理为specular贴图。
 
 
-### 镜面贴图采样
+## 镜面贴图采样
 
 一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元(参见[纹理](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/))，所以在渲染前让我们把它绑定到合适的纹理单元
 

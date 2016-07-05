@@ -1,8 +1,16 @@
-本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
+# Gamma校正
 
-# Gamma校正(Gamma Correction)
+原文     | [Gamma Correction](http://learnopengl.com/#!Advanced-Lighting/Gamma-Correction)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | 暂无
 
-当我们计算出场景中所有像素的最终颜色以后，我们就必须把它们显示在监视器上。过去，大多数监视器是阴极射线管显示器（CRT）。这些监视器有一个物理特性就是两倍的输入电压产生的不是两倍的亮度。输入电压产生约为输入电压的2.2次幂的亮度，这叫做监视器Gamma（译注：Gamma也叫灰度系数，每种显示设备都有自己的Gamma值，都不相同，有一个公式：设备输出亮度 = 电压的Gamma次幂，任何设备Gamma基本上都不会等于1，等于1是一种理想的线性状态，这种理想状态是：如果电压和亮度都是在0到1的区间，那么多少电压就等于多少亮度。对于CRT，Gamma通常为2.2，因而，输出亮度 = 输入电压的2.2次幂，你可以从本节第二张图中看到Gamma2.2实际显示出来的总会比预期暗，相反Gamma0.45就会比理想预期亮，如果你讲Gamma0.45叠加到Gamma2.2的显示设备上，便会对偏暗的显示效果做到校正，这个简单的思路就是本节的核心）。
+当我们计算出场景中所有像素的最终颜色以后，我们就必须把它们显示在监视器上。过去，大多数监视器是阴极射线管显示器（CRT）。这些监视器有一个物理特性就是两倍的输入电压产生的不是两倍的亮度。输入电压产生约为输入电压的2.2次幂的亮度，这叫做监视器Gamma。
+
+!!! note "译注"
+
+	Gamma也叫灰度系数，每种显示设备都有自己的Gamma值，都不相同，有一个公式：设备输出亮度 = 电压的Gamma次幂，任何设备Gamma基本上都不会等于1，等于1是一种理想的线性状态，这种理想状态是：如果电压和亮度都是在0到1的区间，那么多少电压就等于多少亮度。对于CRT，Gamma通常为2.2，因而，输出亮度 = 输入电压的2.2次幂，你可以从本节第二张图中看到Gamma2.2实际显示出来的总会比预期暗，相反Gamma0.45就会比理想预期亮，如果你讲Gamma0.45叠加到Gamma2.2的显示设备上，便会对偏暗的显示效果做到校正，这个简单的思路就是本节的核心
 
 人类所感知的亮度恰好和CRT所显示出来相似的指数关系非常匹配。为了更好的理解所有含义，请看下面的图片：
 
@@ -26,7 +34,7 @@
 
 ## Gamma校正
 
-Gamma校正的思路是在最终的颜色输出上应用监视器Gamma的倒数。回头看前面的Gamma曲线图，你会有一个短划线，它是监视器Gamma曲线的翻转曲线。我们在颜色显示到监视器的时候把每个颜色输出都加上这个翻转的Gamma曲线，这样应用了监视器Gamma以后最终的颜色将会变为线性的。我们所得到的中间色调就会更亮，所以虽然监视器使它们变暗，但是我们又将其平衡回来了。
+Gamma校正(Gamma Correction)的思路是在最终的颜色输出上应用监视器Gamma的倒数。回头看前面的Gamma曲线图，你会有一个短划线，它是监视器Gamma曲线的翻转曲线。我们在颜色显示到监视器的时候把每个颜色输出都加上这个翻转的Gamma曲线，这样应用了监视器Gamma以后最终的颜色将会变为线性的。我们所得到的中间色调就会更亮，所以虽然监视器使它们变暗，但是我们又将其平衡回来了。
 
 我们来看另一个例子。还是那个暗红色\((0.5, 0.0, 0.0)\)。在将颜色显示到监视器之前，我们先对颜色应用Gamma校正曲线。线性的颜色显示在监视器上相当于降低了\(2.2\)次幂的亮度，所以倒数就是\(1/2.2\)次幂。Gamma校正后的暗红色就会成为\((0.5, 0.0, 0.0)^{1/2.2} = (0.5, 0.0, 0.0)^{0.45} = (0.73, 0.0, 0.0)\)。校正后的颜色接着被发送给监视器，最终显示出来的颜色是\((0.73, 0.0, 0.0)^{2.2} = (0.5, 0.0, 0.0)\)。你会发现使用了Gamma校正，监视器最终会显示出我们在应用中设置的那种线性的颜色。
 
@@ -103,7 +111,7 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BY
 
 ## 衰减
 
-在使用了gamma校正之后，另一个不同之处是光照衰减。真实的物理世界中，光照的衰减和光源的距离的平方成反比。
+在使用了gamma校正之后，另一个不同之处是光照衰减(Attenuation)。真实的物理世界中，光照的衰减和光源的距离的平方成反比。
 
 ```c++
 float attenuation = 1.0 / (distance * distance);
@@ -129,12 +137,8 @@ float attenuation = 1.0 / distance;
 
 总而言之，gamma校正使你可以在线性空间中进行操作。因为线性空间更符合物理世界，大多数物理公式现在都可以获得较好效果，比如真实的光的衰减。你的光照越真实，使用gamma校正获得漂亮的效果就越容易。这也正是为什么当引进gamma校正时，建议只去调整光照参数的原因。
 
- 
-
 ## 附加资源
 
-[cambridgeincolour.com](http://www.cambridgeincolour.com/tutorials/gamma-correction.htm):更多关于gamma和gamma校正的内容。
-
-[wolfire.com](http://blog.wolfire.com/2010/02/Gamma-correct-lighting): David Rosen关于在渲染领域使用gamma校正的好处。
-
-[renderwonk.com](http://renderwonk.com/blog/index.php/archive/adventures-with-gamma-correct-rendering/): 一些额外的实践上的思考。
+- [cambridgeincolour.com](http://www.cambridgeincolour.com/tutorials/gamma-correction.htm):更多关于gamma和gamma校正的内容。
+- [wolfire.com](http://blog.wolfire.com/2010/02/Gamma-correct-lighting): David Rosen关于在渲染领域使用gamma校正的好处。
+- [renderwonk.com](http://renderwonk.com/blog/index.php/archive/adventures-with-gamma-correct-rendering/): 一些额外的实践上的思考。

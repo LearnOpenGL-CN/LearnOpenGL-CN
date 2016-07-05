@@ -1,6 +1,10 @@
-本文作者JoeyDeVries，由Django翻译自[http://learnopengl.com](http://learnopengl.com)
+# 法线贴图
 
-## 法线贴图 （Normal Mapping）
+原文     | [Normal Mapping](http://learnopengl.com/#!Advanced-Lighting/Normal-Mapping)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [Django](http://bullteacher.com/)
+校对     | 暂无
 
 我们的场景中已经充满了多边形物体，其中每个都可能由成百上千平坦的三角形组成。我们以向三角形上附加纹理的方式来增加额外细节，提升真实感，隐藏多边形几何体是由无数三角形组成的事实。纹理确有助益，然而当你近看它们时，这个事实便隐藏不住了。现实中的物体表面并非是平坦的，而是表现出无数（凹凸不平的）细节。
 
@@ -20,9 +24,7 @@
 
 你可以看到细节获得了极大提升，开销却不大。因为我们只需要改变每个fragment的法线向量，并不需要改变所有光照公式。现在我们是为每个fragment传递一个法线，不再使用插值表面法线。这样光照使表面拥有了自己的细节。
 
- 
-
-### 法线贴图
+## 法线贴图
 
 为使法线贴图工作，我们需要为每个fragment提供一个法线。像diffuse贴图和specular贴图一样，我们可以使用一个2D纹理来储存法线数据。2D纹理不仅可以储存颜色和光照数据，还可以储存法线向量。这样我们可以从2D纹理中采样得到特定纹理的法线向量。
 
@@ -76,9 +78,7 @@ void main()
 
 另一个稍微有点难的解决方案是，在一个不同的坐标空间中进行光照，这个坐标空间里，法线贴图向量总是指向这个坐标空间的正z方向；所有的光照向量都相对与这个正z方向进行变换。这样我们就能始终使用同样的法线贴图，不管朝向问题。这个坐标空间叫做切线空间（tangent space）。
 
- 
-
-### 切线空间
+## 切线空间
 
 法线贴图中的法线向量在切线空间中，法线永远指着正z方向。切线空间是位于三角形表面之上的空间：法线相对于单个三角形的本地参考框架。它就像法线贴图向量的本地空间；它们都被定义为指向正z方向，无论最终变换到什么方向。使用一个特定的矩阵我们就能将本地/切线空寂中的法线向量转成世界或视图坐标，使它们转向到最终的贴图表面的方向。
 
@@ -86,7 +86,7 @@ void main()
 
 这种矩阵叫做TBN矩阵这三个字母分别代表tangent、bitangent和normal向量。这是建构这个矩阵所需的向量。要建构这样一个把切线空间转变为不同空间的变异矩阵，我们需要三个相互垂直的向量，它们沿一个表面的法线贴图对齐于：上、右、前；这和我们在[摄像机教程](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/09%20Camera/)中做的类似。
 
-已知上向量是表面的法线向量。右和前向量是切线和副切线向量。下面的图片展示了一个表面的三个向量：
+已知上向量是表面的法线向量。右和前向量是切线(Tagent)和副切线(Bitangent)向量。下面的图片展示了一个表面的三个向量：
 
 ![](http://learnopengl.com/img/advanced-lighting/normal_mapping_tbn_vectors.png)
 
@@ -160,14 +160,12 @@ glm::vec3 nm(0.0, 0.0, 1.0);
 
 我们先计算第一个三角形的边和deltaUV坐标：
 
-
 ```c++
 glm::vec3 edge1 = pos2 - pos1;
 glm::vec3 edge2 = pos3 - pos1;
 glm::vec2 deltaUV1 = uv2 - uv1;
 glm::vec2 deltaUV2 = uv3 - uv1;
 ```
-
 
 有了计算切线和副切线的必备数据，我们就可以开始写出来自于前面部分中的下列等式：
 
@@ -340,7 +338,7 @@ RenderQuad();
 
 你可以在这里找到[源代码](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/normal_mapping)、[顶点](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/normal_mapping&type=vertex)和[像素](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/normal_mapping&type=fragment)着色器。
 
-### 复杂的物体
+### 复杂物体
 
 我们已经说明了如何通过手工计算切线和副切线向量，来使用切线空间和法线贴图。幸运的是，计算这些切线和副切线向量对于你来说不是经常能遇到的事；大多数时候，在模型加载器中实现了一次就行了，我们是在使用了Assimp的那个加载器中实现的。
 
@@ -385,9 +383,7 @@ vector<Texture> specularMaps = this->loadMaterialTextures(
 
 高精度网格和使用法线贴图的低精度网格几乎区分不出来。所以法线贴图不仅看起来漂亮，它也是一个将高精度多边形转换为低精度多边形而不失细节的重要工具。
 
- 
-
-### 最后一件事
+## 最后一件事
 
 关于法线贴图还有最后一个技巧要讨论，它可以在不必花费太多性能开销的情况下稍稍提升画质表现。
 
@@ -408,9 +404,9 @@ mat3 TBN = mat3(T, B, N)
 
 这样稍微花费一些性能开销就能对法线贴图进行一点提升。看看最后的那个附加资源： Normal Mapping Mathematics视频，里面有对这个过程的解释。
 
-### 附加资源
+## 附加资源
 
-* [Tutorial 26: Normal Mapping](http://ogldev.atspace.co.uk/www/tutorial26/tutorial26.html)：ogldev的法线贴图教程。
-* [How Normal Mapping Works](https://www.youtube.com/watch?v=LIOPYmknj5Q)：TheBennyBox的讲述法线贴图如何工作的视频。
-* [Normal Mapping Mathematics](https://www.youtube.com/watch?v=4FaWLgsctqY)：TheBennyBox关于法线贴图的数学原理的教程。
-* [Tutorial 13: Normal Mapping](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/)：opengl-tutorial.org提供的法线贴图教程。
+- [Tutorial 26: Normal Mapping](http://ogldev.atspace.co.uk/www/tutorial26/tutorial26.html)：ogldev的法线贴图教程。
+- [How Normal Mapping Works](https://www.youtube.com/watch?v=LIOPYmknj5Q)：TheBennyBox的讲述法线贴图如何工作的视频。
+- [Normal Mapping Mathematics](https://www.youtube.com/watch?v=4FaWLgsctqY)：TheBennyBox关于法线贴图的数学原理的教程。
+- [Tutorial 13: Normal Mapping](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/)：opengl-tutorial.org提供的法线贴图教程。

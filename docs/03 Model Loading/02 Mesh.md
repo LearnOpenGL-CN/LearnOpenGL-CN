@@ -1,4 +1,4 @@
-# 网格(Mesh)
+# 网格
 
 原文     | [Mesh](http://learnopengl.com/#!Model-Loading/Mesh)
       ---|---

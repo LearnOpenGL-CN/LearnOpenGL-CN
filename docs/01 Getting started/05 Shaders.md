@@ -1,4 +1,4 @@
-# 着色器(Shader)
+# 着色器
 
 原文     | [Shaders](http://learnopengl.com/#!Getting-started/Shaders)
       ---|---
@@ -6,11 +6,11 @@
 翻译     | [Django](http://bullteacher.com/)
 校对     | Geequlim
 
-在[Hello Triangle](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/04%20Hello%20Triangle/)教程中提到，着色器是运行在GPU上的小程序。这些小程序为图形渲染管线的一个特定部分而运行。从基本意义上来说，着色器不是别的，只是一种把输入转化为输出的程序。着色器也是一种相当独立的程序，它们不能相互通信；只能通过输入和输出的方式来进行沟通。
+在[Hello Triangle](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/04%20Hello%20Triangle/)教程中提到，着色器(Shader)是运行在GPU上的小程序。这些小程序为图形渲染管线的一个特定部分而运行。从基本意义上来说，着色器不是别的，只是一种把输入转化为输出的程序。着色器也是一种相当独立的程序，它们不能相互通信；只能通过输入和输出的方式来进行沟通。
 
 前面的教程里我们简要地触及了一点着色器的皮毛。了解了如何恰当地使用它们。现在我们会用一种更加通用的方式详细解释着色器，特别是OpenGL着色器语言。
 
-## GLSL
+# GLSL
 
 着色器是使用一种叫GLSL的类C语言写成的。GLSL是为图形计算量身定制的，它包含针对向量和矩阵操作的有用特性。
 
@@ -51,9 +51,9 @@ std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << st
 
 GLSL有像其他编程语言相似的数据类型。GLSL有C风格的默认基础数据类型：`int`、`float`、`double`、`uint`和`bool`。GLSL也有两种容器类型，教程中我们会使用很多，它们是向量(Vector)和矩阵(Matrix)，其中矩阵我们会在之后的教程里再讨论。
 
-## 向量(Vector)
+### 向量
 
-GLSL中的向量可以包含有1、2、3或者4个分量，分量类型可以是前面默认基础类型的任意一个。它们可以是下面的形式(n代表元素数量)：
+GLSL中的向量(Vector)可以包含有1、2、3或者4个分量，分量类型可以是前面默认基础类型的任意一个。它们可以是下面的形式(n代表元素数量)：
 
   类型|含义
    ---|---
@@ -86,7 +86,7 @@ vec4 otherResult = vec4(result.xyz, 1.0f);
 
 向量是一种灵活的数据类型，我们可以把用在所有输入和输出上。学完教程你会看到很多如何创造性地管理向量的例子。
 
-## 输入与输出(in vs out)
+## 输入与输出
 
 着色器是各自独立的小程序，但是它们都是一个整体的局部，出于这样的原因，我们希望每个着色器都有输入和输出，这样才能进行数据交流和传递。GLSL定义了`in`和`out`关键字来实现这个目的。每个着色器使用这些关键字定义输入和输出，无论在哪儿，一个输出变量就能与一个下一个阶段的输入变量相匹配。他们在顶点和片段着色器之间有点不同。
 
@@ -100,7 +100,7 @@ vec4 otherResult = vec4(result.xyz, 1.0f);
 
 所以，如果我们打算从一个着色器向另一个着色器发送数据，我们必须**在发送方着色器中声明一个输出，在接收方着色器中声明一个同名输入**。当名字和类型都一样的时候，OpenGL就会把两个变量链接到一起，它们之间就能发送数据了(这是在链接程序(Program)对象时完成的)。为了展示这是这么工作的，我们会改变前面教程里的那个着色器，让顶点着色器为片段着色器决定颜色。
 
-#### 顶点着色器
+**顶点着色器**
 
 ```c++
 #version 330 core
@@ -114,7 +114,7 @@ void main()
     vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f); // 把输出颜色设置为暗红色
 }
 ```
-#### 片段着色器
+**片段着色器**
 
 ```c++
 #version 330 core
@@ -296,7 +296,7 @@ glEnableVertexAttribArray(1);
 
 这正是这个三角形里发生的事。我们有3个顶点，和相应的3个颜色，从这个三角形的像素来看它可能包含50,000左右的像素，片段着色器为这些像素进行插值。如果你仔细看这些颜色，你会发现其中的奥秘：红到紫再到蓝。像素插值会应用到所有片段着色器的输入属性上。
 
-## 我们自己的着色器类
+# 我们自己的着色器类
 
 编写、编译、管理着色器是件麻烦事。在着色器的最后主题里，我们会写一个类来让我们的生活轻松一点，这个类从硬盘读着色器，然后编译和链接它们，对它们进行错误检测，这就变得很好用了。这也会给你一些关于如何把我们目前所学的知识封装到一个抽象的对象里的灵感。
 
@@ -335,9 +335,13 @@ public:
 
 shader类保留了着色器程序的ID。它的构造器需要顶点和片段着色器源代码的文件路径，我们可以把各自的文本文件储存在硬盘上。`Use`函数看似平常，但是能够显示这个自造类如何让我们的生活变轻松(虽然只有一点)。
 
-### 从文件读取
+## 从文件读取
 
-我们使用C++文件流读取着色器内容，储存到几个string对象里([译注1])
+我们使用C++文件流读取着色器内容，储存到几个string对象里：(译注1)
+
+!!! note "译注1"
+
+	实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。
 
 ```c++
 Shader(const GLchar * vertexPath, const GLchar * fragmentPath)
@@ -439,10 +443,8 @@ while(...)
 
 使用新着色器类的[程序](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-using-object)，[着色器类](http://learnopengl.com/code_viewer.php?type=header&code=shader)，[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/basic)，[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/basic)。
 
-## 练习
+# 练习
 
 1. 修改顶点着色器让三角形上下颠倒：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise1)
 2. 通过使用uniform定义一个水平偏移，在顶点着色器中使用这个偏移量把三角形移动到屏幕右侧：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise2)
 3. 使用`out`关键字把顶点位置输出到片段着色器，把像素的颜色设置为与顶点位置相等(看看顶点位置值是如何在三角形中进行插值的)。做完这些后，尝试回答下面的问题：为什么在三角形的左下角是黑的?：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise3)
-
-[译注1]: http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/05%20Shaders/#_5 "译者注：实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。"
