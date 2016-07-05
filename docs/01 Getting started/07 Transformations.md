@@ -375,7 +375,7 @@ $$
 
 GLM是Open**GL** **M**athematics的缩写，它是一个只有头文件的库，也就是说我们只需包含合适的头文件就行了；不用链接和编译。GLM可以从他们的[网站](http://glm.g-truc.net/0.9.5/index.html)上下载。把头文件的根目录复制到你的`includes`文件夹，然后你就可以使用这个库了。
 
-<img alt="OpenGL Logo" src="../../img/01/07/glm.png" class="right" />
+<img alt="GLM Logo" src="../../img/01/07/glm.png" class="right" />
 
 我们需要的GLM的大多数功能都可以从下面这3个头文件中找到：
 
