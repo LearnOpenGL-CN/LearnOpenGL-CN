@@ -103,3 +103,11 @@ video {
 	font-style: normal;
 	font-size: 85%;
 }
+
+.attention {
+	background: #FFD2D2;
+}
+
+.attention-title {
+	background: #E0B3B3;
+}
