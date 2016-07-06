@@ -111,3 +111,18 @@ video {
 .rst-content .attention .admonition-title {
 	background: #E0B3B3;
 }
+
+def {
+    color: green;
+}
+
+fun {
+    font-family: "Courier New", Courier, monospace;
+    color: #822;
+}
+
+var {
+    font-style: normal;
+    font-family: "Courier New", Courier, monospace;
+    color: #227;
+}

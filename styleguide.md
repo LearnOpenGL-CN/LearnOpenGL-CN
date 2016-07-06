@@ -137,6 +137,12 @@ $$
 	[text]
 ```
 
+## 特殊词汇标记
+
+- 定义：`<def>Definition</def>`
+- 函数及类名：`<fun>Program logic</fun>`
+- 变量：`<var>Variables</var>`
+
 ## 专业词汇对照表
 
 1. [微软术语搜索](https://www.microsoft.com/Language/zh-cn/Search.aspx)
