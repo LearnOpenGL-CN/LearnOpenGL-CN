@@ -32,12 +32,12 @@ table td, table th {
 code {
 	font-size: 100%;
 	background: #F8F8F8;
+	font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
 p code {
 	font-size: 80%;
 	word-wrap: normal;
-	font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
 div.admonition code {
@@ -47,7 +47,6 @@ div.admonition code {
 	color: #404040;
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	background: rgba(255, 255, 255, 0.7);
-	font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
 img {
@@ -111,4 +110,19 @@ video {
 
 a.nav-title {
 	cursor: pointer;
+}
+
+def {
+    color: green;
+}
+
+fun {
+    font-family: "Courier New", Courier, monospace;
+    color: #822;
+}
+
+var {
+    font-style: normal;
+    font-family: "Courier New", Courier, monospace;
+    color: #227;
 }
