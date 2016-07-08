@@ -59,7 +59,7 @@ site_name: 'LearnOpenGL CN'
 
 site_url: https://learnopengl-cn.github.io/
 
-repo_url: https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/tree/new-theme
+repo_url: https://github.com/LearnOpenGL-CN/LearnOpenGL-CN
 
 markdown_extensions:
   - admonition
