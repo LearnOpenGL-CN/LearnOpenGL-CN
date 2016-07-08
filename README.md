@@ -1,6 +1,6 @@
 # LearnOpenGL中文化工程
 
-![](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN.svg?branch=new-theme)
+[![Build Status](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN.svg?branch=new-theme)](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN)
 
 learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
