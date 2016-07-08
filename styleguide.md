@@ -144,9 +144,10 @@ $$
 
 ## 专业词汇对照表
 
-1. [微软术语搜索](https://www.microsoft.com/Language/zh-cn/Search.aspx)
-2. [《游戏引擎架构》中英词汇索引表](http://www.cnblogs.com/miloyip/p/GameEngineArchitectureIndex.html) 
-3. 摘抄自《OpenGL超级宝典第五版》：
+1. [专有词汇翻译记录](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/master/glossary.md)
+2. [微软术语搜索](https://www.microsoft.com/Language/zh-cn/Search.aspx)
+3. [《游戏引擎架构》中英词汇索引表](http://www.cnblogs.com/miloyip/p/GameEngineArchitectureIndex.html) 
+4. 摘抄自《OpenGL超级宝典第五版》：
 
 英文词 | 对应翻译
 ---|---
