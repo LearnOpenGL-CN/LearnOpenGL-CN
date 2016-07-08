@@ -8,7 +8,7 @@ install:
   - python setup.py install
 
 script:
-  - mkdocs build
+  - mkdocs build --clean
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ]; then
@@ -17,6 +17,6 @@ after_success: |
     git init
     git add .
     git -c user.name='travis' -c user.email='travis' commit -m "update"
-    git push -f -q https://Meow-J:$GITHUB_API_KEY@github.com/LearnOpenGL-CN/learnopengl-cn.github.io master &2>/dev/null
+    git push -f -q https://Meow-J:$GITHUB_API_KEY@github.com/LearnOpenGL-CN/learnopengl-cn.github.io master
     cd "$TRAVIS_BUILD_DIR"
   fi
