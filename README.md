@@ -1,5 +1,9 @@
 # LearnOpenGL中文化工程
 
+[![Build Status](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN.svg?branch=new-theme)](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN)
+
+**要更新的话请到`new-theme`分支，这个分支可能会停止更新**
+
 learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 **英文原版**：[learnopengl.com](learnopengl.com)
@@ -10,9 +14,9 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 ## 阅读地址
 
-目前Host在Read The Docs上，可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
+目前Host在GitHub上，可以[点击这里](https://learnopengl-cn.github.io/)进行阅读。
 
-还有一份在GitHub上采用新的主题，可以[点击这里](https://learnopengl-cn.github.io/)阅读。
+旧版本的Host在Read The Docs内（可能会放弃更新），可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
 
 ## 认领翻译
 

@@ -104,14 +104,6 @@ video {
 	font-size: 85%;
 }
 
-.rst-content .attention {
-	background: #FFD2D2;
-}
-
-.rst-content .attention .admonition-title {
-	background: #E0B3B3;
-}
-
 def {
     color: green;
 }
