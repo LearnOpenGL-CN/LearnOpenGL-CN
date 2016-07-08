@@ -16,7 +16,7 @@ after_success: |
     cd site
     git init
     git add .
-    git -c user.name='travis' -c user.email='travis' commit -m "update"
+    git -c user.name='$GITHUB_MEOWJ_NAME' -c user.email='$GITHUB_MEOWJ_EMAIL' commit -m "Auto Deployment"
     git push -f -q https://Meow-J:$GITHUB_API_KEY@github.com/LearnOpenGL-CN/learnopengl-cn.github.io master
     cd "$TRAVIS_BUILD_DIR"
   fi
