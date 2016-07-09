@@ -45,3 +45,28 @@
 - Callback：回调
 - Rendering：渲染
 - Call：调用
+
+## 01-04
+
+- Graphics Pipeline：图形渲染管线
+- Resolution：分辨率
+- Shader：着色器
+- GLSL：OpenGL Shading Language，OpenGL着色器语言
+- Vertex Data：顶点数据
+- Vertex：顶点
+- Vertex Attribute：顶点属性
+- Primitive：图元
+- Vertex Shader：顶点着色器
+- Primitive Assembly：图元装配
+- Rasterization：光栅化
+- Fragment：片段
+- Fragment Shader：片段着色器
+- View：视图
+- Alpha Test：Alpha测试
+- Depth：深度
+- Light：光照
+- Transform：变换
+- Normalized Device Coordinates：标准化设备坐标，NDC
+- Position：位置
+- Coordinate Space：坐标空间
+- Screen-space Coordinates：屏幕空间坐标
