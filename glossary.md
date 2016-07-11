@@ -70,3 +70,17 @@
 - Position：位置
 - Coordinate Space：坐标空间
 - Screen-space Coordinates：屏幕空间坐标
+- VBO：Vertex Buffer Objects，顶点缓冲对象
+- Vertex Attribute：顶点属性
+- Position：位置
+- Location：位置值
+- Vector：向量
+- Perspective Division：透视划分
+- Fragment Shader：片段着色器
+- Component：分量
+- Normalize：标准化
+- Stride：步长
+- Offset：偏移量
+- VAO：顶点数组对象，Vertex Array Object
+- Element Buffer Object，Index Buffer Object：EBO，IBO，索引缓冲对象
+- Wireframe Mode：线框模式
