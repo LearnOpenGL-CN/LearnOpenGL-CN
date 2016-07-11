@@ -19,6 +19,7 @@ h1, h2 {
 
 .col-md-9 li {
 	margin-bottom: 3px;
+	line-height: 180%;
 }
 
 .col-md-9 pre {
