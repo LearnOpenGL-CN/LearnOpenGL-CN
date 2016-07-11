@@ -1,6 +1,6 @@
 # 你好，三角形
 
-原文     | [Creating a window](http://www.learnopengl.com/#!Getting-started/Hello-Triangle)
+原文     | [Hello Triangle](http://www.learnopengl.com/#!Getting-started/Hello-Triangle)
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
