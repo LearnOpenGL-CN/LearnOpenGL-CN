@@ -217,7 +217,7 @@ while(!glfwWindowShouldClose(window))
 
 这里的代码对之前代码是一次非常直接的修改。这次，我们在每次迭代绘制三角形前先更新uniform值。如果你正确更新了uniform，你会看到你的三角形逐渐由绿变黑再变回绿色。
 
-<video src="http://learnopengl.com/video/getting-started/shaders.mp4" controls="controls"/></video>
+<video src="../../img/01/05/shaders.mp4" controls="controls"/></video>
 
 如果你在哪儿卡住了，可以到[这里](http://www.learnopengl.com/code_viewer.php?code=getting-started/shaders-uniform)查看源码。
 
