@@ -84,3 +84,19 @@
 - VAO：顶点数组对象，Vertex Array Object
 - Element Buffer Object，Index Buffer Object：EBO，IBO，索引缓冲对象
 - Wireframe Mode：线框模式
+- Stage：阶段
+
+## 01-04
+
+- uniform：uniform
+- Matrix：矩阵
+- Texture：纹理
+- Swizzling：重组
+- Global：全局
+- Query：查询
+- Overload：重载
+- Rasterizer：光栅
+- Fragment Interpolation：片段插值
+- Interpolate：插值
+- Preprocessor Directives：预处理指令
+- Debug：调试
