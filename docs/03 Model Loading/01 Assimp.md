@@ -67,4 +67,4 @@ Required library DirectX not found! Install the library (including dev packages)
 
     如果你想要让Assimp使用多线程支持来提高性能，你可以使用<b>Boost</b>库来编译 Assimp。在[Boost安装页面](http://assimp.sourceforge.net/lib_html/install.html)，你能找到关于Boost的完整安装介绍。
 
-现在，你应该已经能够编译Assimp库，并链接Assimp到你的工程里去了。下一步：[导入完美的3D物件！](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/02%20Mesh/)
+现在，你应该已经能够编译Assimp库，并链接Assimp到你的工程里去了。下一步：[导入完美的3D物件！](02 Mesh.md)

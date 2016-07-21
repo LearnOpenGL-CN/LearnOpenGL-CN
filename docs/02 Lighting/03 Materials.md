@@ -30,7 +30,7 @@ uniform Material material;
 
 ![](http://www.learnopengl.com/img/lighting/materials_real_world.png)
 
-如你所见，正确地指定一个物体的材质属性，似乎就是改变我们物体的相关属性的比例。效果显然很引人注目，但是对于大多数真实效果，我们最终需要更加复杂的形状，而不单单是一个立方体。在[下面的教程](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/01%20Assimp/)中，我们会讨论更复杂的形状。
+如你所见，正确地指定一个物体的材质属性，似乎就是改变我们物体的相关属性的比例。效果显然很引人注目，但是对于大多数真实效果，我们最终需要更加复杂的形状，而不单单是一个立方体。在[后面的教程](../03 Model Loading/01 Assimp.md)中，我们会讨论更复杂的形状。
 
 为一个物体赋予一款正确的材质是非常困难的，这需要大量实验和丰富的经验，所以由于错误的设置材质而毁了物体的画面质量是件经常发生的事。
 

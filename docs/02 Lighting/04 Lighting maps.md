@@ -16,7 +16,7 @@
 
 我们希望通过某种方式对每个原始像素独立设置diffuse颜色。有可以让我们基于物体原始像素的位置来获取颜色值的系统吗？
 
-这可能听起来极其相似，坦白来讲我们使用这样的系统已经有一段时间了。听起来很像在一个[之前的教程](https://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/)中谈论的**纹理**，它基本就是一个纹理。我们其实是使用同一个潜在原则下的不同名称：使用一张图片覆盖住物体，以便我们为每个原始像素索引独立颜色值。在光照场景中，通过纹理来呈现一个物体的diffuse颜色，这个做法被称做**漫反射贴图(Diffuse texture)**(因为3D建模师就是这么称呼这个做法的)。
+这可能听起来极其相似，坦白来讲我们使用这样的系统已经有一段时间了。听起来很像在一个[之前的教程](../01 Getting started/06 Textures.md)中谈论的**纹理**，它基本就是一个纹理。我们其实是使用同一个潜在原则下的不同名称：使用一张图片覆盖住物体，以便我们为每个原始像素索引独立颜色值。在光照场景中，通过纹理来呈现一个物体的diffuse颜色，这个做法被称做**漫反射贴图(Diffuse texture)**(因为3D建模师就是这么称呼这个做法的)。
 
 为了演示漫反射贴图，我们将会使用[下面的图片](http://learnopengl.com/img/textures/container2.png)，它是一个有一圈钢边的木箱：
 
@@ -109,7 +109,7 @@ glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
 ## 镜面贴图采样
 
-一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元(参见[纹理](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/06%20Textures/))，所以在渲染前让我们把它绑定到合适的纹理单元
+一个specular贴图和其他纹理一样，所以代码和diffuse贴图的代码也相似。确保合理的加载了图片，生成一个纹理对象。由于我们在同样的片段着色器中使用另一个纹理采样器，我们必须为specular贴图使用一个不同的纹理单元(参见[纹理](../01 Getting started/06 Textures.md))，所以在渲染前让我们把它绑定到合适的纹理单元
 
 ```c++
 glUniform1i(glGetUniformLocation(lightingShader.Program, "material.specular"), 1);

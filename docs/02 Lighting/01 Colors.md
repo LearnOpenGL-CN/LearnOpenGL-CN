@@ -55,7 +55,7 @@ glm::vec3 result = lightColor * toyColor; // = (0.33f, 0.21f, 0.06f);
 
 首先我们需要一个物体来投光(Cast the light)，我们将无耻地使用前面教程中的立方体箱子。我们还需要一个物体来代表光源，它代表光源在这个3D空间中的确切位置。简单起见，我们依然使用一个立方体来代表光源(我们已拥有立方体的[顶点数据](http://www.learnopengl.com/code_viewer.php?code=getting-started/cube_vertices)是吧？)。
 
-当然，填一个顶点缓冲对象(VBO)，设定一下顶点属性指针和其他一些乱七八糟的东西现在对你来说应该很容易了，所以我们就不再赘述那些步骤了。如果你仍然觉得这很困难，我建议你复习[之前的教程](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/04%20Hello%20Triangle/)，并且在继续学习之前先把练习过一遍。
+当然，填一个顶点缓冲对象(VBO)，设定一下顶点属性指针和其他一些乱七八糟的东西现在对你来说应该很容易了，所以我们就不再赘述那些步骤了。如果你仍然觉得这很困难，我建议你复习[之前的教程](../01 Getting started/04 Hello Triangle.md)，并且在继续学习之前先把练习过一遍。
 
 所以，我们首先需要一个顶点着色器来绘制箱子。与上一个教程的顶点着色器相比，容器的顶点位置保持不变(虽然这一次我们不需要纹理坐标)，因此顶点着色器中没有新的代码。我们将会使用上一篇教程顶点着色器的精简版：
 
@@ -166,4 +166,4 @@ glBindVertexArray(0);
 
 如果你在把上述代码片段放到一起编译遇到困难，可以去认真地看看我的[源代码](http://learnopengl.com/code_viewer.php?code=lighting/colors_scene)。你好最自己实现一遍这些操作。
 
-现在我们有了一些关于颜色的知识，并且创建了一个基本的场景能够绘制一些漂亮的光线。你现在可以阅读[下一节](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/02%20Basic%20Lighting/)，真正的魔法即将开始！
+现在我们有了一些关于颜色的知识，并且创建了一个基本的场景能够绘制一些漂亮的光线。你现在可以阅读[下一节](02 Basic Lighting.md)，真正的魔法即将开始！

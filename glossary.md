@@ -86,7 +86,7 @@
 - Wireframe Mode：线框模式
 - Stage：阶段
 
-## 01-04
+## 01-05
 
 - uniform：uniform
 - Matrix：矩阵
@@ -100,3 +100,10 @@
 - Interpolate：插值
 - Preprocessor Directives：预处理指令
 - Debug：调试
+
+## 01-05
+
+- Texture Coordinate：纹理坐标
+- Sampling：采样
+- Wrapping：环绕方式
+- Clamp：约束
