@@ -81,11 +81,11 @@ glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 	Texture Pixel也叫Texel，你可以想象你打开一张.jpg格式图片不断放大你会发现它是由无数像素点组成的，这个点就是纹理像素；注意不要和纹理坐标搞混，纹理坐标是你给模型顶点设置的那个数组，OpenGL以这个顶点的纹理坐标数据去查找纹理图像上的像素，然后进行采样提取纹理像素的颜色
 
-**GL_NEAREST(Nearest Neighbor Filtering，邻近过滤)** 是一种OpenGL默认的纹理过滤方式。当设置为`GL_NEAREST`的时候，OpenGL选择最接近纹理坐标中心点的那个像素。下图你会看到四个像素，加号代表纹理坐标。左上角的纹理像素是距离纹理坐标最近的那个，这样它就会选择这个作为采样颜色：
+<var>GL_NEAREST</var>(Nearest Neighbor Filtering，邻近过滤)是一种OpenGL默认的纹理过滤方式。当设置为`GL_NEAREST`的时候，OpenGL选择最接近纹理坐标中心点的那个像素。下图你会看到四个像素，加号代表纹理坐标。左上角的纹理像素是距离纹理坐标最近的那个，这样它就会选择这个作为采样颜色：
 
 ![](http://learnopengl.com/img/getting-started/filter_nearest.png)
 
-**GL_LINEAR((Bi)linear Filtering，线性过滤)** 它会从纹理坐标的临近纹理像素进行计算，返回一个多个纹理像素的近似值。一个纹理像素距离纹理坐标越近，那么这个纹理像素对最终的采样颜色的影响越大。下面你会看到临近像素返回的混合颜色：
+<var>GL_LINEAR</var>((Bi)linear Filtering，线性过滤)它会从纹理坐标的临近纹理像素进行计算，返回一个多个纹理像素的近似值。一个纹理像素距离纹理坐标越近，那么这个纹理像素对最终的采样颜色的影响越大。下面你会看到临近像素返回的混合颜色：
 
 ![](http://learnopengl.com/img/getting-started/filter_linear.png)
 
