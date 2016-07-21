@@ -51,12 +51,14 @@ GLfloat texCoords[] = {
 
 当纹理坐标超出默认范围时，每个选项都有不同的视觉效果输出。我们来看看这些纹理图像的例子：
 
-![]../img/01/06/texture_wrapping.png)
+![](../img/01/06/texture_wrapping.png)
 
-前面提到的选项都可以使用`glTexParameter`函数单独设置每个坐标轴`s`、`t`(如果是使用3D纹理那么还有一个`r`)它们和`x`、`y`(`z`)是相等的：
+前面提到的每个选项都可以使用<fun>glTexParameter*</fun>函数对单独的一个坐标轴设置（`s`、`t`（如果是使用3D纹理那么还有一个`r`）它们和`x`、`y`、`z`是等价的）：
 
-`glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);`
-`glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);`
+```c++
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+```
 
 第一个参数指定了纹理目标；我们使用的是2D纹理，因此纹理目标是`GL_TEXTURE_2D`。
 
