@@ -208,7 +208,7 @@ glBindTexture(GL_TEXTURE_2D, 0);
 
 ## 应用纹理
 
-后面的部分我们会使用`glDrawElements`绘制[Hello Triangle](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/04%20Hello%20Triangle/)教程的最后一部分的矩形。我们需要告知OpenGL如何采样纹理，这样我们必须更新顶点纹理坐标数据：
+后面的部分我们会使用`glDrawElements`绘制[《你好，三角形》](04 Hello Triangle.md)教程的最后一部分的矩形。我们需要告知OpenGL如何采样纹理，这样我们必须更新顶点纹理坐标数据：
 
 ```c++
 GLfloat vertices[] = {
