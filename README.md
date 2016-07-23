@@ -14,7 +14,7 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 目前Host在GitHub上，可以[点击这里](https://learnopengl-cn.github.io/)进行阅读。
 
-旧版本的Host在Read The Docs内（可能会放弃更新），可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
+旧版本的Host在Read The Docs内（不定时更新），可以[点击这里](http://learnopengl-cn.readthedocs.io/)进行阅读。
 
 ## 认领翻译
 
