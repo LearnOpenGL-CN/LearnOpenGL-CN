@@ -323,7 +323,7 @@ glBindVertexArray(0);
 
 你可以[从这里找到全部源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_reflection)。
 
-当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载[模型教程](http://learnopengl-cn.readthedocs.org/zh/latest/03%20Model%20Loading/03%20Model/)中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
+当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载[模型教程](../03 Model Loading/03 Model.md)中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
 
 ![](http://learnopengl.com/img/advanced/cubemaps_reflection_nanosuit.png)
 

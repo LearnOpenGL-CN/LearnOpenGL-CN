@@ -6,7 +6,7 @@
 翻译     | [Django](http://bullteacher.com/)
 校对     | [Geequlim](http://geequlim.com)
 
-在[坐标系的教程](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/08%20Coordinate%20Systems/)中我们呈现了一个3D容器,使用**深度缓冲(Depth Buffer)**,以防止被其他面遮挡的面渲染到前面。在本教程中我们将细致地讨论被深度缓冲(或z-buffer)所存储的**深度值**以及它是如何确定一个片段是否被其他片段遮挡。
+在[坐标系的教程](../01 Getting started/08 Coordinate Systems.md)中我们呈现了一个3D容器,使用**深度缓冲(Depth Buffer)**,以防止被其他面遮挡的面渲染到前面。在本教程中我们将细致地讨论被深度缓冲(或z-buffer)所存储的**深度值**以及它是如何确定一个片段是否被其他片段遮挡。
 
 **深度缓冲**就像**颜色缓冲(Color Buffer)**(存储所有的片段颜色:视觉输出)那样存储每个片段的信息，(通常) 和颜色缓冲区有相同的宽度和高度。深度缓冲由窗口系统自动创建并将其深度值存储为 16、 24 或 32 位浮点数。在大多数系统中深度缓冲区为24位。
 
@@ -87,7 +87,7 @@ $$
 \begin{equation} F_{depth} = \frac{z - near}{far - near} \end{equation}
 $$
 
-这里far和near是我们用来提供到投影矩阵设置可见视图截锥的远近值 (见[坐标系](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/08%20Coordinate%20Systems/))。方程带内锥截体的深度值 z，并将其转换到 [0，1] 范围。在下面的图给出 z 值和其相应的深度值的关系:
+这里far和near是我们用来提供到投影矩阵设置可见视图截锥的远近值 (见[坐标系](../01 Getting started/08 Coordinate Systems.md))。方程带内锥截体的深度值 z，并将其转换到 [0，1] 范围。在下面的图给出 z 值和其相应的深度值的关系:
 
 ![](http://learnopengl.com/img/advanced/depth_linear_graph.png)
 

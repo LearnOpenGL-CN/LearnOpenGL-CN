@@ -55,7 +55,7 @@ SSAO需要获取几何体的信息，因为我们需要一些方式来确定一�
 
 !!! Important
 
-	在这个教程中，我们将会在一个简化版本的延迟渲染器([延迟着色法](http://learnopengl-cn.readthedocs.org/zh/latest/05%20Advanced%20Lighting/08%20Deferred%20Shading/)教程中)的基础上实现SSAO，所以如果你不知道什么是延迟着色法，请先读完那篇教程。
+	在这个教程中，我们将会在一个简化版本的延迟渲染器([延迟着色法](08 Deferred Shading.md)教程中)的基础上实现SSAO，所以如果你不知道什么是延迟着色法，请先读完那篇教程。
 
 由于我们已经有了逐片段位置和法线数据(G缓冲中)，我们只需要更新一下几何着色器，让它包含片段的线性深度就行了。回忆我们在深度测试那一节学过的知识，我们可以从`gl_FragCoord.z`中提取线性深度：
 
@@ -114,7 +114,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 ## 法向半球
 
-我们需要沿着表面法线方向生成大量的样本。就像我们在这个教程的开始介绍的那样，我们想要生成形成半球形的样本。由于对每个表面法线方向生成采样核心非常困难，也不合实际，我们将在[切线空间](http://learnopengl-cn.readthedocs.org/zh/latest/05%20Advanced%20Lighting/04%20Normal%20Mapping/)(Tangent Space)内生成采样核心，法向量将指向正z方向。
+我们需要沿着表面法线方向生成大量的样本。就像我们在这个教程的开始介绍的那样，我们想要生成形成半球形的样本。由于对每个表面法线方向生成采样核心非常困难，也不合实际，我们将在[切线空间](04 Normal Mapping.md)(Tangent Space)内生成采样核心，法向量将指向正z方向。
 
 ![](http://learnopengl.com/img/advanced-lighting/ssao_hemisphere.png)
 

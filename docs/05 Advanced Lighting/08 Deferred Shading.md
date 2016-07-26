@@ -65,7 +65,7 @@ while(...) // 游戏循环
 }
 ```
 
-对于每一个片段我们需要储存的数据有：一个**位置**向量、一个**法**向量，一个**颜色**向量，一个镜面强度值。所以我们在几何处理阶段中需要渲染场景中所有的对象并储存这些数据分量到G缓冲中。我们可以再次使用**多渲染目标(Multiple Render Targets)**来在一个渲染处理之内渲染多个颜色缓冲，在之前的[泛光教程](http://learnopengl-cn.readthedocs.org/zh/latest/05%20Advanced%20Lighting/07%20Bloom/)中我们也简单地提及了它。
+对于每一个片段我们需要储存的数据有：一个**位置**向量、一个**法**向量，一个**颜色**向量，一个镜面强度值。所以我们在几何处理阶段中需要渲染场景中所有的对象并储存这些数据分量到G缓冲中。我们可以再次使用**多渲染目标(Multiple Render Targets)**来在一个渲染处理之内渲染多个颜色缓冲，在之前的[泛光教程](07 Bloom.md)中我们也简单地提及了它。
 
 对于几何渲染处理阶段，我们首先需要初始化一个帧缓冲对象，我们很直观的称它为`gBuffer`，它包含了多个颜色缓冲和一个单独的深度渲染缓冲对象(Depth Renderbuffer Object)。对于位置和法向量的纹理，我们希望使用高精度的纹理(每分量16或32位的浮点数)，而对于反照率和镜面值，使用默认的纹理(每分量8位浮点数)就够了。
 
@@ -224,7 +224,7 @@ void main()
 
 你可以在以下位置找到Demo的完整[源代码](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred)，和几何渲染阶段的[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred_geometry&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred_geometry&type=fragment)着色器，还有光照渲染阶段的[顶点](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred&type=vertex)着色器。
 
-延迟着色法的其中一个缺点就是它不能进行[混合](http://learnopengl-cn.readthedocs.org/zh/latest/04%20Advanced%20OpenGL/03%20Blending/)(Blending)，因为G缓冲中所有的数据都是从一个单独的片段中来的，而混合需要对多个片段的组合进行操作。延迟着色法另外一个缺点就是它迫使你对大部分场景的光照使用相同的光照算法，你可以通过包含更多关于材质的数据到G缓冲中来减轻这一缺点。
+延迟着色法的其中一个缺点就是它不能进行[混合](../04 Advanced OpenGL/03 Blending.md)(Blending)，因为G缓冲中所有的数据都是从一个单独的片段中来的，而混合需要对多个片段的组合进行操作。延迟着色法另外一个缺点就是它迫使你对大部分场景的光照使用相同的光照算法，你可以通过包含更多关于材质的数据到G缓冲中来减轻这一缺点。
 
 为了克服这些缺点(特别是混合)，我们通常分割我们的渲染器为两个部分：一个是延迟渲染的部分，另一个是专门为了混合或者其他不适合延迟渲染管线的着色器效果而设计的的正向渲染的部分。为了展示这是如何工作的，我们将会使用正向渲染器渲染光源为一个小立方体，因为光照立方体会需要一个特殊的着色器(会输出一个光照颜色)。
 

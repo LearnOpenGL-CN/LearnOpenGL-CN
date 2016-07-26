@@ -43,7 +43,7 @@ void main()
 
 作为结果的`lightDir`向量被使用在`diffuse`和`specular`计算之前。
 
-为了清晰地强调一个定向光对所有物体都有同样的影响，我们再次访问[坐标系教程](http://learnopengl-cn.readthedocs.org/zh/latest/01%20Getting%20started/08%20Coordinate%20Systems/)结尾部分的箱子场景。例子里我们先定义10个不同的箱子位置，为每个箱子生成不同的模型矩阵，每个模型矩阵包含相应的本地到世界变换：
+为了清晰地强调一个定向光对所有物体都有同样的影响，我们再次访问[坐标系教程](../01 Getting started/08 Coordinate Systems.md)结尾部分的箱子场景。例子里我们先定义10个不同的箱子位置，为每个箱子生成不同的模型矩阵，每个模型矩阵包含相应的本地到世界变换：
 
 ```c++
 for(GLuint i = 0; i < 10; i++)
@@ -317,7 +317,7 @@ specular* = intensity;
 
 看起来好多了。仔细看看内部和外部切光角，尝试创建一个符合你求的聚光。可以在这里找到应用源码，以及片段的源代码。
 
-这样的一个手电筒/聚光类型的灯光非常适合恐怖游戏，结合定向和点光，环境会真的开始被照亮了。[下一个教程](http://learnopengl-cn.readthedocs.org/zh/latest/02%20Lighting/06%20Multiple%20lights/)，我们会结合所有我们目前讨论了的光和技巧。
+这样的一个手电筒/聚光类型的灯光非常适合恐怖游戏，结合定向和点光，环境会真的开始被照亮了。[下一节](06 Multiple lights.md)中，我们会结合所有我们目前讨论了的光和技巧。
 
 ## 练习
 
