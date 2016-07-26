@@ -107,3 +107,12 @@
 - Sampling：采样
 - Wrapping：环绕方式
 - Clamp：约束
+- Nearest Neighbor Filtering：临近过滤
+- Texture Pixel，Texel：纹理像素
+- (Bi)linear Filtering：线性过滤
+- Magnify：放大
+- Minify：缩小
+- Mipmap：多级渐远纹理
+- Channel：通道
+- Sampler：采样器
+- Texture Unit：纹理单元
