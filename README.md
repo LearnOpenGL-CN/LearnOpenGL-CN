@@ -6,7 +6,9 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 **英文原版**：[learnopengl.com](http://learnopengl.com/)
 
-**当前翻译进度**：![Progress](http://progressed.io/bar/70?title=44/58)
+**当前翻译进度**：![Progress](http://progressed.io/bar/77?title=46/60)
+
+**校对进度**：![Progress](http://progressed.io/bar/20?title=9/46)
 
 **目前状态**：请认领一下In Practice下的章节
 
