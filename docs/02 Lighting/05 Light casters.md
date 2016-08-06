@@ -169,7 +169,7 @@ glUniform1f(glGetUniformLocation(lightingShader.Program, "light.quadratic"), 0.0
 我们需要将光源的距离提供给公式；还记得我们是怎样计算向量的长度吗？我们可以通过获取片段和光源之间的不同向量把向量的长度结果作为距离项。我们可以使用GLSL的内建`length`函数做这件事：
 
 ```c++
-float distance = length(light.position - Position);
+float distance = length(light.position - FragPos);
 float attenuation = 1.0f / (light.constant + light.linear*distance +light.quadratic*(distance*distance));
 ```
 
