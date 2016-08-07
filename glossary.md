@@ -49,7 +49,7 @@
 ## 01-04
 
 - Graphics Pipeline：图形渲染管线
-- Resolution：分辨率
+- Resolution（图像，屏幕）：分辨率
 - Shader：着色器
 - GLSL：OpenGL Shading Language，OpenGL着色器语言
 - Vertex Data：顶点数据
@@ -78,6 +78,7 @@
 - Perspective Division：透视划分
 - Fragment Shader：片段着色器
 - Component：分量
+- Element：元素
 - Normalize：标准化
 - Stride：步长
 - Offset：偏移量
@@ -101,7 +102,7 @@
 - Preprocessor Directives：预处理指令
 - Debug：调试
 
-## 01-05
+## 01-06
 
 - Texture Coordinate：纹理坐标
 - Sampling：采样
@@ -116,3 +117,23 @@
 - Channel：通道
 - Sampler：采样器
 - Texture Unit：纹理单元
+
+## 01-07
+
+- Direction：方向
+- Magnitude：大小
+- Dimension（数学）：维度
+- Scalar：标量
+- Position Vector：位置向量
+- Unit Vector：单位向量
+- Pythagoras Theorem：勾股定理
+- Dot Product：点乘，点积
+- Cross Product：叉乘，叉积
+- Identity Matrix：单位矩阵
+- Scale：缩放
+- Translation：位移
+- Homogeneous Coordinate：齐次坐标
+- Direction Vector：方向向量
+- Rotation：旋转
+- Rotation Axis：旋转轴
+- Column-major Ordering：列主序
