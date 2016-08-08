@@ -52,6 +52,8 @@
 <img alt="OpenGL Logo" src="../../img/opengl.jpg" class="right" />
 ```
 
+- 如果图片有背景颜色的话请使用tools目录下的`ClearBG.py`清除为透明
+
 其他的class名称还有：
 
 - clean
