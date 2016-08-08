@@ -89,6 +89,9 @@ img.large {
 	height: auto;
 }
 
+img.noborder {
+	border: none;
+}
 
 video {
 	display: block;
