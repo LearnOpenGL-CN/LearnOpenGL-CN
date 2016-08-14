@@ -86,8 +86,6 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
 
 你可以在这里获得[应用的所有代码](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_directional)，这里是[顶点](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_directional&type=fragment)着色器代码。
 
-
-
 # 点光源
 
 定向光作为全局光可以照亮整个场景，这非常棒，但是另一方面除了定向光，我们通常也需要几个点光源(Point Light)，在场景里发亮。点光是一个在时间里有位置的光源，它向所有方向发光，光线随距离增加逐渐变暗。想象灯泡和火炬作为投光物，它们可以扮演点光的角色。
@@ -110,8 +108,8 @@ $$
 
 在这里\(d\)代表片段到光源的距离。为了计算衰减值，我们定义3个（可配置）项：**常数**项\(K_c\)，**一次**项\(K_l\)和**二次**项\(K_q\)。
 
-- 常数项通常是1.0，它的作用是保证坟墓永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
-- 一次项用于与距离值相称，这回以线性的方式减少亮度。
+- 常数项通常是1.0，它的作用是保证分母永远不会比1小，因为它可以利用一定的距离增加亮度，这个结果不会影响到我们所寻找的。
+- 一次项用于与距离值相乘，这会以线性的方式减少亮度。
 - 二次项用于与距离的平方相乘，为光源设置一个亮度的二次递减。二次项在距离比较近的时候相比一次项会比一次项更小，但是当距离更远的时候比一次项更大。
 
 由于二次项的光会以线性方式减少，指导距离足够大的时候，就会超过一次项，之后，光的亮度会减少的更快。最后的效果就是光在近距离时，非常量，但是距离变远亮度迅速降低，最后亮度降低速度再次变慢。下面的图展示了在100以内的范围，这样的衰减效果。
@@ -171,7 +169,7 @@ glUniform1f(glGetUniformLocation(lightingShader.Program, "light.quadratic"), 0.0
 我们需要将光源的距离提供给公式；还记得我们是怎样计算向量的长度吗？我们可以通过获取片段和光源之间的不同向量把向量的长度结果作为距离项。我们可以使用GLSL的内建`length`函数做这件事：
 
 ```c++
-float distance = length(light.position - Position);
+float distance = length(light.position - FragPos);
 float attenuation = 1.0f / (light.constant + light.linear*distance +light.quadratic*(distance*distance));
 ```
 

@@ -274,7 +274,7 @@ vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string
 
     注意，我们假设纹理文件与模型是在相同的目录里。我们可以简单的链接纹理位置字符串和之前获取的目录字符串（在`loadModel`函数中得到的）来获得完整的纹理路径（这就是为什么`GetTexture`函数同样需要目录字符串）。
     
-    有些在互联网上找到的模型使用绝对路径，它们的纹理位置就不会在每天机器上都有效了。例子里，你可能希望手工编辑这个文件来使用本地路径为纹理所使用（如果可能的话）。
+    有些在互联网上找到的模型使用绝对路径，它们的纹理位置就不会在每台机器上都有效了。例子里，你可能希望手工编辑这个文件来使用本地路径为纹理所使用（如果可能的话）。
 
 这就是使用Assimp来导入一个模型的全部了。你可以在这里找到[Model类的代码](http://learnopengl.com/code_viewer.php?code=model_loading/model_unoptimized)。
 

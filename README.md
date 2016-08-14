@@ -77,11 +77,11 @@ $ mkdocs serve
 
 ## 建议
 
-如果您发现文档有任何错误的话，欢迎Fork这个工程并发送Pull Request到 `master` 分支。如果您不想修改的话，可以点击页面上方的 `Issues` 按钮提交一个Issue，我们看到后会及时更正。
+如果您发现教程有任何错误的话，欢迎Fork这个工程并发送Pull Request到 `new-theme` 分支。如果您不想修改的话，可以点击页面上方的 `Issues` 按钮提交一个Issue，我们看到后会及时更正。如果是对教程的内容有问题，请先查看原文，如果不是翻译错误的话，请直接在原网站评论区向作者（JoeyDeVries）反馈。
 
 ## 样式指南
 
-在文档的写作过程中，请遵守我们的[样式指南](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/master/styleguide.md)方便之后的校对以及修改工作。
+在文档的写作过程中，请遵守我们的[样式指南](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/new-theme/styleguide.md)方便之后的校对以及修改工作。
 
 ## 联系方式
 
