@@ -20,4 +20,10 @@
 
 这里是LearnOpenGL教程的中文翻译，英文版的地址为：[http://learnopengl.com/](http://learnopengl.com/)
 
+<<<<<<< HEAD
 由于翻译可能无法做到精确表达原文意思，我们推荐您在对问题有疑惑的时候去阅读一下英文版的教程。如果您对翻译有更好的建议，可以去我们的[GitHub工程](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)上提交Issue或者Pull Request。如果是对教程的内容有问题，请先查看原文，如果不是翻译错误的话，请直接在原网站评论区向作者（JoeyDeVries）反馈。
+=======
+由于翻译可能无法做到精确表达原文意思，我们推荐您在对问题有疑惑的时候去阅读一下英文版的教程。如果您对翻译有更好的建议，可以去我们的[GitHub工程](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)上提交Issue或者Pull Request。
+
+如果可以的话，请访问[https://learnopengl-cn.github.io/](https://learnopengl-cn.github.io/)，这里是采用新主题的网站。这里的翻译版本会比较落后一些，只会不定时更新。
+>>>>>>> opengl/master

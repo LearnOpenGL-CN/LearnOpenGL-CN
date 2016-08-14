@@ -2,6 +2,11 @@
 
 [![Build Status](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN.svg?branch=new-theme)](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN)
 
+<<<<<<< HEAD
+=======
+**要更新的话请到`new-theme`分支，这个分支可能会停止更新**
+
+>>>>>>> opengl/master
 learnopengl.com系列教程的中文翻译，目前正在翻译中。
 
 **英文原版**：[learnopengl.com](http://learnopengl.com/)

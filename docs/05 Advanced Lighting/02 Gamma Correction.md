@@ -141,4 +141,8 @@ float attenuation = 1.0 / distance;
 
 - [cambridgeincolour.com](http://www.cambridgeincolour.com/tutorials/gamma-correction.htm):更多关于gamma和gamma校正的内容。
 - [wolfire.com](http://blog.wolfire.com/2010/02/Gamma-correct-lighting): David Rosen关于在渲染领域使用gamma校正的好处。
+<<<<<<< HEAD
 - [renderwonk.com](http://renderwonk.com/blog/index.php/archive/adventures-with-gamma-correct-rendering/): 一些额外的实践上的思考。
+=======
+- [renderwonk.com](http://renderwonk.com/blog/index.php/archive/adventures-with-gamma-correct-rendering/): 一些额外的实践上的思考。
+>>>>>>> opengl/master

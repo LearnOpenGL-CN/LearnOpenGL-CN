@@ -1,5 +1,6 @@
 pages:
   - 主页: 'index.md'
+<<<<<<< HEAD
   - 目录:
     - 简介: 'intro.md'
     - 入门:
@@ -54,6 +55,61 @@ pages:
       - 文字渲染: '06 In Practice/02 Text Rendering.md'
       - 2D游戏:
         - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
+=======
+  - 简介: 'intro.md'
+  - 入门:
+    - OpenGL: '01 Getting started/01 OpenGL.md'
+    - 创建窗口: '01 Getting started/02 Creating a window.md'
+    - 你好，窗口: '01 Getting started/03 Hello Window.md'
+    - 你好，三角形: '01 Getting started/04 Hello Triangle.md'
+    - 着色器: '01 Getting started/05 Shaders.md'
+    - 纹理: '01 Getting started/06 Textures.md'
+    - 变换: '01 Getting started/07 Transformations.md'
+    - 坐标系统: '01 Getting started/08 Coordinate Systems.md'
+    - 摄像机: '01 Getting started/09 Camera.md'
+    - 复习: '01 Getting started/10 Review.md'
+  - 光照(Lighting):
+    - 颜色: '02 Lighting/01 Colors.md'
+    - 光照基础: '02 Lighting/02 Basic Lighting.md'
+    - 材质: '02 Lighting/03 Materials.md'
+    - 光照贴图: '02 Lighting/04 Lighting maps.md'
+    - 投光物: '02 Lighting/05 Light casters.md'
+    - 多光源: '02 Lighting/06 Multiple lights.md'
+    - 复习: '02 Lighting/07 Review.md'
+  - 加载模型:
+    - Assimp: '03 Model Loading/01 Assimp.md'
+    - 网格: '03 Model Loading/02 Mesh.md'
+    - 模型: '03 Model Loading/03 Model.md'
+  - 高级OpenGL:
+    - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
+    - 模板测试: '04 Advanced OpenGL/02 Stencil testing.md'
+    - 混合: '04 Advanced OpenGL/03 Blending.md'
+    - 面剔除: '04 Advanced OpenGL/04 Face culling.md'
+    - 帧缓冲: '04 Advanced OpenGL/05 Framebuffers.md'
+    - 立方体贴图: '04 Advanced OpenGL/06 Cubemaps.md'
+    - 高级数据: '04 Advanced OpenGL/07 Advanced Data.md'
+    - 高级GLSL: '04 Advanced OpenGL/08 Advanced GLSL.md'
+    - 几何着色器: '04 Advanced OpenGL/09 Geometry Shader.md'
+    - 实例化: '04 Advanced OpenGL/10 Instancing.md'
+    - 抗锯齿: '04 Advanced OpenGL/11 Anti Aliasing.md'
+  - 高级光照:
+    - 高级光照: '05 Advanced Lighting/01 Advanced Lighting.md'
+    - Gamma校正: '05 Advanced Lighting/02 Gamma Correction.md'
+    - 阴影:
+      - 阴影映射: '05 Advanced Lighting/03 Shadows/01 Shadow Mapping.md'
+      - 点阴影: '05 Advanced Lighting/03 Shadows/02 Point Shadows.md'
+      - CSM: '05 Advanced Lighting/03 Shadows/03 CSM.md'
+    - 法线贴图: '05 Advanced Lighting/04 Normal Mapping.md'
+    - 视差贴图: '05 Advanced Lighting/05 Parallax Mapping.md'
+    - HDR: '05 Advanced Lighting/06 HDR.md'
+    - 泛光: '05 Advanced Lighting/07 Bloom.md'
+    - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
+    - SSAO: '05 Advanced Lighting/09 SSAO.md'
+  - 实战:
+    - 文字渲染: '06 In Practice/02 Text Rendering.md'
+    - 2D游戏:
+      - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
+>>>>>>> opengl/master
 
 site_name: 'LearnOpenGL CN'
 
@@ -72,8 +128,11 @@ extra_javascript:
 
 extra_css:
   - css/style.css
-  - css/admonition_fix.css
 
+<<<<<<< HEAD
 docs_dir: 'docs'
 
 theme_dir: 'yeti'
+=======
+docs_dir: 'docs'
+>>>>>>> opengl/master
