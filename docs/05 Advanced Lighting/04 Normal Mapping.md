@@ -409,4 +409,8 @@ mat3 TBN = mat3(T, B, N)
 - [Tutorial 26: Normal Mapping](http://ogldev.atspace.co.uk/www/tutorial26/tutorial26.html)：ogldev的法线贴图教程。
 - [How Normal Mapping Works](https://www.youtube.com/watch?v=LIOPYmknj5Q)：TheBennyBox的讲述法线贴图如何工作的视频。
 - [Normal Mapping Mathematics](https://www.youtube.com/watch?v=4FaWLgsctqY)：TheBennyBox关于法线贴图的数学原理的教程。
+<<<<<<< HEAD
 - [Tutorial 13: Normal Mapping](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/)：opengl-tutorial.org提供的法线贴图教程。
+=======
+- [Tutorial 13: Normal Mapping](http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/)：opengl-tutorial.org提供的法线贴图教程。
+>>>>>>> opengl/master
