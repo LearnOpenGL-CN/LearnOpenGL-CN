@@ -137,3 +137,8 @@
 - Rotation：旋转
 - Rotation Axis：旋转轴
 - Column-major Ordering：列主序
+
+## 06-01
+
+- Debugging：调试
+- Flag：标记
