@@ -142,3 +142,9 @@
 
 - Debugging：调试
 - Flag：标记
+- Reference Compiler：参考编译器
+- Tessellation Control Shader：细分控制着色器
+- Tessellation Evaluation Shader：细分评估着色器
+- Compute Shader：计算着色器
+- Attachment：附件
+- Render Buffer Object：渲染缓冲对象
