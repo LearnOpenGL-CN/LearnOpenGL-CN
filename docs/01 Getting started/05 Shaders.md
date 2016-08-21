@@ -335,11 +335,7 @@ public:
 
 ## 从文件读取
 
-我们使用C++文件流读取着色器内容，储存到几个`string`对象里（译注1）：
-
-!!! note "译注1"
-
-	实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。
+我们使用C++文件流读取着色器内容，储存到几个`string`对象里：
 
 ```c++
 Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
