@@ -1,6 +1,6 @@
-# 粒子系统
+# 粒子
 
-原文    | [Particle](http://learnopengl.com/#!In-Practice/2D-Game/Particles)
+原文    | [Particles](http://learnopengl.com/#!In-Practice/2D-Game/Particles)
 -----   |  ----
 作者    | JoeydeVries
 翻译    | [ZMANT](https://github.com/Itanq)

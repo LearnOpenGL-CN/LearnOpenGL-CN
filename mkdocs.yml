@@ -56,7 +56,8 @@ pages:
       - 2D游戏:
         - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
         - 准备工作: '06 In Practice/2D-Game/02 Setting up.md'
-        - 粒子系统: '06 In Practice/2D-Game/06 Particles.md'
+        - 渲染精灵: '06 In Practice/2D-Game/03 Rendering Sprites.md'
+        - 粒子: '06 In Practice/2D-Game/06 Particles.md'
 
 site_name: 'LearnOpenGL CN'
 
