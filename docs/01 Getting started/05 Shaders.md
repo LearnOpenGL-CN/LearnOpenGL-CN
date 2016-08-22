@@ -152,7 +152,7 @@ void main()
 }  
 ```
 
-我们在片段着色器中声明了一个uniform `vec4`的<var>ourColor</var>，并把片段着色器的输出颜色设置为uniform值的内容。因为uniform是全局变量，我们我们可以在任何着色器中定义它们，而无需通过顶点着色器作为中介。顶点着色器中不需要这个uniform，所以我们不用在那里定义它。
+我们在片段着色器中声明了一个uniform `vec4`的<var>ourColor</var>，并把片段着色器的输出颜色设置为uniform值的内容。因为uniform是全局变量，我们可以在任何着色器中定义它们，而无需通过顶点着色器作为中介。顶点着色器中不需要这个uniform，所以我们不用在那里定义它。
 
 !!! Attention
 
@@ -335,11 +335,7 @@ public:
 
 ## 从文件读取
 
-我们使用C++文件流读取着色器内容，储存到几个`string`对象里（译注1）：
-
-!!! note "译注1"
-
-	实际上把着色器代码保存在文件中适合学习OpenGL的时候，实际开发中最好把一个着色器直接储存为多个字符串，这样具有更高的灵活度。
+我们使用C++文件流读取着色器内容，储存到几个`string`对象里：
 
 ```c++
 Shader(const GLchar* vertexPath, const GLchar* fragmentPath)

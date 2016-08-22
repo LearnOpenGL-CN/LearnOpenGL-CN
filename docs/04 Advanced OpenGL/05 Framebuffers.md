@@ -1,4 +1,4 @@
-# 帧缓冲（Framebuffer）
+# 帧缓冲
 
 原文     | [Framebuffers](http://learnopengl.com/#!Advanced-OpenGL/Framebuffers)
       ---|---

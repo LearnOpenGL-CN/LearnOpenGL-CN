@@ -1,4 +1,4 @@
-# 延迟着色法(Deferred Shading)
+# 延迟着色法
 
 原文     | [Deferred Shading](http://learnopengl.com/#!Advanced-Lighting/Deferred-Shading)
       ---|---

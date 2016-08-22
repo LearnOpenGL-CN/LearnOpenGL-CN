@@ -1,4 +1,4 @@
-## 抗锯齿(Anti Aliasing)
+# 抗锯齿
 
 原文     | [Anti Aliasing](http://learnopengl.com/#!Advanced-OpenGL/Anti-Aliasing)
       ---|---
@@ -116,9 +116,9 @@ glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTI
 
 当前绑定的帧缓冲现在有了一个纹理图像形式的多采样颜色缓冲。
 
-### 多采样渲染缓冲对象（Multisampled renderbuffer objects）
+### 多采样渲染缓冲对象
 
-和纹理一样，创建一个多采样渲染缓冲对象不难。而且还很简单，因为我们所要做的全部就是当我们指定渲染缓冲的内存的时候将`glRenderbuffeStorage`改为`glRenderbufferStorageMuiltisample`：
+和纹理一样，创建一个多采样渲染缓冲对象(Multisampled Renderbuffer Objects)不难。而且还很简单，因为我们所要做的全部就是当我们指定渲染缓冲的内存的时候将`glRenderbuffeStorage`改为`glRenderbufferStorageMuiltisample`：
 
 ```c++
 glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);

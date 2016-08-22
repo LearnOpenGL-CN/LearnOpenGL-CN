@@ -371,7 +371,7 @@ glBindVertexArray(0);
 
 为了更熟练地使用纹理，建议在继续之后的学习之前做完这些练习：
 
-- 修改片段着色器，**仅**对笑脸图案进行翻转，[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise1)
+- 修改片段着色器，**仅**让笑脸图案朝另一个方向看，[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise1)
 - 尝试用不同的纹理环绕方式，设定一个从`0.0f`到`2.0f`范围内的（而不是原来的`0.0f`到`1.0f`）纹理坐标。试试看能不能在箱子的角落放置4个笑脸：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise2)，[结果](http://learnopengl.com/img/getting-started/textures_exercise2.png)。记得一定要试试其他的环绕方式。
 - 尝试在矩形上只显示纹理图像的中间一部分，修改纹理坐标，达到能看见单个的像素的效果。尝试使用<var>GL_NEAREST</var>的纹理过滤方式让像素显示得更清晰：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise3)
 - 使用一个uniform变量作为<fun>mix</fun>函数的第三个参数来改变两个纹理可见度，使用上和下键来改变箱子或笑脸的可见度：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise4)，[片段着色器](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise4_fragment)。

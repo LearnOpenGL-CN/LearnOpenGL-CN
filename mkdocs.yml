@@ -12,7 +12,7 @@ pages:
     - 坐标系统: '01 Getting started/08 Coordinate Systems.md'
     - 摄像机: '01 Getting started/09 Camera.md'
     - 复习: '01 Getting started/10 Review.md'
-  - 光照(Lighting):
+  - 光照:
     - 颜色: '02 Lighting/01 Colors.md'
     - 光照基础: '02 Lighting/02 Basic Lighting.md'
     - 材质: '02 Lighting/03 Materials.md'
@@ -50,9 +50,13 @@ pages:
     - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
     - SSAO: '05 Advanced Lighting/09 SSAO.md'
   - 实战:
+    - 调试: '06 In Practice/01 Debugging.md'
     - 文字渲染: '06 In Practice/02 Text Rendering.md'
     - 2D游戏:
       - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
+      - 准备工作: '06 In Practice/2D-Game/02 Setting up.md'
+      - 渲染精灵: '06 In Practice/2D-Game/03 Rendering Sprites.md'
+      - 粒子: '06 In Practice/2D-Game/06 Particles.md'
 
 site_name: LearnOpenGL-CN
 
