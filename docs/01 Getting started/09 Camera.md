@@ -209,7 +209,7 @@ while(!glfwWindowShouldClose(window))
 我们要用两个全局变量来计算出`deltaTime`值：
 
 ```c++
-GLfloat deltaTime = 0.0f;	// 当前帧遇上一帧的时间差
+GLfloat deltaTime = 0.0f;	// 当前帧与上一帧的时间差
 GLfloat lastFrame = 0.0f;  	// 上一帧的时间
 ```
 
