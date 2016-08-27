@@ -53,13 +53,18 @@ CMake Error at cmake-modules/FindPkgMacros.cmake:110 (message):
 Required library DirectX not found! Install the library (including dev packages) and try again. If the library is already installed, set the missing variables manually in cmake.
 ```
 
-这个问题的解决方案：如果你之前没有安装过DirectX SDK，那么请安装。下载地址：[DirectX SDK](http://www.microsoft.com/en-us/download/details.aspx?id=6812)
- - 安装DirectX SDK时，可以遇到一个错误码为<b>S1023</b>的错误。遇到这个问题，请在安装DirectX SDK前，先安装C++ Redistributable package(s)。
-  问题解释：[已知问题：DirectX SDK (June 2010) 安装及S1023错误](https://blogs.msdn.microsoft.com/chuckw/2011/12/09/known-issue-directx-sdk-june-2010-setup-and-the-s1023-error/)
- - 一旦配置完成，你就可以生成解决方案文件了，打开解决方案文件并编译Assimp库（编译为Debug版本还是Release版本，根据你的需要和心情来定吧）
- - 使用默认配置构建的Assimp是一个动态库，所以我们需要把编译出来的assimp.dll文件拷贝到我们自己程序的可执行文件的同一目录里
- - 编译出来的Assimp的LIB文件和DLL文件可以在code/Debug或者code/Release里找到
- - 把编译好的LIB文件和DLL文件拷贝到工程的相应目录下，并链接到你的解决方案中。同时还好记得把Assimp的头文件也拷贝到工程里去（Assimp的头文件可以在include目录里找到）
+这个问题的解决方案：如果你之前没有安装过DirectX SDK，那么请安装。下载地址：[DirectX SDK](http://www.microsoft.com/en-us/download/details.aspx?id=6812)。
+
+ - 安装DirectX SDK时，可能遇到一个错误码为<b>S1023</b>的错误。遇到这个问题，请在安装DirectX SDK前，先安装C++ Redistributable package(s)。
+  问题解释：[已知问题：DirectX SDK (June 2010) 安装及S1023错误](https://blogs.msdn.microsoft.com/chuckw/2011/12/09/known-issue-directx-sdk-june-2010-setup-and-the-s1023-error/)。
+  
+ - 一旦配置完成，你就可以生成解决方案文件了，打开解决方案文件并编译Assimp库（编译为Debug版本还是Release版本，根据你的需要和心情来定吧）。
+ 
+ - 使用默认配置构建的Assimp是一个动态库，所以我们需要把编译出来的assimp.dll文件拷贝到我们自己程序的可执行文件的同一目录里。
+ 
+ - 编译出来的Assimp的LIB文件和DLL文件可以在code/Debug或者code/Release里找到。
+ 
+ - 把编译好的LIB文件和DLL文件拷贝到工程的相应目录下，并链接到你的解决方案中。同时还好记得把Assimp的头文件也拷贝到工程里去（Assimp的头文件可以在include目录里找到）。
 
 如果你还遇到了其他问题，可以在下面给出的链接里获取帮助。
 
