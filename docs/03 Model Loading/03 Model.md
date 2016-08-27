@@ -70,7 +70,7 @@ const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess
 我们先来声明一个`Importer`对象，它的名字空间是`Assimp`，然后调用它的`ReadFile`函数。这个函数需要一个文件路径，第二个参数是后处理（post-processing）选项。除了可以简单加载文件外，Assimp允许我们定义几个选项来强制Assimp去对导入数据做一些额外的计算或操作。通过设置`aiProcess_Triangulate`，我们告诉Assimp如果模型不是（全部）由三角形组成，应该转换所有的模型的原始几何形状为三角形。`aiProcess_FlipUVs`基于y轴翻转纹理坐标，在处理的时候是必须的（你可能记得，我们在纹理教程中，我们说过在OpenGL大多数图像会被沿着y轴反转，所以这个小小的后处理选项会为我们修正这个）。一少部分其他有用的选项如下：
 
 * `aiProcess_GenNormals` : 如果模型没有包含法线向量，就为每个顶点创建法线。
-* `aiProcess_SplitLargeMeshes` : 把大的网格成几个小的的下级网格，当你渲染有一个最大数量顶点的限制时或者只能处理小块网格时很有用。
+* `aiProcess_SplitLargeMeshes` : 把大的网格分成几个小的的下级网格，当你渲染有一个最大数量顶点的限制时或者只能处理小块网格时很有用。
 * `aiProcess_OptimizeMeshes` : 和上个选项相反，它把几个网格结合为一个更大的网格。以减少绘制函数调用的次数的方式来优化。
 
 Assimp提供了后处理说明，你可以从这里找到所有内容。事实上通过Assimp加载一个模型超级简单。困难的是使用返回的场景对象把加载的数据变换到一个Mesh对象的数组。
@@ -245,7 +245,7 @@ if(mesh->mMaterialIndex >= 0)
 }
 ```
 
-我么先从场景的`mMaterials`数组获取`aimaterial`对象，然后，我们希望加载网格的diffuse或/和specular纹理。一个材质储存了一个数组，这个数组为每个纹理类型提供纹理位置。不同的纹理类型都以`aiTextureType_`为前缀。我们使用一个帮助函数：`loadMaterialTextures`来从材质获取纹理。这个函数返回一个`Texture`结构体的向量，我们在之后储存在模型的`textures`坐标的后面。
+我么先从场景的`mMaterials`数组获取`aimaterial`对象，然后，我们希望加载网格的漫反射贴图和（或者）镜面贴图。一个材质储存了一个数组，这个数组为每个纹理类型提供纹理位置。不同的纹理类型都以`aiTextureType_`为前缀。我们使用一个帮助函数：`loadMaterialTextures`来从材质获取纹理。这个函数返回一个`Texture`结构体的向量，我们在之后储存在模型的`textures`坐标的后面。
 
 `loadMaterialTextures`函数遍历所有给定纹理类型的纹理位置，获取纹理的文件位置，然后加载生成纹理，把信息储存到`Vertex`结构体。看起来像这样：
 
@@ -345,23 +345,23 @@ vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string
 
 # 和箱子模型告别
 
-现在给我们导入一个天才艺术家创建的模型看看效果，不是我这个天才做的（你不得不承认，这个箱子也许是你见过的最漂亮的立体图形）。因为我不想过于自夸，所以我会时不时的给其他艺术家进入这个行列的机会，这次我们会加载Crytek原版的孤岛危机游戏中的纳米铠甲。这个模型被输出为obj和mtl文件，mtl包含模型的diffuse和specular以及法线贴图（后面会讲）。你可以下载这个模型，注意，所有的纹理和模型文件都应该放在同一个目录，以便载入纹理。
+现在给我们导入一个天才艺术家创建的模型看看效果，不是我这个天才做的（你不得不承认，这个箱子也许是你见过的最漂亮的立方体）。因为我不想过于自夸，所以我会时不时的给其他艺术家进入这个行列的机会，这次我们会加载Crytek的原版孤岛危机游戏中的纳米铠甲。这个模型被输出为obj和mtl文件，mtl包含模型的漫反射贴图，镜面贴图以及法线贴图（后面会讲）。你可以[下载这个模型](http://learnopengl.com/data/models/nanosuit.rar)，注意，所有的纹理和模型文件都应该放在同一个目录，以便载入纹理。
 
 !!! Important
     
     你从这个站点下载的版本是修改过的版本，每个纹理文件路径已经修改改为本地相对目录，原来的资源是绝对目录。
 
-现在在代码中，声明一个Model对象，把它模型的文件位置传递给它。模型应该自动加载（如果没有错误的话）在游戏循环中使用它的Draw函数绘制这个对象。没有更多的缓冲配置，属性指针和渲染命令，仅仅简单的一行。如果你创建几个简单的着色器，像素着色器只输出对象的diffuse纹理颜色，结果看上去会有点像这样：
+现在在代码中，声明一个Model对象，把它模型的文件位置传递给它。模型应该自动加载（如果没有错误的话）在游戏循环中使用它的Draw函数绘制这个对象。没有更多的缓冲配置，属性指针和渲染命令，仅仅简单的一行。如果你创建几个简单的着色器，像素着色器只输出对象的漫反射贴图颜色，结果看上去会有点像这样：
 
 ![](http://www.learnopengl.com/img/model_loading/model_diffuse.png)
 
 你可以从这里找到带有[顶点](http://learnopengl.com/code_viewer.php?code=model_loading/model&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=model_loading/model&type=fragment)着色器的[完整的源码](http://learnopengl.com/code_viewer.php?code=model_loading/model_diffuse)。
 
-我们也可以变得更加有创造力，引入两个点光源到我们之前从光照教程学过的渲染等式，结合高光贴图获得惊艳效果：
+因为我们之前学习过光照教程，可以更加富有创造性的引入两个点光源渲染方程，结合镜面贴图获得惊艳效果：
 
 ![](http://www.learnopengl.com/img/model_loading/model_lighting.png)
 
-虽然我不得不承认这个相比之前用过的容器也太炫了。使用Assimp，你可以载入无数在互联网上找到的模型。只有很少的资源网站提供多种格式的免费3D模型给你下载。一定注意，有些模型仍然不能很好的载入，纹理路径无效或者这种格式Assimp不能读。
+甚至我不得不承认这个相比之前用过的容器酷炫多了。使用Assimp，你可以载入无数在互联网上找到的模型。有相当多可以以多种文件格式下载免费3D模型的资源网站。一定注意，有些模型仍然不能很好的载入，纹理路径无效或者这种格式Assimp不能读取。
 
 ## 练习
 
