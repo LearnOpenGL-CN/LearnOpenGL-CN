@@ -148,3 +148,10 @@
 - Compute Shader：计算着色器
 - Attachment：附件
 - Render Buffer Object：渲染缓冲对象
+
+## 06-03-01
+
+- Level：关卡
+- Gameplay State：游戏状态
+- Singleton：单一实例
+- Single Responsibility Principle：单一功能原则
