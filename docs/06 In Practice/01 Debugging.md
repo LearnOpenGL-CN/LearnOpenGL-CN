@@ -272,7 +272,7 @@ void main()
 - **.frag**：片段着色器(Fragment Shader)
 - **.geom**：几何着色器(Geometry Shader)
 - **.tesc**：细分控制着色器(Tessellation Control Shader)
-- **.tese**：细分评估着色器(Tessellation Evaluation Shader)
+- **.tese**：细分计算着色器(Tessellation Evaluation Shader)
 - **.comp**：计算着色器(Compute Shader)
 
 运行GLSL参考编译器非常简单：
