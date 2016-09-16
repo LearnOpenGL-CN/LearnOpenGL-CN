@@ -20,7 +20,7 @@
 当导入一个模型文件时，即Assimp加载一整个包含所有模型和场景数据的模型文件到一个scene对象时，Assimp会为这个模型文件中的所有场景节点、模型节点都生成一个具有对应关系的数据结构，且将这些场景中的各种元素与模型数据对应起来。下图展示了一个简化的Assimp生成的模型文件数据结构：
 
 
-![](http://learnopengl.com/img/model_loading/assimp_structure.png)
+![](../img/03/01/assimp_structure.png)
 
 
  - 所有的模型、场景数据都包含在scene对象中，如所有的材质和Mesh。同样，场景的根节点引用也包含在这个scene对象中

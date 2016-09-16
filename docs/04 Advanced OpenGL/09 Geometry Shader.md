@@ -51,7 +51,7 @@ triangles_adjacency |GL_TRIANGLES_ADJACENCY或GL_TRIANGLE_STRIP_ADJACENCY（6）
 
 这种情况，你会奇怪什么是线条：一个线条是把多个点链接起来表示出一个连续的线，它最少有两个点来组成。每个后一个点在前一个新渲染的点后面渲染，你可以看看下面的图，其中包含5个顶点：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_line_strip.png)
+![](../img/04/09/geometry_shader_line_strip.png)
 
 上面的着色器，我们只能输出一个线段，因为顶点的最大值设置为2。
 
@@ -89,7 +89,7 @@ void main() {
 
 现在你了解了几何着色器的工作方式，你就可能猜出这个几何着色器做了什么。这个几何着色器接收一个基本图形——点，作为它的输入，使用输入点作为它的中心，创建了一个水平线基本图形。如果我们渲染它，结果就会像这样：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_lines.png)
+![](../img/04/09/geometry_shader_lines.png)
 
 并不是非常引人注目，但是考虑到它的输出是使用下面的渲染命令生成的就很有意思了：
 
@@ -147,7 +147,7 @@ glBindVertexArray(0);
 
 效果是黑色场景中有四个绿点（虽然很难看到）：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_points.png)
+![](../img/04/09/geometry_shader_points.png)
 
 但我们不是已经学到了所有内容了吗？对，现在我们将通过为场景添加一个几何着色器来为这个小场景增加点活力。
 
@@ -182,7 +182,7 @@ glLinkProgram(program);
 
 如果你现在编译和运行，就会看到和下面相似的结果：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_points.png)
+![](../img/04/09/geometry_shader_points.png)
 
 它和没用几何着色器一样！我承认有点无聊，但是事实上，我们仍能绘制证明几何着色器工作了的点，所以现在是时候来做点更有意思的事了！
 
@@ -193,11 +193,11 @@ glLinkProgram(program);
 
 在OpenGL中三角形带(triangle strip)绘制起来更高效，因为它所使用的顶点更少。第一个三角形绘制完以后，每个后续的顶点会生成一个毗连前一个三角形的新三角形：每3个毗连的顶点都能构成一个三角形。如果我们有6个顶点，它们以三角形带的方式组合起来，那么我们会得到这些三角形：（1, 2, 3）、（2, 3, 4）、（3, 4, 5）、（4,5,6）因此总共可以表示出4个三角形。一个三角形带至少要用3个顶点才行，它能生曾N-2个三角形；6个顶点我们就能创建6-2=4个三角形。下面的图片表达了这点：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_triangle_strip.png)
+![](../img/04/09/geometry_shader_triangle_strip.png)
 
 使用一个三角形带作为一个几何着色器的输出，我们可以轻松创建房子的形状，只要以正确的顺序来生成3个毗连的三角形。下面的图像显示，我们需要以何种顺序来绘制点，才能获得我们需要的三角形，图上的蓝点代表输入点：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_house.png)
+![](../img/04/09/geometry_shader_house.png)
 
 上图的内容转变为几何着色器：
 
@@ -229,7 +229,7 @@ void main()
 
 这个几何着色器生成5个顶点，每个顶点是点（point）的位置加上一个偏移量，来组成一个大三角形带。接着最后的基本图形被像素化，片段着色器处理整三角形带，结果是为我们绘制的每个点生成一个绿房子：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_houses.png)
+![](../img/04/09/geometry_shader_houses.png)
 
 可以看到，每个房子实则是由3个三角形组成，都是仅仅使用空间中一点来绘制的。绿房子看起来还是不够漂亮，所以我们再给每个房子加一个不同的颜色。我们将在顶点着色器中为每个顶点增加一个额外的代表颜色信息的顶点属性。
 
@@ -306,7 +306,7 @@ EndPrimitive();
 
 所有发射出去的顶点都把最后储存在fColor中的值嵌入到他们的数据中，和我们在他们的属性中定义的顶点颜色相同。所有的分房子便都有了自己的颜色：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_houses_colored.png)
+![](../img/04/09/geometry_shader_houses_colored.png)
 
 为了好玩儿，我们还可以假装这是在冬天，给最后一个顶点一个自己的白色，就像在屋顶上落了一些雪。
 
@@ -329,7 +329,7 @@ EndPrimitive();
 
 结果就像这样：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_houses_snow.png)
+![](../img/04/09/geometry_shader_houses_snow.png)
 
 你可以对比一下你的[源码](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_houses)和[着色器](http://learnopengl.com/code_viewer.php?code=advanced/geometry_shader_houses_shaders)。
 
@@ -341,7 +341,7 @@ EndPrimitive();
 
 当我们说对一个物体进行爆破(Explode)的时候并不是说我们将要把之前的那堆顶点炸掉，但是我们打算把每个三角形沿着它们的法线向量移动一小段距离。效果是整个物体上的三角形看起来就像沿着它们的法线向量爆炸了一样。纳米服上的三角形的爆炸式效果看起来是这样的：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_explosion.png)
+![](../img/04/09/geometry_shader_explosion.png)
 
 这样一个几何着色器效果的一大好处是，它可以用到任何物体上，无论它们多复杂。
 
@@ -498,7 +498,7 @@ void main()
 
 现在先使用普通着色器来渲染你的模型，然后使用特制的法线可视着色器，你会看到这样的效果：
 
-![](http://learnopengl.com/img/advanced/geometry_shader_normals.png)
+![](../img/04/09/geometry_shader_normals.png)
 
 除了我们的纳米服现在看起来有点像一个带着隔热手套的全身多毛的家伙外，它给了我们一种非常有效的检查一个模型的法线向量是否有错误的方式。你可以想象下这样的几何着色器也经常能被用在给物体添加毛发上。
 

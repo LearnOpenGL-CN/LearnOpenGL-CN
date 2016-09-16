@@ -9,13 +9,13 @@
 
 在OpenGL中，物体透明技术通常被叫做**混合(Blending)**。透明是物体（或物体的一部分）非纯色而是混合色，这种颜色来自于不同浓度的自身颜色和它后面的物体颜色。一个有色玻璃窗就是一种透明物体，玻璃有自身的颜色，但是最终的颜色包含了所有玻璃后面的颜色。这也正是混合这名称的出处，因为我们将多种（来自于不同物体）颜色混合为一个颜色，透明使得我们可以看穿物体。
 
-![](http://learnopengl.com/img/advanced/blending_transparency.png)
+![](../img/04/03/blending_transparency.png)
 
 透明物体可以是完全透明（它使颜色完全穿透）或者半透明的（它使颜色穿透的同时也显示自身颜色）。一个物体的透明度，被定义为它的颜色的alpha值。alpha颜色值是一个颜色向量的第四个元素，你可能已经看到很多了。在这个教程前，我们一直把这个元素设置为1.0，这样物体的透明度就是0.0，同样的，当alpha值是0.0时就表示物体是完全透明的，alpha值为0.5时表示物体的颜色由50%的自身的颜色和50%的后面的颜色组成。
 
-我们之前所使用的纹理都是由3个颜色元素组成的：红、绿、蓝，但是有些纹理同样有一个内嵌的aloha通道，它为每个纹理像素(Texel)包含着一个alpha值。这个alpha值告诉我们纹理的哪个部分有透明度，以及这个透明度有多少。例如，下面的窗子纹理的玻璃部分的alpha值为0.25(它的颜色是完全红色，但是由于它有75的透明度，它会很大程度上反映出网站的背景色，看起来就不那么红了)，角落部分alpha是0.0。
+我们之前所使用的纹理都是由3个颜色元素组成的：红、绿、蓝，但是有些纹理同样有一个内嵌的aloha通道，它为每个纹理像素(Texel)包含着一个alpha值。这个alpha值告诉我们纹理的哪个部分有透明度，以及这个透明度有多少。例如，下面的[窗户纹理](../img/04/03/blending_transparent_window.png)的玻璃部分的alpha值为0.25(它的颜色是完全红色，但是由于它有75的透明度，它会很大程度上反映出网站的背景色，看起来就不那么红了)，角落部分alpha是0.0。
 
-![](http://learnopengl.com/img/advanced/blending_transparent_window.png)
+![](../img/04/03/blending_transparent_window.png)
 
 我们很快就会把这个窗子纹理加到场景中，但是首先，我们将讨论一点简单的技术来实现纹理的半透明，也就是完全透明和完全不透明。
 
@@ -25,7 +25,7 @@
 
 下面的纹理正是这样的纹理，它既有完全不透明的部分（alpha值为1.0）也有完全透明的部分（alpha值为0.0），而没有半透明的部分。你可以看到没有草的部分，图片显示了网站的背景色，而不是它自身的那部分颜色。
 
-![](http://learnopengl.com/img/textures/grass.png)
+![](../img/04/03/grass.png)
 
 所以，当向场景中添加像这样的纹理时，我们不希望看到一个方块图像，而是只显示实际的纹理像素，剩下的部分可以被看穿。我们要忽略(丢弃)纹理透明部分的像素，不必将这些片段储存到颜色缓冲中。在此之前，我们还要学一下如何加载一个带有透明像素的纹理。
 
@@ -82,7 +82,7 @@ glBindVertexArray(0);
 ```
 
 运行程序你将看到：
-![](http://learnopengl.com/img/advanced/blending_no_discard.png)
+![](../img/04/03/blending_no_discard.png)
 
 出现这种情况是因为OpenGL默认是不知道如何处理alpha值的，不知道何时忽略(丢弃)它们。我们不得不手动做这件事。幸运的是这很简单，感谢着色器，GLSL为我们提供了discard命令，它保证了片段不会被进一步处理，这样就不会进入颜色缓冲。有了这个命令我们就可以在片段着色器中检查一个片段是否有在一定的阈限下的alpha值，如果有，那么丢弃这个片段，就好像它不存在一样：
 
@@ -105,7 +105,7 @@ void main()
 
 在这儿我们检查被采样纹理颜色包含着一个低于0.1这个阈限的alpha值，如果有，就丢弃这个片段。这个片段着色器能够保证我们只渲染哪些不是完全透明的片段。现在我们来看看效果：
 
-![](http://learnopengl.com/img/advanced/blending_discard.png)
+![](../img/04/03/blending_discard.png)
 
 !!! Important
 
@@ -141,7 +141,7 @@ $$
 
 片段着色器运行完成并且所有的测试都通过以后，混合方程才能自由执行片段的颜色输出，当前它在颜色缓冲中（前面片段的颜色在当前片段之前储存）。源和目标颜色会自动被OpenGL设置，而源和目标因子可以让我们自由设置。我们来看一个简单的例子：
 
-![](http://learnopengl.com/img/advanced/blending_equation.png)
+![](../img/04/03/blending_equation.png)
 
 我们有两个方块，我们希望在红色方块上绘制绿色方块。红色方块会成为目标颜色（它会先进入颜色缓冲），我们将在红色方块上绘制绿色方块。
 
@@ -153,7 +153,7 @@ $$
 
 最终方块结合部分包含了60%的绿色和40%的红色，得到一种脏兮兮的颜色：
 
-![](http://learnopengl.com/img/advanced/blending_equation_mixed.png)
+![](../img/04/03/blending_equation_mixed.png)
 
 最后的颜色被储存到颜色缓冲中，取代先前的颜色。
 
@@ -232,7 +232,7 @@ void main()
 
 这一次（无论OpenGL什么时候去渲染一个片段），它都根据alpha值，把当前片段的颜色和颜色缓冲中的颜色进行混合。因为窗子的玻璃部分的纹理是半透明的，我们应该可以透过玻璃看到整个场景。
 
-![](http://learnopengl.com/img/advanced/blending_incorrect_order.png)
+![](../img/04/03/blending_incorrect_order.png)
 
 如果你仔细看看，就会注意到有些不对劲。前面的窗子透明部分阻塞了后面的。为什么会这样？
 
@@ -278,7 +278,7 @@ for(std::map<float,glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sort
 
 我们从map得来一个逆序的迭代器，迭代出每个逆序的条目，然后把每个窗子的四边形平移到相应的位置。这个相对简单的方法对透明物体进行了排序，修正了前面的问题，现在场景看起来像这样：
 
-![](http://learnopengl.com/img/advanced/blending_sorted.png)
+![](../img/04/03/blending_sorted.png)
 
 你可以[从这里得到完整的带有排序的源码](http://learnopengl.com/code_viewer.php?code=advanced/blending_sorted)。
 

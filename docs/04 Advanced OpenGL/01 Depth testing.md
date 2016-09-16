@@ -73,11 +73,11 @@ glDepthFunc(GL_ALWAYS);
 
 这和我们没有启用深度测试得到了相同的行为。深度测试只是简单地通过，所以这样最后绘制的片段就会呈现在之前绘制的片段前面，即使他们应该在前面。由于我们最后绘制地板平面，那么平面的片段会覆盖每个容器的片段:
 
-![](http://learnopengl.com/img/advanced/depth_testing_func_always.png)
+![](../img/04/01/depth_testing_func_always.png)
 
 重新设置到`GL_LESS`给了我们曾经的场景：
 
-![](http://learnopengl.com/img/advanced/depth_testing_func_less.png)
+![](../img/04/01/depth_testing_func_less.png)
 
 ## 深度值精度
 
@@ -89,7 +89,7 @@ $$
 
 这里far和near是我们用来提供到投影矩阵设置可见视图截锥的远近值 (见[坐标系](../01 Getting started/08 Coordinate Systems.md))。方程带内锥截体的深度值 z，并将其转换到 [0，1] 范围。在下面的图给出 z 值和其相应的深度值的关系:
 
-![](http://learnopengl.com/img/advanced/depth_linear_graph.png)
+![](../img/04/01/depth_linear_graph.png)
 
 !!! Important
 
@@ -105,7 +105,7 @@ $$
 
 如果你不知道这个方程到底怎么回事也不必担心。要记住的重要一点是在深度缓冲区的值不是线性的屏幕空间 (它们在视图空间投影矩阵应用之前是线性)。值为 0.5 在深度缓冲区并不意味着该对象的 z 值是投影平头截体的中间;顶点的 z 值是实际上相当接近近平面!你可以看到 z 值和产生深度缓冲区的值在下列图中的非线性关系:
 
-![](http://learnopengl.com/img/advanced/depth_non_linear_graph.png)
+![](../img/04/01/depth_non_linear_graph.png)
 
 正如你所看到，一个附近的物体的小的 z 值因此给了我们很高的深度精度。变换 (从观察者的角度) 的 z 值的方程式被嵌入在投影矩阵，所以当我们变换顶点坐标从视图到裁剪，然后到非线性方程应用了的屏幕空间中。如果你好奇的投影矩阵究竟做了什么我建议阅读[这个文章](http://www.songho.ca/opengl/gl_projectionmatrix.html)。
 
@@ -126,7 +126,7 @@ void main()
 
 你可能还记得从上一节中的屏幕空间的深度值是非线性如他们在z很小的时候有很高的精度，，较大的 z 值有较低的精度。该片段的深度值会迅速增加，所以几乎所有顶点的深度值接近 1.0。如果我们小心的靠近物体，你最终可能会看到的色彩越来越暗，意味着它们的 z 值越来越小:
 
-![](http://www.learnopengl.com/img/advanced/depth_testing_visible_depth.png)
+![](../img/04/01/depth_testing_visible_depth.png)
 
 这清楚地表明深度值的非线性特性。近的物体相对远的物体对的深度值比对象较大的影响。只移动几英寸就能让暗色完全变亮。
 
@@ -172,7 +172,7 @@ void main()
 
 如果现在运行该应用程序，我们得到在距离实际上线性的深度值。尝试移动现场周围看到深度值线性变化
 
-![](http://www.learnopengl.com/img/advanced/depth_testing_visible_linear.png)。
+![](../img/04/01/depth_testing_visible_linear.png)。
 
 颜色主要是黑色的因为深度值线性范围从 0.1 的近平面到 100 的远平面，那里离我们很远。其结果是，我们相对靠近近平面，从而得到较低 (较暗) 的深度值。
 
@@ -184,7 +184,7 @@ void main()
 
 如果您移动摄像机到容器的里面，那么这个影响清晰可，容器的底部不断切换容器的平面和地板的平面:
 
-![](http://www.learnopengl.com/img/advanced/depth_testing_z_fighting.png)
+![](../img/04/01/depth_testing_z_fighting.png)
 
 深度冲突是深度缓冲区的普遍问题，当对象的距离越远一般越强(因为深度缓冲区在z值非常大的时候没有很高的精度)。深度冲突还无法完全避免，但有一般的几个技巧，将有助于减轻或完全防止深度冲突在你的场景中的出现：
 

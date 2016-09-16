@@ -45,7 +45,7 @@ void main()
 
 结果是我们绘制的点距离我们越远就越大：
 
-![](http://learnopengl.com/img/advanced/advanced_glsl_pointsize.png)
+![](../img/04/08/advanced_glsl_pointsize.png)
 
 想象一下，每个顶点表示出来的点的大小的不同，如果用在像粒子生成之类的技术里会挺有意思的。
 
@@ -82,7 +82,7 @@ void main()
 
 因为窗口的宽是800，当一个像素的x坐标小于400，那么它一定在窗口的左边，这样我们就让物体有个不同的颜色。
 
-![](http://learnopengl.com/img/advanced/advanced_glsl_frontfacing.png)
+![](../img/04/08/advanced_glsl_frontfacing.png)
 
 我们现在可以计算出两个完全不同的片段着色器结果，每个显示在窗口的一端。这对于测试不同的光照技术很有好处。
 
@@ -111,7 +111,7 @@ void main()
 
 如果我们从箱子的一角往里看，就能看到里面用的是另一个纹理。
 
-![](http://learnopengl.com/img/advanced/advanced_glsl_frontfacing.png)
+![](../img/04/08/advanced_glsl_frontfacing.png)
 
 注意，如果你开启了面剔除，你就看不到箱子里面有任何东西了，所以此时使用`gl_FrontFacing`毫无意义。
 
@@ -326,7 +326,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 在OpenGL环境（context）中，定义了若干绑定点（binding points），在哪儿我们可以把一个uniform缓冲链接上去。当我们创建了一个uniform缓冲，我们把它链接到一个这个绑定点上，我们也把着色器中uniform块链接到同一个绑定点上，这样就把它们链接到一起了。下面的图标表示了这点：
 
-![](http://learnopengl.com/img/advanced/advanced_glsl_binding_points.png)
+![](../img/04/08/advanced_glsl_binding_points.png)
 
 你可以看到，我们可以将多个uniform缓冲绑定到不同绑定点上。因为着色器A和着色器B都有一个链接到同一个绑定点0的uniform块，它们的uniform块分享同样的uniform数据—`uboMatrices`有一个前提条件是两个着色器必须都定义了Matrices这个uniform块。
 
@@ -457,7 +457,7 @@ glBindVertexArray(0);
 
 我们只需要在去设置一个`model`的uniform即可。在一个像这样的场景中使用uniform缓冲对象在每个着色器中可以减少uniform的调用。最后效果看起来像这样：
 
-![](http://learnopengl.com/img/advanced/advanced_glsl_uniform_buffer_objects.png)
+![](../img/04/08/advanced_glsl_uniform_buffer_objects.png)
 
 通过改变模型矩阵，每个立方体都移动到窗口的一边，由于片段着色器不同，物体的颜色也不同。这是一个相对简单的场景，我们可以使用uniform缓冲对象，但是任何大型渲染程序有成百上千的活动着色程序，彼时uniform缓冲对象就会闪闪发光了。
 

@@ -10,7 +10,7 @@
 
 下面这幅图展示了在使用和不使用SSAO时场景的不同。特别注意对比褶皱部分，你会发现(环境)光被遮蔽了许多：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_example.png)
+![](../img/05/09/ssao_example.png)
 
 尽管这不是一个非常明显的效果，启用SSAO的图像确实给我们更真实的感觉，这些小的遮蔽细节给整个场景带来了更强的深度感。
 
@@ -18,23 +18,23 @@
 
 SSAO背后的原理很简单：对于铺屏四边形(Screen-filled Quad)上的每一个片段，我们都会根据周边深度值计算一个**遮蔽因子(Occlusion Factor)**。这个遮蔽因子之后会被用来减少或者抵消片段的环境光照分量。遮蔽因子是通过采集片段周围球型核心(Kernel)的多个深度样本，并和当前片段深度值对比而得到的。高于片段深度值样本的个数就是我们想要的遮蔽因子。
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_crysis_circle.png)
+![](../img/05/09/ssao_crysis_circle.png)
 
 上图中在几何体内灰色的深度样本都是高于片段深度值的，他们会增加遮蔽因子；几何体内样本个数越多，片段获得的环境光照也就越少。
 
 很明显，渲染效果的质量和精度与我们采样的样本数量有直接关系。如果样本数量太低，渲染的精度会急剧减少，我们会得到一种叫做**波纹(Banding)**的效果；如果它太高了，反而会影响性能。我们可以通过引入随机性到采样核心(Sample Kernel)的采样中从而减少样本的数目。通过随机旋转采样核心，我们能在有限样本数量中得到高质量的结果。然而这仍然会有一定的麻烦，因为随机性引入了一个很明显的噪声图案，我们将需要通过模糊结果来修复这一问题。下面这幅图片([John Chapman](http://john-chapman-graphics.blogspot.com/)的佛像)展示了波纹效果还有随机性造成的效果：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_banding_noise.jpg)
+![](../img/05/09/ssao_banding_noise.jpg)
 
 你可以看到，尽管我们在低样本数的情况下得到了很明显的波纹效果，引入随机性之后这些波纹效果就完全消失了。
 
 Crytek公司开发的SSAO技术会产生一种特殊的视觉风格。因为使用的采样核心是一个球体，它导致平整的墙面也会显得灰蒙蒙的，因为核心中一半的样本都会在墙这个几何体上。下面这幅图展示了孤岛危机的SSAO，它清晰地展示了这种灰蒙蒙的感觉：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_crysis.jpg)
+![](../img/05/09/ssao_crysis.jpg)
 
 由于这个原因，我们将不会使用球体的采样核心，而使用一个沿着表面法向量的半球体采样核心。
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_hemisphere.png)
+![](../img/05/09/ssao_hemisphere.png)
 
 通过在**法向半球体(Normal-oriented Hemisphere)**周围采样，我们将不会考虑到片段底部的几何体.它消除了环境光遮蔽灰蒙蒙的感觉，从而产生更真实的结果。这个SSAO教程将会基于法向半球法和John Chapman出色的[SSAO教程](http://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html)。
 
@@ -49,7 +49,7 @@ SSAO需要获取几何体的信息，因为我们需要一些方式来确定一�
 
 通过使用一个逐片段观察空间位置，我们可以将一个采样半球核心对准片段的观察空间表面法线。对于每一个核心样本我们会采样线性深度纹理来比较结果。采样核心会根据旋转矢量稍微偏转一点；我们所获得的遮蔽因子将会之后用来限制最终的环境光照分量。
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_overview.png)
+![](../img/05/09/ssao_overview.png)
 
 由于SSAO是一种屏幕空间技巧，我们对铺屏2D四边形上每一个片段计算这一效果；也就是说我们没有场景中几何体的信息。我们能做的只是渲染几何体数据到屏幕空间纹理中，我们之后再会将此数据发送到SSAO着色器中，之后我们就能访问到这些几何体数据了。如果你看了前面一篇教程，你会发现这和延迟渲染很相似。这也就是说SSAO和延迟渲染能完美地兼容，因为我们已经存位置和法线向量到G缓冲中了。
 
@@ -116,7 +116,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 我们需要沿着表面法线方向生成大量的样本。就像我们在这个教程的开始介绍的那样，我们想要生成形成半球形的样本。由于对每个表面法线方向生成采样核心非常困难，也不合实际，我们将在[切线空间](04 Normal Mapping.md)(Tangent Space)内生成采样核心，法向量将指向正z方向。
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_hemisphere.png)
+![](../img/05/09/ssao_hemisphere.png)
 
 假设我们有一个单位半球，我们可以获得一个拥有最大64样本值的采样核心：
 
@@ -161,7 +161,7 @@ GLfloat lerp(GLfloat a, GLfloat b, GLfloat f)
 
 这就给了我们一个大部分样本靠近原点的核心分布。
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_kernel_weight.png)
+![](../img/05/09/ssao_kernel_weight.png)
 
 每个核心样本将会被用来偏移观察空间片段位置从而采样周围的几何体。我们在教程开始的时候看到，如果没有变化采样核心，我们将需要大量的样本来获得真实的结果。通过引入一个随机的转动到采样核心中，我们可以很大程度上减少这一数量。
 
@@ -333,7 +333,7 @@ occlusion += (sampleDepth >= sample.z ? 1.0 : 0.0);
 
 这并没有完全结束，因为仍然还有一个小问题需要考虑。当检测一个靠近表面边缘的片段时，它将会考虑测试表面之下的表面的深度值；这些值将会(不正确地)音响遮蔽因子。我们可以通过引入一个范围检测从而解决这个问题，正如下图所示([John Chapman](http://john-chapman-graphics.blogspot.com/)的佛像)：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_range_check.png)
+![](../img/05/09/ssao_range_check.png)
 
 我们引入一个范围测试从而保证我们只当被测深度值在取样半径内时影响遮蔽因子。将代码最后一行换成：
 
@@ -344,7 +344,7 @@ occlusion += (sampleDepth >= sample.z ? 1.0 : 0.0) * rangeCheck;
 
 这里我们使用了GLSL的`smoothstep`函数，它非常光滑地在第一和第二个参数范围内插值了第三个参数。如果深度差因此最终取值在`radius`之间，它们的值将会光滑地根据下面这个曲线插值在0.0和1.0之间：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_smoothstep.png)
+![](../img/05/09/ssao_smoothstep.png)
 
 如果我们使用一个在深度值在`radius`之外就突然移除遮蔽贡献的硬界限范围检测(Hard Cut-off Range Check)，我们将会在范围检测应用的地方看见一个明显的(很难看的)边缘。
 
@@ -358,7 +358,7 @@ FragColor = occlusion;
 
 下面这幅图展示了我们最喜欢的纳米装模型正在打盹的场景，环境遮蔽着色器产生了以下的纹理：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_without_blur.png)
+![](../img/05/09/ssao_without_blur.png)
 
 可见，环境遮蔽产生了非常强烈的深度感。仅仅通过环境遮蔽纹理我们就已经能清晰地看见模型一定躺在地板上而不是浮在空中。
 
@@ -406,7 +406,7 @@ void main() {
 
 这里我们遍历了周围在-2.0和2.0之间的SSAO纹理单元(Texel)，采样与噪声纹理维度相同数量的SSAO纹理。我们通过使用返回`vec2`纹理维度的`textureSize`，根据纹理单元的真实大小偏移了每一个纹理坐标。我们平均所得的结果，获得一个简单但是有效的模糊效果：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao.png)
+![](../img/05/09/ssao.png)
 
 这就完成了，一个包含逐片段环境遮蔽数据的纹理；在光照处理阶段中可以直接使用。
 
@@ -466,7 +466,7 @@ void main()
 
 (除了将其改到观察空间)对比于之前的光照实现，唯一的真正改动就是场景环境分量与`AmbientOcclusion`值的乘法。通过在场景中加入一个淡蓝色的点光源，我们将会得到下面这个结果：
 
-![](http://learnopengl.com/img/advanced-lighting/ssao_final.png)
+![](../img/05/09/ssao_final.png)
 
 你可以在[这里](http://learnopengl.com/code_viewer.php?code=advanced-lighting/ssao)找到完整的源代码，和以下着色器：
 

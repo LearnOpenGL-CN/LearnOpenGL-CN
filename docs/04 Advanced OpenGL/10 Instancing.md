@@ -31,7 +31,7 @@ for(GLuint i = 0; i < amount_of_models_to_draw; i++)
 
 我们调用一个实例化渲染函数，在标准化设备坐标中绘制一百个2D四边形来看看实例化绘制的效果是怎样的。通过对一个储存着100个偏移量向量的索引，我们为每个实例四边形添加一个偏移量。最后，窗口被排列精美的四边形网格填满：
 
-![](http://learnopengl.com/img/advanced/instancing_quads.png)
+![](../img/04/10/instancing_quads.png)
 
 每个四边形是2个三角形所组成的，因此总共有6个顶点。每个顶点包含一个2D标准设备坐标位置向量和一个颜色向量。下面是例子中所使用的顶点数据，每个三角形为了适应屏幕都很小：
 
@@ -176,7 +176,7 @@ glVertexAttribDivisor(2, 1);
 
 如果我们现在再次使用`glDrawArraysInstanced`渲染四边形，我们会得到下面的输出：
 
-![](http://learnopengl.com/img/advanced/instancing_quads.png)
+![](../img/04/10/instancing_quads.png)
 
 和前面的一样，但这次是使用实例数组实现的，它使我们为绘制实例向顶点着色器传递更多的数据（内存允许我们存多少就能存多少）。
 
@@ -193,7 +193,7 @@ void main()
 
 结果是第一个实例的四边形被绘制的非常小，随着绘制实例的增加，`gl_InstanceID`越来越接近100，这样更多的四边形会更接近它们原来的大小。这是一种很好的将`gl_InstanceID`与实例数组结合使用的法则：
 
-![](http://learnopengl.com/img/advanced/instancing_quads_arrays.png)
+![](../img/04/10/instancing_quads_arrays.png)
 
 如果你仍然不确定实例渲染如何工作，或者想看看上面的代码是如何组合起来的，你可以在[这里找到应用的源码](http://learnopengl.com/code_viewer.php?code=advanced/instancing_quads)。
 
@@ -262,7 +262,7 @@ for(GLuint i = 0; i < amount; i++)
 
 结果是一个太空样子的场景，我们可以看到有一个自然的小行星带：
 
-![](http://learnopengl.com/img/advanced/instancing_asteroids.png)
+![](../img/04/10/instancing_asteroids.png)
 
 这个场景包含1001次渲染函数调用，每帧渲染1000个小行星模型。你可以在这里找到[场景的源码](http://learnopengl.com/code_viewer.php?code=advanced/instancing_asteroids_normal)，以及[顶点](http://learnopengl.com/code_viewer.php?code=advanced/instancing&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=advanced/instancing&type=fragment)着色器。
 
@@ -341,7 +341,7 @@ for(GLuint i = 0; i < rock.meshes.size(); i++)
 
 这里我们绘制和前面的例子里一样数量（amount）的小行星，只不过是使用的实例渲染。结果是相似的，但你会看在开始增加数量以后效果的不同。不实例渲染，我们可以流畅渲染1000到1500个小行星。而使用了实例渲染，我们可以设置为100000，每个模型由576个顶点，这几乎有5千7百万个顶点，而且帧率没有丝毫下降！
 
-![](http://learnopengl.com/img/advanced/instancing_asteroids_quantity.png)
+![](../img/04/10/instancing_asteroids_quantity.png)
 
 上图渲染了十万小行星，半径为150.0f，偏移等于25.0f。你可以在这里找到这个演示实例渲染的[源码](http://learnopengl.com/code_viewer.php?code=advanced/instancing_asteroids_instanced)。
 

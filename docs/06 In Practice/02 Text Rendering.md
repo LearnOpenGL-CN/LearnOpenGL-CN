@@ -16,7 +16,7 @@
 
 在早期渲染文字时，选择你应用程序的字体(或者创建你自己的字体)来绘制文字是通过将所有用到的文字加载在一张大纹理图中来实现的。这张纹理贴图我们把它叫做**位图字体(Bitmap Font)**，它包含了所有我们想要使用的字符。这些字符被称为**字形(Glyph)**。每个字形根据他们的编号被放到位图字体中的确切位置，在渲染这些字形的时候根据这些排列规则将他们取出并贴到指定的2D方块中。
 
-![](http://learnopengl.com/img/in-practice/bitmapfont.png)
+![](../img/06/02/bitmapfont.png)
 
 上图展示了我们如何从一张位图字体的纹理中通过对字形的合理取样(通过小心地选择字形的纹理坐标)来实现绘制文字“OpenGL”到2D方块中的原理。通过对OpenGL启用混合并让位图字体的纹理背景保持透明，这样就能实现使用OpenGL绘制你想要文字到屏幕的功能。上图的这张位图字体是使用[Codehead的位图字体生成器](http://www.codehead.co.uk/cbfg/)生成的。
 
@@ -77,7 +77,7 @@ if (FT_Load_Char(face, 'X', FT_LOAD_RENDER))
 
 使用FreeType加载的字形位图并不像我们使用位图字体那样持有相同的尺寸大小。使用FreeType生产的字形位图的大小是恰好能包含这个字形的尺寸。例如生产用于表示'.'的位图的尺寸要比表示'X'的小得多。因此，FreeType在加载字形的时候还生产了几个度量值来描述生成的字形位图的大小和位置。下图展示了FreeType的所有度量值的涵义。
 
-![](http://learnopengl.com/img/in-practice/glyph.png)
+![](../img/06/02/glyph.png)
 
 每一个字形都放在一个水平的基线(Baseline)上，上图中被描黑的水平箭头表示该字形的基线。这条基线类似于拼音四格线中的第二根水平线，一些字形被放在基线以上(如'x'或'a')，而另一些则会超过基线以下(如'g'或'p')。FreeType的这些度量值中包含了字形在相对于基线上的偏移量用来描述字形相对于此基线的位置，字形的大小，以及与下一个字符之间的距离。下面列出了我们在渲染字形时所需要的度量值的属性：
 
@@ -292,7 +292,7 @@ GLfloat ypos = y - (ch.Size.y - ch.Bearing.y);
 
 一些字符(诸如'p'或'q')需要被渲染到基线以下，因此字形方块也应该讲y位置往下调整。调整的量就是便是字形度量值中字形的高度和BearingY的差：
 
-![](http://learnopengl.com/img/in-practice/glyph_offset.png)
+![](../img/06/02/glyph_offset.png)
 
 要计算这段偏移量的距离，我们需要指出是字形在基线以下的部分最底断到基线的距离。在上图中这段距离用红色双向箭头标出。如你所见，在字形度量值中，我们可以通过用字形的高度减去bearingY来计算这段向量的长度。这段距离有可能是0.0f(如'x'字符)
 ，或是超出基线底部的距离的长度(如'g'或'j')。
@@ -306,13 +306,13 @@ RenderText(shader, "(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0
 
 渲染效果看上去像这样：
 
-![](http://learnopengl.com/img/in-practice/text_rendering.png)
+![](../img/06/02/text_rendering.png)
 
 你可以从这里获取这个例子的[源代码](http://learnopengl.com/code_viewer.php?code=in-practice/text_rendering)。
 
 通过关闭字形纹理的绑定，能够给你对文字方块的顶点计算更好的理解，它看上去像这样：
 
-![](http://learnopengl.com/img/in-practice/text_rendering_quads.png)
+![](../img/06/02/text_rendering_quads.png)
 
 可以看出，对应'p'和'('等字形的方块明显向下偏移了一些，通过这些你就能清楚地看到那条传说中的基线了。
 

@@ -12,7 +12,7 @@
 
 从立方体贴图上使用橘黄色向量采样一个纹理值看起来和下图有点像：
 
-![](http://learnopengl.com/img/advanced/cubemaps_sampling.png)
+![](../img/04/06/cubemaps_sampling.png)
 
 !!! Important
 
@@ -96,17 +96,17 @@ void main()
 
 天空盒(Skybox)是一个包裹整个场景的立方体，它由6个图像构成一个环绕的环境，给玩家一种他所在的场景比实际的要大得多的幻觉。比如有些在视频游戏中使用的天空盒的图像是群山、白云或者满天繁星。比如下面的夜空繁星的图像就来自《上古卷轴》：
 
-![](http://learnopengl.com/img/advanced/cubemaps_morrowind.jpg)
+![](../img/04/06/cubemaps_morrowind.jpg)
 
 你现在可能已经猜到立方体贴图完全满足天空盒的要求：我们有一个立方体，它有6个面，每个面需要一个贴图。上图中使用了几个夜空的图片给予玩家一种置身广袤宇宙的感觉，可实际上，他还是在一个小盒子之中。
 
 网上有很多这样的天空盒的资源。[这个网站](http://www.custommapmakers.org/skyboxes.php)就提供了很多。这些天空盒图像通常有下面的样式：
 
-![](http://learnopengl.com/img/advanced/cubemaps_skybox.png)
+![](../img/04/06/cubemaps_skybox.png)
 
 如果你把这6个面折叠到一个立方体中，你机会获得模拟了一个巨大的风景的立方体。有些资源所提供的天空盒比如这个例子6个图是连在一起的，你必须手工它们切割出来，不过大多数情况它们都是6个单独的纹理图像。
 
-这个细致（高精度）的天空盒就是我们将在场景中使用的那个，你可以[在这里下载](http://learnopengl.com/img/textures/skybox.rar)。
+这个细致（高精度）的天空盒就是我们将在场景中使用的那个，你可以[在这里下载](../img/04/06/skybox.rar)。
 
 ## 加载天空盒
 
@@ -220,7 +220,7 @@ glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 
 这会移除所有平移，但保留所有旋转，因此用户仍然能够向四面八方看。由于有了天空盒，场景即可变得巨大了。如果你添加些物体然后自由在其中游荡一会儿你会发现场景的真实度有了极大提升。最后的效果看起来像这样：
 
-![](http://learnopengl.com/img/advanced/cubemaps_skybox_result.png)
+![](../img/04/06/cubemaps_skybox_result.png)
 
 [这里有全部源码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox)，你可以对比一下你写的。
 
@@ -259,7 +259,7 @@ void main()
 
 反射的基本思路不难。下图展示了我们如何计算反射向量，然后使用这个向量去从一个立方体贴图中采样：
 
-![](http://learnopengl.com/img/advanced/cubemaps_reflection_theory.png)
+![](../img/04/06/cubemaps_reflection_theory.png)
 
 我们基于观察方向向量I和物体的法线向量N计算出反射向量R。我们可以使用GLSL的内建函数reflect来计算这个反射向量。最后向量R作为一个方向向量对立方体贴图进行索引/采样，返回一个环境的颜色值。最后的效果看起来就像物体反射了天空盒。
 
@@ -319,13 +319,13 @@ glBindVertexArray(0);
 
 编译运行你的代码，你等得到一个镜子一样的箱子。箱子完美地反射了周围的天空盒：
 
-![](http://learnopengl.com/img/advanced/cubemaps_reflection.png)
+![](../img/04/06/cubemaps_reflection.png)
 
 你可以[从这里找到全部源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_reflection)。
 
 当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载[模型教程](../03 Model Loading/03 Model.md)中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
 
-![](http://learnopengl.com/img/advanced/cubemaps_reflection_nanosuit.png)
+![](../img/04/06/cubemaps_reflection_nanosuit.png)
 
 看起来挺惊艳，但是现实中大多数模型都不是完全反射的。我们可以引进反射贴图（reflection map）来使模型有另一层细节。和diffuse、specular贴图一样，我们可以从反射贴图上采样来决定fragment的反射率。使用反射贴图我们还可以决定模型的哪个部分有反射能力，以及强度是多少。本节的练习中，要由你来在我们早期创建的模型加载器引入反射贴图，这回极大的提升纳米服模型的细节。
 
@@ -335,7 +335,7 @@ glBindVertexArray(0);
 
 折射遵守[斯涅尔定律](http://en.wikipedia.org/wiki/Snell%27s_law)，使用环境贴图看起来就像这样：
 
-![](http://learnopengl.com/img/advanced/cubemaps_refraction_theory.png)
+![](../img/04/06/cubemaps_refraction_theory.png)
 
 我们有个观察向量I，一个法线向量N，这次折射向量是R。就像你所看到的那样，观察向量的方向有轻微弯曲。弯曲的向量R随后用来从立方体贴图上采样。
 
@@ -367,7 +367,7 @@ void main()
 
 通过改变折射指数你可以创建出完全不同的视觉效果。编译运行应用，结果也不是太有趣，因为我们只是用了一个普通箱子，这不能显示出折射的效果，看起来像个放大镜。使用同一个着色器，纳米服模型却可以展示出我们期待的效果：玻璃制物体。
 
-![](http://learnopengl.com/img/advanced/cubemaps_refraction.png)
+![](../img/04/06/cubemaps_refraction.png)
 
 你可以向想象一下，如果将光线、反射、折射和顶点的移动合理的结合起来就能创造出漂亮的水的图像。一定要注意，出于物理精确的考虑当光线离开物体的时候还要再次进行折射；现在我们简单的使用了单边（一次）折射，大多数目的都可以得到满足。
 
@@ -383,7 +383,7 @@ void main()
 
 ## 练习
 
-- 尝试在模型加载中引进反射贴图，你将再次得到很大视觉效果的提升。这其中有几点需要注意：
+- 尝试在之前模型加载小节的模型加载器中引进反射贴图，你可以在[这里](../img/04/06/nanosuit_reflection.zip)找到升级过的纳米装模型，反射贴图也包含在里面。这其中有几点需要注意：
 	- Assimp并不支持反射贴图，我们可以使用环境贴图的方式将反射贴图从`aiTextureType_AMBIENT`类型中来加载反射贴图的材质。
 	- 我匆忙地使用反射贴图来作为镜面反射的贴图，而反射贴图并没有很好的映射在模型上:)。
 	- 由于加载模型已经占用了3个纹理单元，因此你要绑定天空盒到第4个纹理单元上，这样才能在同一个着色器内从天空盒纹理中取样。
@@ -391,4 +391,4 @@ void main()
 
 如果你一切都做对了，那你应该看到和下图类似的效果：
 
-![](http://learnopengl.com/img/advanced/cubemaps_reflection_map.png)
+![](../img/04/06/cubemaps_reflection_map.png)

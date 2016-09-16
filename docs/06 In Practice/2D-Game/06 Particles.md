@@ -10,7 +10,7 @@
 
 当处理这些微粒的时候,通常是由一个叫做粒子发射器或粒子生成器的东西完成的,从这个地方,持续不断的产生新的微粒并且旧的微粒随着时间逐渐消亡.如果这个粒子发射器产生一个带着类似烟雾纹理的微粒的时候,它的颜色亮度同时又随着与发射器距离的增加而变暗,那么就会产生出灼热的火焰的效果:
 
-![fire](http://www.learnopengl.com/img/in-practice/breakout/particles_example.jpg)
+![fire](../../img/06/Breakout/06/particles_example.jpg)
 
 一个单一的微粒通常有一个生命值变量,并且从它产生开始就一直在缓慢的减少.一旦它的生命值少于某个极限值(通常是0)我们就会杀掉这个粒子,这样下一个粒子产生时就可以让它来替换那个被杀掉的粒子.一个粒子发射器控制它产生的所有粒子并且根据它们的属性来改变它们的行为.一个粒子通常有下面的属性:
 
@@ -29,7 +29,7 @@ struct Particle {
 
 你可以想象到用这样一个系统,我们就可以创造一些有趣的效果比如火焰,青烟,烟雾,魔法效果,炮火残渣等等.在Breakout游戏里,我们将会使用下面那个小球来创建一个简单的粒子生成器来制作一些有趣的效果,结果看起来就像这样:
 
-<video src="http://learnopengl.com/video/in-practice/breakout/particles.mp4" controls="controls"></video>
+<video src="../../../img/06/Breakout/06/particles.mp4" controls="controls"></video>
 
 上面那个粒子生成器在这个球的位置产生无数的粒子,根据球移动的速度给了粒子相应的速度,并且根据它们的生命值来改变他们的颜色亮度.
 
@@ -179,7 +179,7 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 因为我们(就像这个系列教程的其他部分一样)喜欢让事情变得有条理,所以我们就创建了另一个类`ParticleGenerator`来封装我们刚刚谈到的所有功能.你可以在下面的链接里找到源码:
 >* [header](http://www.learnopengl.com/code_viewer.php?code=in-practice/breakout/particle_generator.h),[code](http://www.learnopengl.com/code_viewer.php?code=in-practice/breakout/particle_generator)
 
-然后在游戏代码里,我们创建这样一个粒子发射器并且用[这个](http://www.learnopengl.com/img/in-practice/breakout/textures/particle.png)纹理初始化.
+然后在游戏代码里,我们创建这样一个粒子发射器并且用[这个](../../img/06/Breakout/06/particle.png)纹理初始化.
 
 ```c++
 ParticleGenerator   *Particles; 

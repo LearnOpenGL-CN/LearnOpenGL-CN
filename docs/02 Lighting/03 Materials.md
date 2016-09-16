@@ -28,7 +28,7 @@ uniform Material material;
 
 这四个元素定义了一个物体的材质，通过它们我们能够模拟很多真实世界的材质。这里有一个列表[devernay.free.fr](http://devernay.free.fr/cours/opengl/materials.html)展示了几种材质属性，这些材质属性模拟外部世界的真实材质。下面的图片展示了几种真实世界材质对我们的立方体的影响：
 
-![](http://www.learnopengl.com/img/lighting/materials_real_world.png)
+![](../img/02/03/materials_real_world.png)
 
 如你所见，正确地指定一个物体的材质属性，似乎就是改变我们物体的相关属性的比例。效果显然很引人注目，但是对于大多数真实效果，我们最终需要更加复杂的形状，而不单单是一个立方体。在[后面的教程](../03 Model Loading/01 Assimp.md)中，我们会讨论更复杂的形状。
 
@@ -84,7 +84,7 @@ glUniform1f(matShineLoc, 32.0f);
 
 运行程序，会得到下面这样的结果：
 
-![](http://www.learnopengl.com/img/lighting/materials_with_material.png)
+![](../img/02/03/materials_with_material.png)
 
 看起来很奇怪不是吗？
 
@@ -142,7 +142,7 @@ glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 
 现在，我们调整了光是如何影响物体所有的材质的，我们得到一个更像前面教程的视觉输出。这次我们完全控制了物体光照和材质：
 
-![](http://www.learnopengl.com/img/lighting/materials_light.png)
+![](../img/02/03/materials_light.png)
 
 现在改变物体的外观相对简单了些。我们做点更有趣的事！
 
@@ -151,7 +151,7 @@ glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 
 目前为止，我们使用光源的颜色仅仅去改变物体各个元素的强度(通过选用从白到灰到黑范围内的颜色)，并没有影响物体的真实颜色(只是强度)。由于现在能够非常容易地访问光的属性了，我们可以随着时间改变它们的颜色来获得一些有很意思的效果。由于所有东西都已经在片段着色器做好了，改变光的颜色很简单，我们可以立即创建出一些有趣的效果：
 
-<video src="http://www.learnopengl.com/video/lighting/materials.mp4" controls="controls">
+<video src="../../img/02/03/materials.mp4" controls="controls">
 </video>
 
 如你所见，不同光的颜色极大地影响了物体的颜色输出。由于光的颜色直接影响物体反射的颜色(你可能想起在颜色教程中有讨论过)，它对视觉输出有显著的影响。

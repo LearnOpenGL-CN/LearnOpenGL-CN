@@ -10,7 +10,7 @@
 
 阴影是光线被阻挡的结果；当一个光源的光线由于其他物体的阻挡不能够达到一个物体的表面的时候，那么这个物体就在阴影中了。阴影能够使场景看起来真实得多，并且可以让观察者获得物体之间的空间位置关系。场景和物体的深度感因此能够得到极大提升，下图展示了有阴影和没有阴影的情况下的不同：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_with_without.png)
+![](../../img/05/03/01/shadow_mapping_with_without.png)
 
 你可以看到，有阴影的时候你能更容易地区分出物体之间的位置关系，例如，当使用阴影的时候浮在地板上的立方体的事实更加清晰。
 
@@ -22,7 +22,7 @@
 
 阴影映射(Shadow Mapping)背后的思路非常简单：我们以光的位置为视角进行渲染，我们能看到的东西都将被点亮，看不见的一定是在阴影之中了。假设有一个地板，在光源和它之间有一个大盒子。由于光源处向光线方向看去，可以看到这个盒子，但看不到地板的一部分，这部分就应该在阴影中了。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_theory.png)
+![](../../img/05/03/01/shadow_mapping_theory.png)
 
 这里的所有蓝线代表光源可以看到的fragment。黑线代表被遮挡的fragment：它们应该渲染为带阴影的。如果我们绘制一条从光源出发，到达最右边盒子上的一个片元上的线段或射线，那么射线将先击中悬浮的盒子，随后才会到达最右侧的盒子。结果就是悬浮的盒子被照亮，而最右侧的盒子将处于阴影之中。
 
@@ -30,7 +30,7 @@
 
 你可能记得在[深度测试](http://learnopengl.com/#!Advanced-OpenGL/Depth-testing)教程中，在深度缓冲里的一个值是摄像机视角下，对应于一个片元的一个0到1之间的深度值。如果我们从光源的透视图来渲染场景，并把深度值的结果储存到纹理中会怎样？通过这种方式，我们就能对光源的透视图所见的最近的深度值进行采样。最终，深度值就会显示从光源的透视图下见到的第一个片元了。我们管储存在纹理中的所有这些深度值，叫做深度贴图（depth map）或阴影贴图。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_theory_spaces.png)
+![](../../img/05/03/01/shadow_mapping_theory_spaces.png)
 
 左侧的图片展示了一个定向光源（所有光线都是平行的）在立方体下的表面投射的阴影。通过储存到深度贴图中的深度值，我们就能找到最近点，用以决定片元是否在阴影中。我们使用一个来自光源的视图和投影矩阵来渲染场景就能创建一个深度贴图。这个投影和视图矩阵结合在一起成为一个\(T\)变换，它可以将任何三维位置转变到光源的可见坐标空间。
 
@@ -179,7 +179,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 最后，在光的透视图视角下，很完美地用每个可见片元的最近深度填充了深度缓冲。通过将这个纹理投射到一个2D四边形上（和我们在帧缓冲一节做的后处理过程类似），就能在屏幕上显示出来，我们会获得这样的东西：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_depth_map.png)
+![](../../img/05/03/01/shadow_mapping_depth_map.png)
 
 将深度贴图渲染到四边形上的像素着色器：
 
@@ -353,7 +353,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 激活这个着色器，绑定合适的纹理，激活第二个渲染阶段默认的投影以及视图矩阵，结果如下图所示：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_shadows.png)
+![](../../img/05/03/01/shadow_mapping_shadows.png)
 
 如果你做对了，你会看到地板和上有立方体的阴影。你可以从这里找到demo程序的[源码](http://learnopengl.com/code_viewer.php?code=advanced-lighting/shadow_mapping_shadows)。
 
@@ -365,11 +365,11 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 前面的图片中明显有不对的地方。放大看会发现明显的线条样式：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne.png)
+![](../../img/05/03/01/shadow_mapping_acne.png)
 
 我们可以看到地板四边形渲染出很大一块交替黑线。这种阴影贴图的不真实感叫做**阴影失真(Shadow Acne)**，下图解释了成因：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne_diagram.png)
+![](../../img/05/03/01/shadow_mapping_acne_diagram.png)
 
 因为阴影贴图受限于解析度，在距离光源比较远的情况下，多个片元可能从深度贴图的同一个值中去采样。图片每个斜坡代表深度贴图一个单独的纹理像素。你可以看到，多个片元从同一个深度值进行采样。
 
@@ -377,7 +377,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 我们可以用一个叫做**阴影偏移**（shadow bias）的技巧来解决这个问题，我们简单的对表面的深度（或深度贴图）应用一个偏移量，这样片元就不会被错误地认为在表面之下了。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_acne_bias.png)
+![](../../img/05/03/01/shadow_mapping_acne_bias.png)
 
 使用了偏移量后，所有采样点都获得了比表面深度更小的深度值，这样整个表面就正确地被照亮，没有任何阴影。我们可以这样实现这个偏移：
 
@@ -394,7 +394,7 @@ float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
 这里我们有一个偏移量的最大值0.05，和一个最小值0.005，它们是基于表面法线和光照方向的。这样像地板这样的表面几乎与光源垂直，得到的偏移就很小，而比如立方体的侧面这种表面得到的偏移就更大。下图展示了同一个场景，但使用了阴影偏移，效果的确更好：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_with_bias.png)
+![](../../img/05/03/01/shadow_mapping_with_bias.png)
 
 选用正确的偏移数值，在不同的场景中需要一些像这样的轻微调校，但大多情况下，实际上就是增加偏移量直到所有失真都被移除的问题。
 
@@ -402,13 +402,13 @@ float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
 使用阴影偏移的一个缺点是你对物体的实际深度应用了平移。偏移有可能足够大，以至于可以看出阴影相对实际物体位置的偏移，你可以从下图看到这个现象（这是一个夸张的偏移值）：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_peter_panning.png)
+![](../../img/05/03/01/shadow_mapping_peter_panning.png)
 
 这个阴影失真叫做悬浮(Peter Panning)，因为物体看起来轻轻悬浮在表面之上（译注Peter Pan就是童话彼得潘，而panning有平移、悬浮之意，而且彼得潘是个会飞的男孩…）。我们可以使用一个叫技巧解决大部分的Peter panning问题：当渲染深度贴图时候使用正面剔除（front face culling）你也许记得在面剔除教程中OpenGL默认是背面剔除。我们要告诉OpenGL我们要剔除正面。
 
 因为我们只需要深度贴图的深度值，对于实体物体无论我们用它们的正面还是背面都没问题。使用背面深度不会有错误，因为阴影在物体内部有错误我们也看不见。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_culling.png)
+![](../../img/05/03/01/shadow_mapping_culling.png)
 
 为了修复peter游移，我们要进行正面剔除，先必须开启GL_CULL_FACE：
 
@@ -426,7 +426,7 @@ glCullFace(GL_BACK); // 不要忘记设回原先的culling face
 
 无论你喜不喜欢还有一个视觉差异，就是光的视锥不可见的区域一律被认为是处于阴影中，不管它真的处于阴影之中。出现这个状况是因为超出光的视锥的投影坐标比1.0大，这样采样的深度纹理就会超出他默认的0到1的范围。根据纹理环绕方式，我们将会得到不正确的深度结果，它不是基于真实的来自光源的深度值。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_outside_frustum.png)
+![](../../img/05/03/01/shadow_mapping_outside_frustum.png)
 
 你可以在图中看到，光照有一个区域，超出该区域就成为了阴影；这个区域实际上代表着深度贴图的大小，这个贴图投影到了地板上。发生这种情况的原因是我们之前将深度贴图的环绕方式设置成了GL_REPEAT。
 
@@ -441,7 +441,7 @@ glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 现在如果我们采样深度贴图0到1坐标范围以外的区域，纹理函数总会返回一个1.0的深度值，阴影值为0.0。结果看起来会更真实：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_clamp_edge.png)
+![](../../img/05/03/01/shadow_mapping_clamp_edge.png)
 
 仍有一部分是黑暗区域。那里的坐标超出了光的正交视锥的远平面。你可以看到这片黑色区域总是出现在光源视锥的极远处。
 
@@ -462,7 +462,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 检查远平面，并将深度贴图限制为一个手工指定的边界颜色，就能解决深度贴图采样超出的问题，我们最终会得到下面我们所追求的效果：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_over_sampling_fixed.png)
+![](../../img/05/03/01/shadow_mapping_over_sampling_fixed.png)
 
 这些结果意味着，只有在深度贴图范围以内的被投影的fragment坐标才有阴影，所以任何超出范围的都将会没有阴影。由于在游戏中通常这只发生在远处，就会比我们之前的那个明显的黑色区域效果更真实。
 
@@ -470,7 +470,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 阴影现在已经附着到场景中了，不过这仍不是我们想要的。如果你放大看阴影，阴影映射对解析度的依赖很快变得很明显。
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_zoom.png)
+![](../../img/05/03/01/shadow_mapping_zoom.png)
 
 因为深度贴图有一个固定的解析度，多个片元对应于一个纹理像素。结果就是多个片元会从深度贴图的同一个深度值进行采样，这几个片元便得到的是同一个阴影，这就会产生锯齿边。
 
@@ -498,7 +498,7 @@ shadow /= 9.0;
 
 使用更多的样本，更改texelSize变量，你就可以增加阴影的柔和程度。下面你可以看到应用了PCF的阴影：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_soft_shadows.png)
+![](../../img/05/03/01/shadow_mapping_soft_shadows.png)
 
 从稍微远一点的距离看去，阴影效果好多了，也不那么生硬了。如果你放大，仍会看到阴影贴图解析度的不真实感，但通常对于大多数应用来说效果已经很好了。
 
@@ -511,7 +511,7 @@ shadow /= 9.0;
 
 在渲染深度贴图的时候，正交(Orthographic)和投影(Projection)矩阵之间有所不同。正交投影矩阵并不会将场景用透视图进行变形，所有视线/光线都是平行的，这使它对于定向光来说是个很好的投影矩阵。然而透视投影矩阵，会将所有顶点根据透视关系进行变形，结果因此而不同。下图展示了两种投影方式所产生的不同阴影区域：
 
-![](http://learnopengl.com/img/advanced-lighting/shadow_mapping_projection.png)
+![](../../img/05/03/01/shadow_mapping_projection.png)
 
 透视投影对于光源来说更合理，不像定向光，它是有自己的位置的。透视投影因此更经常用在点光源和聚光灯上，而正交投影经常用在定向光上。
 

@@ -19,7 +19,7 @@
 
 对于深度贴图，我们需要从一个点光源的所有渲染场景，普通2D深度贴图不能工作；如果我们使用立方体贴图会怎样？因为立方体贴图可以储存6个面的环境数据，它可以将整个场景渲染到立方体贴图的每个面上，把它们当作点光源四周的深度值来采样。
 
-![](http://learnopengl.com/img/advanced-lighting/point_shadows_diagram.png)
+![](../../img/05/03/02/point_shadows_diagram.png)
 
 生成后的深度立方体贴图被传递到光照像素着色器，它会用一个方向向量来采样立方体贴图，从而得到当前的fragment的深度（从光的透视图）。大部分复杂的事情已经在阴影映射教程中讨论过了。算法只是在深度立方体贴图生成上稍微复杂一点。
 
@@ -369,7 +369,7 @@ float ShadowCalculation(vec3 fragPos)
 
 有了这些着色器，我们已经能得到非常好的阴影效果了，这次从一个点光源所有周围方向上都有阴影。有一个位于场景中心的点光源，看起来会像这样：
 
-![](http://learnopengl.com/img/advanced-lighting/point_shadows.png)
+![](../../img/05/03/02/point_shadows.png)
 
 你可以从这里找到这个[demo的源码](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/point_shadows)、[顶点](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/point_shadows&type=vertex)和[片段](http://www.learnopengl.com/code_viewer.php?code=advanced-lighting/point_shadows&type=fragment)着色器。
 
@@ -385,7 +385,7 @@ FragColor = vec4(vec3(closestDepth / far_plane), 1.0);
 
 结果是一个灰度场景，每个颜色代表着场景的线性深度值：
 
-![](http://learnopengl.com/img/advanced-lighting/point_shadows_depth_cubemap.png)
+![](../../img/05/03/02/point_shadows_depth_cubemap.png)
 
 你可能也注意到了带阴影部分在墙外。如果看起来和这个差不多，你就知道深度立方体贴图生成的没错。否则你可能做错了什么，也许是closestDepth仍然还在0到far_plane的范围。
 
@@ -420,7 +420,7 @@ shadow /= (samples * samples * samples);
 
 现在阴影看起来更加柔和平滑了，由此得到更加真实的效果：
 
-![](http://learnopengl.com/img/advanced-lighting/point_shadows_soft.png)
+![](../../img/05/03/02/point_shadows_soft.png)
 
 然而，samples设置为4.0，每个fragment我们会得到总共64个样本，这太多了！
 
@@ -465,7 +465,7 @@ float diskRadius = (1.0 + (viewDistance / far_plane)) / 25.0;
 
 PCF算法的结果如果没有变得更好，也是非常不错的，这是柔和的阴影效果：
 
-![](http://learnopengl.com/img/advanced-lighting/point_shadows_soft_better.png)
+![](../../img/05/03/02/point_shadows_soft_better.png)
 
 当然了，我们添加到每个样本的bias（偏移）高度依赖于上下文，总是要根据场景进行微调的。试试这些值，看看怎样影响了场景。
 这里是最终版本的顶点和像素着色器。

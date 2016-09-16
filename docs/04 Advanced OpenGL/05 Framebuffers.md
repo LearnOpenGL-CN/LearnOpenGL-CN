@@ -209,7 +209,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 2. 绑定到默认帧缓冲。
 3. 绘制一个四边形，让它平铺到整个屏幕上，用新的帧缓冲的颜色缓冲作为他的纹理。
 
-我们使用在深度测试教程中同一个场景进行绘制，但是这次使用老气横秋的[箱子纹理](http://learnopengl.com/img/textures/container.jpg)。
+我们使用在深度测试教程中同一个场景进行绘制，但是这次使用老气横秋的[箱子纹理](../img/04/05/container.jpg)。
 
 为了绘制四边形我们将会创建新的着色器。我们不打算引入任何花哨的变换矩阵，因为我们只提供已经是标准化设备坐标的[顶点坐标](http://learnopengl.com/code_viewer.php?code=advanced/framebuffers_quad_vertices)，所以我们可以直接把它们作为顶点着色器的输出。顶点着色器看起来像这样：
 
@@ -269,7 +269,7 @@ glBindVertexArray(0);
 
 这里的确有很多地方会做错，所以如果你没有获得任何输出，尝试排查任何可能出现错误的地方，再次阅读教程中相关章节。如果每件事都做对了就一定能成功，你将会得到这样的输出：
 
-![](http://learnopengl.com/img/advanced/framebuffers_screen_texture.png)
+![](../img/04/05/framebuffers_screen_texture.png)
 
 左侧展示了和深度测试教程中一样的输出结果，但是这次却是渲染到一个简单的四边形上的。如果我们以线框方式显示的话，那么显然，我们只是绘制了一个默认帧缓冲中单调的四边形。
 
@@ -295,7 +295,7 @@ void main()
 
 虽然反相是一种相对简单的后处理特效，但是已经很有趣了：
 
-![image description](http://learnopengl.com/img/advanced/framebuffers_grayscale.png)
+![image description](../img/04/05/framebuffers_grayscale.png)
 
 整个场景现在的颜色都反转了，只需在着色器中写一行代码就能做到，酷吧？
 
@@ -322,7 +322,7 @@ void main()
 }
 ```
 
-![](http://learnopengl.com/img/advanced/framebuffers_grayscale.png)
+![](../img/04/05/framebuffers_grayscale.png)
 
 ## Kernel effects
 
@@ -382,7 +382,7 @@ void main()
 
 这个锐化的kernel看起来像这样：
 
-![](http://learnopengl.com/img/advanced/framebuffers_sharpen.png)
+![](../img/04/05/framebuffers_sharpen.png)
 
 这里创建的有趣的效果就好像你的玩家吞了某种麻醉剂产生的幻觉一样。
 
@@ -406,7 +406,7 @@ float kernel[9] = float[](
 
 通过在像素着色器中改变kernel的float数组,我们就完全改变了之后的后处理效果.现在看起来会像是这样:
 
-![](http://learnopengl.com/img/advanced/framebuffers_blur.png)
+![](../img/04/05/framebuffers_blur.png)
 
 这样的模糊效果具有创建许多有趣效果的潜力.例如,我们可以随着时间的变化改变模糊量,创建出类似于某人喝醉酒的效果,或者,当我们的主角摘掉眼镜的时候增加模糊.模糊也能为我们在后面的教程中提供都颜色值进行平滑处理的能力.
 
@@ -422,11 +422,11 @@ $$
 
 这个kernel将所有的边提高亮度,而对其他部分进行暗化处理,当我们值关心一副图像的边缘的时候,它非常有用.
 
-![](http://learnopengl.com/img/advanced/framebuffers_edge_detection.png)
+![](../img/04/05/framebuffers_edge_detection.png)
 
 在一些像Photoshop这样的软件中使用这些kernel作为图像操作工具/过滤器一点都不奇怪.因为掀开可以具有很强的平行处理能力，我们以实时进行针对每个像素的图像操作便相对容易，图像编辑工具因而更经常使用显卡来进行图像处理。
 
 ## 练习
 
-* 你可以使用帧缓冲来创建一个后视镜吗?做到它,你必须绘制场景两次:一次正常绘制,另一次摄像机旋转180度后绘制.尝试在你的显示器顶端创建一个小四边形,在上面应用后视镜的镜面纹理:[解决方案](http://learnopengl.com/code_viewer.php?code=advanced/framebuffers-exercise1),[视觉效果](http://learnopengl.com/img/advanced/framebuffers_mirror.png)
+* 你可以使用帧缓冲来创建一个后视镜吗?做到它,你必须绘制场景两次:一次正常绘制,另一次摄像机旋转180度后绘制.尝试在你的显示器顶端创建一个小四边形,在上面应用后视镜的镜面纹理:[解决方案](http://learnopengl.com/code_viewer.php?code=advanced/framebuffers-exercise1),[视觉效果](../img/04/05/framebuffers_mirror.png)
 * 自己随意调整一下kernel值,创建出你自己后处理特效.尝试在网上搜索其他有趣的kernel.

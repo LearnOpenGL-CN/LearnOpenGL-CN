@@ -8,7 +8,7 @@
 
 现实世界的光照是极其复杂的，而且会受到诸多因素的影响，这是以目前我们所拥有的处理能力无法模拟的。因此OpenGL的光照仅仅使用了简化的模型并基于对现实的估计来进行模拟，这样处理起来会更容易一些，而且看起来也差不多一样。这些光照模型都是基于我们对光的物理特性的理解。其中一个模型被称为冯氏光照模型(Phong Lighting Model)。冯氏光照模型的主要结构由3个元素组成：环境(Ambient)、漫反射(Diffuse)和镜面(Specular)光照。这些光照元素看起来像下面这样：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_phong.png)
+![](../img/02/02/basic_lighting_phong.png)
 
 - 环境光照(Ambient Lighting)：即使在黑暗的情况下，世界上也仍然有一些光亮(月亮、一个来自远处的光)，所以物体永远不会是完全黑暗的。我们使用环境光照来模拟这种情况，也就是无论如何永远都给物体一些颜色。
 - 漫反射光照(Diffuse Lighting)：模拟一个发光物对物体的方向性影响(Directional Impact)。它是冯氏光照模型最显著的组成部分。面向光源的一面比其他面会更亮。
@@ -36,13 +36,13 @@ void main()
 
 如果你现在运行你的程序，你会注意到冯氏光照的第一个阶段已经应用到你的物体上了。这个物体非常暗，但不是完全的黑暗，因为我们应用了环境光照(注意发光立方体没被环境光照影响是因为我们对它使用了另一个着色器)。它看起来应该像这样：
 
-![](http://learnopengl.com/img/lighting/ambient_lighting.png)
+![](../img/02/02/ambient_lighting.png)
 
 # 漫反射光照
 
 环境光本身不提供最明显的光照效果，但是漫反射光照(Diffuse Lighting)会对物体产生显著的视觉影响。漫反射光使物体上与光线排布越近的片段越能从光源处获得更多的亮度。为了更好的理解漫反射光照，请看下图：
 
-![](http://learnopengl.com/img/lighting/diffuse_light.png)
+![](../img/02/02/diffuse_light.png)
 
 图左上方有一个光源，它所发出的光线落在物体的一个片段上。我们需要测量这个光线与它所接触片段之间的角度。如果光线垂直于物体表面，这束光对物体的影响会最大化(译注：更亮)。为了测量光线和片段的角度，我们使用一个叫做法向量(Normal Vector)的东西，它是垂直于片段表面的一种向量(这里以黄色箭头表示)，我们在后面再讲这个东西。两个向量之间的角度就能够根据点乘计算出来。
 
@@ -168,7 +168,7 @@ color = vec4(result, 1.0f);
 
 如果你的应用(和着色器)编译成功了，你可能看到类似的输出：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_diffuse.png)
+![](../img/02/02/basic_lighting_diffuse.png)
 
 你可以看到使用了散射光照，立方体看起来就真的像个立方体了。尝试在你的脑中想象，通过移动正方体，法向量和光的方向向量之间的夹角增大，片段变得更暗。
 
@@ -182,7 +182,7 @@ color = vec4(result, 1.0f);
 
 其次，如果模型矩阵执行了不等比缩放，法向量就不再垂直于表面了，顶点就会以这种方式被改变了。因此，我们不能用这样的模型矩阵去乘以法向量。下面的图展示了应用了不等比缩放的矩阵对法向量的影响：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_normal_transformation.png)
+![](../img/02/02/basic_lighting_normal_transformation.png)
 
 无论何时当我们提交一个不等比缩放(注意：等比缩放不会破坏法线，因为法线的方向没被改变，而法线的长度很容易通过标准化进行修复)，法向量就不会再垂直于它们的表面了，这样光照会被扭曲。
 
@@ -208,7 +208,7 @@ Normal = mat3(transpose(inverse(model))) * normal;
 
 和环境光照一样，镜面光照(Specular Lighting)同样依据光的方向向量和物体的法向量，但是这次它也会依据观察方向，例如玩家是从什么方向看着这个片段的。镜面光照根据光的反射特性。如果我们想象物体表面像一面镜子一样，那么，无论我们从哪里去看那个表面所反射的光，镜面光照都会达到最大化。你可以从下面的图片看到效果：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_specular_theory.png)
+![](../img/02/02/basic_lighting_specular_theory.png)
 
 我们通过反射法向量周围光的方向计算反射向量。然后我们计算反射向量和视线方向的角度，如果之间的角度越小，那么镜面光的作用就会越大。它的作用效果就是，当我们去看光被物体所反射的那个方向的时候，我们会看到一个高光。
 
@@ -251,7 +251,7 @@ vec3 specular = specularStrength * spec * lightColor;
 
 我们先计算视线方向与反射方向的点乘(确保它不是负值)，然后得到它的32次幂。这个32是高光的**发光值(Shininess)**。一个物体的发光值越高，反射光的能力越强，散射得越少，高光点越小。在下面的图片里，你会看到不同发光值对视觉(效果)的影响：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_specular_shininess.png)
+![](../img/02/02/basic_lighting_specular_shininess.png)
 
 我们不希望镜面成分过于显眼，所以我们把指数设置为32。剩下的最后一件事情是把它添加到环境光颜色和散射光颜色里，然后再乘以物体颜色：
 
@@ -262,7 +262,7 @@ color = vec4(result, 1.0f);
 
 我们现在为冯氏光照计算了全部的光照元素。根据你的观察点，你可以看到类似下面的画面：
 
-![](http://learnopengl.com/img/lighting/basic_lighting_specular.png)
+![](../img/02/02/basic_lighting_specular.png)
 
 你可以[在这里找到完整源码](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting_specular)，在这里有[顶点](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=lighting/basic_lighting&type=fragment)着色器。
 
@@ -270,7 +270,7 @@ color = vec4(result, 1.0f);
 
     早期的光照着色器，开发者在顶点着色器中实现冯氏光照。在顶点着色器中做这件事的优势是，相比片段来说，顶点要少得多，因此会更高效，所以(开销大的)光照计算频率会更低。然而，顶点着色器中的颜色值是只是顶点的颜色值，片段的颜色值是它与周围的颜色值的插值。结果就是这种光照看起来不会非常真实，除非使用了大量顶点。
 
-    ![](http://learnopengl.com/img/lighting/basic_lighting_gouruad.png)
+    ![](../img/02/02/basic_lighting_gouruad.png)
 
     在顶点着色器中实现的冯氏光照模型叫做Gouraud着色，而不是冯氏着色。记住由于插值，这种光照连起来有点逊色。冯氏着色能产生更平滑的光照效果。
 

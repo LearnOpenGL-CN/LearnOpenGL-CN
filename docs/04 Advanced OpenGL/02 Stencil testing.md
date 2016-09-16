@@ -16,7 +16,7 @@
 
 下面是一个模板缓冲的简单例子：
 
-![image description](http://learnopengl.com/img/advanced/stencil_buffer.png)
+![image description](../img/04/02/stencil_buffer.png)
 
 模板缓冲先清空模板缓冲设置所有片段的模板值为0，然后开启矩形片段用1填充。场景中的模板值为1的那些片段才会被渲染（其他的都被丢弃）。
 
@@ -102,7 +102,7 @@ GL_INVERT   | Bitwise inverts the current stencil buffer value.
 
 看了前面的部分你未必能理解模板测试是如何工作的，所以我们会展示一个用模板测试实现的一个特别的和有用的功能，叫做**物体轮廓(Object Outlining)**。
 
-![](http://learnopengl.com/img/advanced/stencil_object_outlining.png)
+![](../img/04/02/stencil_object_outlining.png)
 
 物体轮廓就像它的名字所描述的那样，它能够给每个（或一个）物体创建一个有颜色的边。在策略游戏中当你打算选择一个单位的时候它特别有用。给物体加上轮廓的步骤如下：
 
@@ -190,7 +190,7 @@ glEnable(GL_DEPTH_TEST);
 
 这个边框的算法的结果在深度测试教程的那个场景中，看起来像这样：
 
-![](http://learnopengl.com/img/advanced/stencil_scene_outlined.png)
+![](../img/04/02/stencil_scene_outlined.png)
 
 在这里[查看源码](http://learnopengl.com/code_viewer.php?code=advanced/stencil_testing)和[着色器](http://learnopengl.com/code_viewer.php?code=advanced/depth_testing_func_shaders)，看看完整的物体边框算法是怎样的。
 

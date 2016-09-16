@@ -16,7 +16,7 @@
 
 我们知道的定向光源的一个好例子是，太阳。太阳和我们不是无限远，但它也足够远了，在计算光照的时候，我们感觉它就像无限远。在下面的图片里，来自于太阳的所有的光线都被定义为平行光：
 
-![](http://www.learnopengl.com/img/lighting/light_casters_directional.png)
+![](../img/02/05/light_casters_directional.png)
 
 因为所有的光线都是平行的，对于场景中的每个物体光的方向都保持一致，物体和光源的位置保持怎样的关系都无所谓。由于光的方向向量保持一致，光照计算会和场景中的其他物体相似。
 
@@ -82,7 +82,7 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
     
 如果你现在编译应用，飞跃场景，它看起来像有一个太阳一样的光源，把光抛到物体身上。你可以看到`diffuse`和`specular`元素都对该光源进行反射了，就像天空上有一个光源吗？看起来就像这样：
 
-![](http://www.learnopengl.com/img/lighting/light_casters_directional_light.png)
+![](../img/02/05/light_casters_directional_light.png)
 
 你可以在这里获得[应用的所有代码](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_directional)，这里是[顶点](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_directional&type=fragment)着色器代码。
 
@@ -90,7 +90,7 @@ glUniform3f(lightDirPos, -0.2f, -1.0f, -0.3f);
 
 定向光作为全局光可以照亮整个场景，这非常棒，但是另一方面除了定向光，我们通常也需要几个点光源(Point Light)，在场景里发亮。点光是一个在时间里有位置的光源，它向所有方向发光，光线随距离增加逐渐变暗。想象灯泡和火炬作为投光物，它们可以扮演点光的角色。
 
-![](http://www.learnopengl.com/img/lighting/light_casters_point.png)
+![](../img/02/05/light_casters_point.png)
 
 之前的教程我们已经使用了（最简单的）点光。我们指定了一个光源以及其所在的位置，它从这个位置向所有方向发散光线。然而，我们定义的光源所模拟光线的强度却不会因为距离变远而衰减，这使得看起来像是光源亮度极强。在大多数3D仿真场景中，我们更希望去模拟一个仅仅能照亮靠近光源点附近场景的光源，而不是照亮整个场景的光源。
 
@@ -114,7 +114,7 @@ $$
 
 由于二次项的光会以线性方式减少，指导距离足够大的时候，就会超过一次项，之后，光的亮度会减少的更快。最后的效果就是光在近距离时亮度很高，但是距离变远亮度迅速降低，最后亮度降低速度再次变慢。下面的图展示了在100以内的范围，这样的衰减效果。
 
-![](http://www.learnopengl.com/img/lighting/attenuation.png)
+![](../img/02/05/attenuation.png)
 
 你可以看到当距离很近的时候光有最强的亮度，但是随着距离增大，亮度明显减弱，大约接近100的时候，就会慢下来。这就是我们想要的。
 
@@ -187,7 +187,7 @@ specular *= attenuation;
 
 如果你运行应用后获得这样的效果：
 
-![](http://learnopengl.com/img/lighting/light_casters_point_light.png)
+![](../img/02/05/light_casters_point_light.png)
 
 你可以看到现在只有最近处的箱子的前面被照得最亮。后面的箱子一点都没被照亮，因为它们距离光源太远了。你可以在这里找到[应用源码](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_point)和[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_point&type=fragment)的代码。
 
@@ -200,7 +200,7 @@ specular *= attenuation;
 
 OpenGL中的聚光用世界空间位置，一个方向和一个指定了聚光半径的切光角来表示。我们计算的每个片段，如果片段在聚光的切光方向之间（就是在圆锥体内），我们就会把片段照亮。下面的图可以让你明白聚光是如何工作的：
 
-![](http://www.learnopengl.com/img/lighting/light_casters_spotlight_angles.png)
+![](../img/02/05/light_casters_spotlight_angles.png)
 
 * `LightDir`：从片段指向光源的向量。
 * `SpotDir`：聚光所指向的方向。
@@ -253,13 +253,13 @@ color = vec4(light.ambient*vec3(texture(material.diffuse,TexCoords)), 1.0f);
 
     你可能奇怪为什么if条件中使用>符号而不是<符号。为了在聚光以内，`theta`不是应该比光的切光值更小吗？这没错，但是不要忘了，角度值是以余弦值来表示的，一个0度的角表示为1.0的余弦值，当一个角是90度的时候被表示为0.0的余弦值，你可以在这里看到：
 
-    ![](http://www.learnopengl.com/img/lighting/light_casters_cos.png)
+    ![](../img/02/05/light_casters_cos.png)
 
     现在你可以看到，余弦越是接近1.0，角度就越小。这就解释了为什么θ需要比切光值更大了。切光值当前被设置为12.5的余弦，它等于0.9978，所以θ的余弦值在0.9979和1.0之间，片段会在聚光内，被照亮。
 
 运行应用，在聚光内的片段才会被照亮。这看起来像这样：
 
-![](http://www.learnopengl.com/img/lighting/light_casters_spotlight_hard.png)
+![](../img/02/05/light_casters_spotlight_hard.png)
 
 你可以在这里获得[全部源码](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_spotlight_hard)和[片段着色器的源码](http://learnopengl.com/code_viewer.php?code=lighting/light_casters_spotlight_hard&type=fragment)。
 
@@ -310,7 +310,7 @@ specular* = intensity;
 
 确定你把`outerCutOff`值添加到了`Light`结构体，并在应用中设置了它的uniform值。对于下面的图片，内部切光角`12.5f`，外部切光角是`17.5f`：
 
-![](http://www.learnopengl.com/img/lighting/light_casters_spotlight.png)
+![](../img/02/05/light_casters_spotlight.png)
 
 看起来好多了。仔细看看内部和外部切光角，尝试创建一个符合你求的聚光。可以在这里找到应用源码，以及片段的源代码。
 

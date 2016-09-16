@@ -353,13 +353,13 @@ vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string
 
 现在在代码中，声明一个Model对象，把它模型的文件位置传递给它。模型应该自动加载（如果没有错误的话）在游戏循环中使用它的Draw函数绘制这个对象。没有更多的缓冲配置，属性指针和渲染命令，仅仅简单的一行。如果你创建几个简单的着色器，像素着色器只输出对象的漫反射贴图颜色，结果看上去会有点像这样：
 
-![](http://www.learnopengl.com/img/model_loading/model_diffuse.png)
+![](../img/03/03/model_diffuse.png)
 
 你可以从这里找到带有[顶点](http://learnopengl.com/code_viewer.php?code=model_loading/model&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=model_loading/model&type=fragment)着色器的[完整的源码](http://learnopengl.com/code_viewer.php?code=model_loading/model_diffuse)。
 
 因为我们之前学习过光照教程，可以更加富有创造性的引入两个点光源渲染方程，结合镜面贴图获得惊艳效果：
 
-![](http://www.learnopengl.com/img/model_loading/model_lighting.png)
+![](../img/03/03/model_lighting.png)
 
 甚至我不得不承认这个相比之前用过的容器酷炫多了。使用Assimp，你可以载入无数在互联网上找到的模型。有相当多可以以多种文件格式下载免费3D模型的资源网站。一定注意，有些模型仍然不能很好的载入，纹理路径无效或者这种格式Assimp不能读取。
 

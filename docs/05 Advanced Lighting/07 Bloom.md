@@ -10,7 +10,7 @@
 
 光晕效果可以使用一个后处理特效泛光来实现。泛光使所有明亮区域产生光晕效果。下面是一个使用了和没有使用光晕的对比（图片生成自虚幻引擎）：
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_example.png)
+![](../img/05/07/bloom_example.png)
 
 Bloom是我们能够注意到一个明亮的物体真的有种明亮的感觉。泛光可以极大提升场景中的光照效果，并提供了极大的效果提升，尽管做到这一切只需一点改变。
 
@@ -20,25 +20,25 @@ Bloom和HDR结合使用效果很好。常见的一个误解是HDR和泛光是一
 
 我们来一步一步解释这个处理过程。我们在场景中渲染一个带有4个立方体形式不同颜色的明亮的光源。带有颜色的发光立方体的亮度在1.5到15.0之间。如果我们将其渲染至HDR颜色缓冲，场景看起来会是这样的：
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_scene.png)
+![](../img/05/07/bloom_scene.png)
 
 我们得到这个HDR颜色缓冲纹理，提取所有超出一定亮度的fragment。这样我们就会获得一个只有fragment超过了一定阈限的颜色区域：
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_extracted.png)
+![](../img/05/07/bloom_extracted.png)
 
 我们将这个超过一定亮度阈限的纹理进行模糊。泛光效果的强度很大程度上被模糊过滤器的范围和强度所决定。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_blurred.png)
+![](../img/05/07/bloom_blurred.png)
 
 最终的被模糊化的纹理就是我们用来获得发出光晕效果的东西。这个已模糊的纹理要添加到原来的HDR场景纹理的上部。因为模糊过滤器的应用明亮区域发出光晕，所以明亮区域在长和宽上都有所扩展。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_small.png)
+![](../img/05/07/bloom_small.png)
 
 泛光本身并不是个复杂的技术，但很难获得正确的效果。它的品质很大程度上取决于所用的模糊过滤器的质量和类型。简单的改改模糊过滤器就会极大的改变泛光效果的品质。
 
 下面这几步就是泛光后处理特效的过程，它总结了实现泛光所需的步骤。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_steps.png)
+![](../img/05/07/bloom_steps.png)
 
 首先我们需要根据一定的阈限提取所有明亮的颜色。我们先来做这件事。
 
@@ -110,7 +110,7 @@ void main()
 
 有了两个颜色缓冲，我们就有了一个正常场景的图像和一个提取出的亮区的图像；这些都在一个渲染步骤中完成。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_attachments.png)
+![](../img/05/07/bloom_attachments.png)
 
 有了一个提取出的亮区图像，我们现在就要把这个图像进行模糊处理。我们可以使用帧缓冲教程后处理部分的那个简单的盒子过滤器，但不过我们最好还是使用一个更高级的更漂亮的模糊过滤器：**高斯模糊(Gaussian blur)**。
 
@@ -118,7 +118,7 @@ void main()
 
 在后处理教程那里，我们采用的模糊是一个图像中所有周围像素的均值，它的确为我们提供了一个简易实现的模糊，但是效果并不好。高斯模糊基于高斯曲线，高斯曲线通常被描述为一个钟形曲线，中间的值达到最大化，随着距离的增加，两边的值不断减少。高斯曲线在数学上有不同的形式，但是通常是这样的形状：
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_gaussian.png)
+![](../img/05/07/bloom_gaussian.png)
 
 高斯曲线在它的中间处的面积最大，使用它的值作为权重使得近处的样本拥有最大的优先权。比如，如果我们从fragment的32×32的四方形区域采样，这个权重随着和fragment的距离变大逐渐减小；通常这会得到更好更真实的模糊效果，这种模糊叫做高斯模糊。
 
@@ -126,7 +126,7 @@ void main()
 
 幸运的是，高斯方程有个非常巧妙的特性，它允许我们把二维方程分解为两个更小的方程：一个描述水平权重，另一个描述垂直权重。我们首先用水平权重在整个纹理上进行水平模糊，然后在经改变的纹理上进行垂直模糊。利用这个特性，结果是一样的，但是可以节省难以置信的性能，因为我们现在只需做32+32次采样，不再是1024了！这叫做两步高斯模糊。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_gaussian_two_pass.png)
+![](../img/05/07/bloom_gaussian_two_pass.png)
 
 这意味着我们如果对一个图像进行模糊处理，至少需要两步，最好使用帧缓冲对象做这件事。具体来说，我们将实现像乒乓球一样的帧缓冲来实现高斯模糊。它的意思是，有一对儿帧缓冲，我们把另一个帧缓冲的颜色缓冲放进当前的帧缓冲的颜色缓冲中，使用不同的着色效果渲染指定的次数。基本上就是不断地切换帧缓冲和纹理去绘制。这样我们先在场景纹理的第一个缓冲中进行模糊，然后在把第一个帧缓冲的颜色缓冲放进第二个帧缓冲进行模糊，接着，将第二个帧缓冲的颜色缓冲放进第一个，循环往复。
 
@@ -218,7 +218,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 通过对提取亮区纹理进行5次模糊，我们就得到了一个正确的模糊的场景亮区图像。
 
-![](http://learnopengl.com/img/advanced-lighting/bloom_blurred_large.png)
+![](../img/05/07/bloom_blurred_large.png)
 
 泛光的最后一步是把模糊处理的图像和场景原来的HDR纹理进行结合。
 
@@ -255,7 +255,7 @@ void main()
 
 把两个纹理结合以后，场景亮区便有了合适的光晕特效：
 
-![](http://learnopengl.com/img/advanced-lighting/bloom.png)
+![](../img/05/07/bloom.png)
 
 有颜色的立方体看起来仿佛更亮，它向外发射光芒，的确是一个更好的视觉效果。这个场景比较简单，所以泛光效果不算十分令人瞩目，但在更好的场景中合理配置之后效果会有巨大的不同。你可以在这里找到这个简单的例子的源码，以及模糊的顶点和像素着色器、立方体的像素着色器、后处理的顶点和像素着色器。
 

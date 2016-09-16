@@ -192,13 +192,13 @@ glm::vec3 pointLightPositions[] = {
 
 如果你在还是用了手电筒的话，将所有的光源结合起来看上去应该和下图差不多：
 
-![](http://learnopengl.com/img/lighting/multiple_lights_combined.png)
+![](../img/02/06/multiple_lights_combined.png)
 
 你可以在此处获取本教程的[源代码](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights)，同时可以查看[顶点着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights&type=fragment)的代码。
 
 上面的图片的光源都是使用默认的属性的效果，如果你尝试对光源属性做出各种修改尝试的话，会出现很多有意思的画面。很多艺术家和场景编辑器都提供大量的按钮或方式来修改光照以使用各种环境。使用最简单的光照属性的改变我们就足已创建有趣的视觉效果：
 
-![](http://learnopengl.com/img/lighting/multiple_lights_atmospheres.png)
+![](../img/02/06/multiple_lights_atmospheres.png)
 
 相信你现在已经对OpenGL的光照有很好的理解了。有了这些知识我们便可以创建丰富有趣的环境和氛围了。快试试改变所有的属性的值来创建你的光照环境吧！
 

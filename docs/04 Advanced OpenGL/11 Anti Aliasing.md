@@ -8,11 +8,11 @@
 
 在你的渲染大冒险中，你可能会遇到模型边缘有锯齿的问题。**锯齿边(Jagged Edge)**出现的原因是由顶点数据像素化之后成为片段的方式所引起的。下面是一个简单的立方体，它体现了锯齿边的效果：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_aliasing.png)
+![](../img/04/11/anti_aliasing_aliasing.png)
 
 也许不是立即可见的，如果你更近的看看立方体的边，你就会发现锯齿了。如果我们放大就会看到下面的情境：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_zoomed.png)
+![](../img/04/11/anti_aliasing_zoomed.png)
 
 这当然不是我们在最终版本的应用里想要的效果。这个效果，很明显能看到边是由像素所构成的，这种现象叫做**走样(Aliasing)**。有很多技术能够减少走样，产生更平滑的边缘，这些技术叫做**抗锯齿技术**(Anti-aliasing，也被称为反走样技术)。
 
@@ -26,19 +26,19 @@
 
 光栅化是你的最终的经处理的顶点和片段着色器之间的所有算法和处理的集合。光栅化将属于一个基本图形的所有顶点转化为一系列片段。顶点坐标理论上可以含有任何坐标，但片段却不是这样，这是因为它们与你的窗口的解析度有关。几乎永远都不会有顶点坐标和片段的一对一映射，所以光栅化必须以某种方式决定每个特定顶点最终结束于哪个片段/屏幕坐标上。
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_rasterization.png)
+![](../img/04/11/anti_aliasing_rasterization.png)
 
 这里我们看到一个屏幕像素网格，每个像素中心包含一个采样点（sample point），它被用来决定一个像素是否被三角形所覆盖。红色的采样点如果被三角形覆盖，那么就会为这个被覆盖像（屏幕）素生成一个片段。即使三角形覆盖了部分屏幕像素，但是采样点没被覆盖，这个像素仍然不会受到任何片段着色器影响到。
 
 你可能已经明白走样的原因来自何处了。三角形渲染后的版本最后在你的屏幕上是这样的：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_rasterization_filled.png)
+![](../img/04/11/anti_aliasing_rasterization_filled.png)
 
 由于屏幕像素总量的限制，有些边上的像素能被渲染出来，而有些则不会。结果就是我们渲染出的基本图形的非光滑边缘产生了上图的锯齿边。
 
 多采样所做的正是不再使用单一采样点来决定三角形的覆盖范围，而是采用多个采样点。我们不再使用每个像素中心的采样点，取而代之的是4个子样本（subsample），用它们来决定像素的覆盖率。这意味着颜色缓冲的大小也由于每个像素的子样本的增加而增加了。
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_sample_points.png)
+![](../img/04/11/anti_aliasing_sample_points.png)
 
 左侧的图显示了我们普通决定一个三角形的覆盖范围的方式。这个像素并不会运行一个片段着色器（这就仍保持空白），因为它的采样点没有被三角形所覆盖。右边的图展示了多采样的版本，每个像素包含4个采样点。这里我们可以看到只有2个采样点被三角形覆盖。
 
@@ -52,13 +52,13 @@ MSAA的真正工作方式是，每个像素只运行一次片段着色器，无�
 
 结果是，颜色缓冲中所有基本图形的边都生成了更加平滑的样式。让我们看看当再次决定前面的三角形覆盖范围时多样本看起来是这样的：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_rasterization_samples.png)
+![](../img/04/11/anti_aliasing_rasterization_samples.png)
 
 这里每个像素包含着4个子样本（不相关的已被隐藏）蓝色的子样本是被三角形覆盖了的，灰色的没有被覆盖。三角形内部区域中的所有像素都会运行一次片段着色器，它输出的颜色被储存到所有4个子样本中。三角形的边缘并不是所有的子样本都会被覆盖，所以片段着色器的结果仅储存在部分子样本中。根据被覆盖子样本的数量，最终的像素颜色由三角形颜色和其他子样本所储存的颜色所决定。
 
 大致上来说，如果更多的采样点被覆盖，那么像素的颜色就会更接近于三角形。如果我们用早期使用的三角形的颜色填充像素，我们会获得这样的结果：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_rasterization_samples_filled.png)
+![](../img/04/11/anti_aliasing_rasterization_samples_filled.png)
 
 对于每个像素来说，被三角形覆盖的子样本越少，像素受到三角形的颜色的影响也越少。现在三角形的硬边被比实际颜色浅一些的颜色所包围，因此观察者从远处看上去就比较平滑了。
 
@@ -86,7 +86,7 @@ glEnable(GL_MULTISAMPLE);
 
 当默认帧缓冲有了多采样缓冲附件的时候，我们所要做的全部就是调用 `glEnable`开启多采样。因为实际的多采样算法在OpenGL驱动光栅化里已经实现了，所以我们无需再做什么了。如果我们现在来渲染教程开头的那个绿色立方体，我们会看到边缘变得平滑了：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_multisampled.png)
+![](../img/04/11/anti_aliasing_multisampled.png)
 
 这个箱子看起来平滑多了，在场景中绘制任何物体都可以利用这个技术。可以[从这里找到](http://learnopengl.com/code_viewer.php?code=advanced/anti_aliasing_multisampling)这个简单的例子。
 
@@ -142,7 +142,7 @@ glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT,
 
 如果我们渲染应用，我们将得到和没用帧缓冲一样的结果：一个绿色立方体，它使用MSAA显示出来，但边缘锯齿明显少了：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_multisampled.png)
+![](../img/04/11/anti_aliasing_multisampled.png)
 
 你可以[在这里找到源代码](http://learnopengl.com/code_viewer.php?code=advanced/anti_aliasing_framebuffers)。
 
@@ -177,7 +177,7 @@ while(!glfwWindowShouldClose(window))
 
 如果我们实现帧缓冲教程中讲的后处理代码，我们就能创造出没有锯齿边的所有效果很酷的后处理特效。使用模糊kernel过滤器，看起来会像这样：
 
-![](http://learnopengl.com/img/advanced/anti_aliasing_post_processing.png)
+![](../img/04/11/anti_aliasing_post_processing.png)
 
 你可以[在这里找到所有MSAA版本的后处理源码](http://learnopengl.com/code_viewer.php?code=advanced/anti_aliasing_post_processing)。
 

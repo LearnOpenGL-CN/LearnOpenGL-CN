@@ -22,7 +22,7 @@
 
 当我们定义一系列的三角顶点时，我们会把它们定义为一个特定的连接顺序(Winding Order)，它们可能是**顺时针**的或**逆时针**的。每个三角形由3个顶点组成，我们从三角形的中间去看，从而把这三个顶点指定一个连接顺序。
 
-![](http://learnopengl.com/img/advanced/faceculling_windingorder.png)
+![](../img/04/04/faceculling_windingorder.png)
 
 正如你所看到的那样，我们先定义了顶点1，接着我们定义顶点2或3，这个不同的选择决定了这个三角形的连接顺序。下面的代码展示出这点：
 
@@ -45,7 +45,7 @@ GLfloat vertices[] = {
 
 我们指定了它们以后，观察者面对的所有的三角形的顶点的连接顺序都是正确的，但是现在渲染的立方体另一面的三角形的顶点的连接顺序被反转。最终，我们所面对的三角形被视为正面朝向的三角形，后部的三角形被视为背面朝向的三角形。下图展示了这个效果：
 
-![](http://learnopengl.com/img/advanced/faceculling_frontback.png)
+![](../img/04/04/faceculling_frontback.png)
 
 在顶点数据中，我们定义的是两个逆时针顺序的三角形。然而，从观察者的方面看，后面的三角形是顺时针的，如果我们仍以1、2、3的顺序以观察者当面的视野看的话。即使我们以逆时针顺序定义后面的三角形，它现在还是变为顺时针。它正是我们打算剔除（丢弃）的不可见的面！
 
@@ -95,7 +95,7 @@ glFrontFace(GL_CW);
 
 最后的结果只有背面被渲染了：
 
-![](http://learnopengl.com/img/advanced/faceculling_reverse.png)
+![](../img/04/04/faceculling_reverse.png)
 
 要注意，你可以使用默认逆时针顺序剔除正面，来创建相同的效果：
 

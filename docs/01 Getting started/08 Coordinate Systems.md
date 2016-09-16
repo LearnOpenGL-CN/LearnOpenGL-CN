@@ -24,7 +24,7 @@
 
 为了将坐标从一个坐标系转换到另一个坐标系，我们需要用到几个转换矩阵，最重要的几个分别是**模型(Model)**、**视图(View)**、**投影(Projection)**三个矩阵。首先，顶点坐标开始于**局部空间(Local Space)**，称为**局部坐标(Local Coordinate)**，然后经过**世界坐标(World Coordinate)**，**观察坐标(View Coordinate)**，**裁剪坐标(Clip Coordinate)**，并最后以**屏幕坐标(Screen Coordinate)**结束。下面的图示显示了整个流程及各个转换过程做了什么：
 
-![coordinate_systems](http://learnopengl.com/img/getting-started/coordinate_systems.png)
+![coordinate_systems](../img/01/08/coordinate_systems.png)
 
 
  1. 局部坐标是对象相对于局部原点的坐标；也是对象开始的坐标。
@@ -77,7 +77,7 @@
 
 正射投影(Orthographic Projection)矩阵定义了一个类似立方体的平截头体，指定了一个裁剪空间，每一个在这空间外面的顶点都会被裁剪。创建一个正射投影矩阵需要指定可见平截头体的宽、高和长度。所有在使用正射投影矩阵转换到裁剪空间后如果还处于这个平截头体里面的坐标就不会被裁剪。它的平截头体看起来像一个容器：
 
-![orthographic projection frustum](http://learnopengl.com/img/getting-started/orthographic_frustum.png)
+![orthographic projection frustum](../img/01/08/orthographic_frustum.png)
 
 上面的平截头体定义了由宽、高、**近**平面和**远**平面决定的可视的坐标系。任何出现在近平面前面或远平面后面的坐标都会被裁剪掉。正视平截头体直接将平截头体内部的顶点映射到标准化设备坐标系中，因为每个向量的w分量都是不变的；如果w分量等于1.0，则透视划分不会改变坐标的值。
 
@@ -95,7 +95,7 @@ glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
 
 如果你曾经体验过**实际生活**给你带来的景象，你就会注意到离你越远的东西看起来更小。这个神奇的效果我们称之为透视(Perspective)。透视的效果在我们看一条无限长的高速公路或铁路时尤其明显，正如下面图片显示的那样:
 
-![perspective](http://learnopengl.com/img/getting-started/perspective.png)
+![perspective](../img/01/08/perspective.png)
 
 正如你看到的那样，由于透视的原因，平行线似乎在很远的地方看起来会相交。这正是透视投影(Perspective Projection)想要模仿的效果，它是使用透视投影矩阵来完成的。这个投影矩阵不仅将给定的平截头体范围映射到裁剪空间，同样还修改了每个顶点坐标的w值，从而使得离观察者越远的顶点坐标w分量越大。被转换到裁剪空间的坐标都会在-w到w的范围之间(任何大于这个范围的对象都会被裁剪掉)。OpenGL要求所有可见的坐标都落在-1.0到1.0范围内从而作为最后的顶点着色器输出，因此一旦坐标在裁剪空间内，透视划分就会被应用到裁剪空间坐标：
 
@@ -113,7 +113,7 @@ glm::mat4 proj = glm::perspective(45.0f, (float)width/(float)height, 0.1f, 100.0
 
 `glm::perspective`所做的其实就是再次创建了一个定义了可视空间的大的**平截头体**，任何在这个平截头体以外的对象最后都不会出现在裁剪空间体积内，并且将会受到裁剪。一个透视平截头体可以被可视化为一个不均匀形状的盒子，在这个盒子内部的每个坐标都会被映射到裁剪空间的点。一张透视平截头体的照片如下所示：
 
-![ perspective_frustum](http://learnopengl.com/img/getting-started/perspective_frustum.png)
+![ perspective_frustum](../img/01/08/perspective_frustum.png)
 
 它的第一个参数定义了**fov**的值，它表示的是**视野(Field of View)**，并且设置了观察空间的大小。对于一个真实的观察效果，它的值经常设置为45.0，但想要看到更多结果你可以设置一个更大的值。第二个参数设置了宽高比，由视口的高除以宽。第三和第四个参数设置了平截头体的近和远平面。我们经常设置近距离为0.1而远距离设为100.0。所有在近平面和远平面的顶点且处于平截头体内的顶点都会被渲染。
 
@@ -123,7 +123,7 @@ glm::mat4 proj = glm::perspective(45.0f, (float)width/(float)height, 0.1f, 100.0
 
 当使用正射投影时，每一个顶点坐标都会直接映射到裁剪空间中而不经过任何精细的透视划分(它仍然会进行透视划分，只是w分量没有被操作(它保持为1)因此没有起作用)。因为正射投影没有使用透视，远处的对象不会显得小以产生神奇的视觉输出。由于这个原因，正射投影主要用于二维渲染以及一些建筑或工程的应用，或者是那些我们不需要使用投影来转换顶点的情况下。某些如Blender的进行三维建模的软件有时在建模时会使用正射投影，因为它在各个维度下都更准确地描绘了每个物体。下面你能够看到在Blender里面使用两种投影方式的对比：
 
-![perspective_orthographic](http://learnopengl.com/img/getting-started/perspective_orthographic.png)
+![perspective_orthographic](../img/01/08/perspective_orthographic.png)
 
 你可以看到使用透视投影的话，远处的顶点看起来比较小，而在正射投影中每个顶点距离观察者的距离都是一样的。
 
@@ -170,7 +170,7 @@ model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
 	按照约定，OpenGL是一个右手坐标系。最基本的就是说正x轴在你的右手边，正y轴往上而正z轴是往后的。想象你的屏幕处于三个轴的中心且正z轴穿过你的屏幕朝向你。坐标系画起来如下：
 
-	![coordinate_systems_right_handed](http://learnopengl.com/img/getting-started/coordinate_systems_right_handed.png)
+	![coordinate_systems_right_handed](../img/01/08/coordinate_systems_right_handed.png)
 
 	为了理解为什么被称为右手坐标系，按如下的步骤做：
 
@@ -234,7 +234,7 @@ glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 让我们检查一下结果是否满足这些要求：
 
-![coordinate_systems_result](http://learnopengl.com/img/getting-started/coordinate_systems_result.png)
+![coordinate_systems_result](../img/01/08/coordinate_systems_result.png)
 
 它看起来就像是一个三维的平面，是静止在一些虚构的地板上的。如果你不是得到相同的结果，请检查下完整的[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems) 以及[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=fragment)着色器。
 
@@ -256,7 +256,7 @@ glDrawArrays(GL_TRIANGLES, 0, 36);
 
 如果一切顺利的话绘制效果将与下面的类似：
 
-<video src="http://learnopengl.com/video/getting-started/coordinate_system_no_depth.mp4" controls="controls"></video>
+<video src="../../img/01/08/coordinate_system_no_depth.mp4" controls="controls"></video>
 
 这有点像一个立方体，但又有种说不出的奇怪。立方体的某些本应被遮挡住的面被绘制在了这个立方体的其他面的上面。之所以这样是因为OpenGL是通过画一个一个三角形来画你的立方体的，所以它将会覆盖之前已经画在那里的像素。因为这个原因，有些三角形会画在其它三角形上面，虽然它们本不应该是被覆盖的。
 
@@ -280,7 +280,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 我们来重新运行下程序看看OpenGL是否执行了深度测试：
 
-<video src="http://learnopengl.com/video/getting-started/coordinate_system_depth.mp4" controls="controls"></video>
+<video src="../../img/01/08/coordinate_system_depth.mp4" controls="controls"></video>
 
 就是这样！一个开启了深度测试，各个面都是纹理，并且还在旋转的立方体！如果你的程序有问题可以到[这里](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems_with_depth)下载源码进行比对。
 
@@ -324,7 +324,7 @@ glBindVertexArray(0);
 
 这个代码将会每次都更新模型矩阵然后画出新的立方体，如此总共重复10次。然后我们应该就能看到一个拥有10个正在奇葩旋转着的立方体的世界。
 
-![coordinate_systems_multiple_objects](http://learnopengl.com/img/getting-started/coordinate_systems_multiple_objects.png)
+![coordinate_systems_multiple_objects](../img/01/08/coordinate_systems_multiple_objects.png)
 
 完美！这就像我们的箱子找到了志同道合的小伙伴一样。如果你在这里卡住了，你可以对照一下[代码](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems_multiple_objects) 以及[顶点着色器](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems&type=vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems&type=fragment) 。
 
