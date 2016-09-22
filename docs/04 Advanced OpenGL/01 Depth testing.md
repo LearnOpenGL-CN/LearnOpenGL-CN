@@ -63,7 +63,7 @@ glDepthFunc(GL_LESS);
 
 默认情况下使用`GL_LESS`，这将丢弃深度值高于或等于当前深度缓冲区的值的片段。
 
-让我们看看改变深度函数对输出的影响。我们将使用新鲜的代码安装程序显示一个没有灯光的有纹理地板上的两个有纹理的立方体。你可以在这里找到源代码和其着色器代码。
+让我们看看改变深度函数对输出的影响。我们将使用新的代码显示一个由两个带纹理的立方体和带纹理的地板组成的没有光照的基本场景。你可以在这里找到[源代码](http://learnopengl.com/code_viewer.php?code=advanced/depth_testing_func)和其[着色器](http://learnopengl.com/code_viewer.php?code=advanced/depth_testing_func_shaders)代码。
 
 代码中我们将深度函数设为`GL_ALWAYS`:
 
