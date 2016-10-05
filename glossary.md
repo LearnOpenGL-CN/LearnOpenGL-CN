@@ -149,6 +149,16 @@
 - Attachment：附件
 - Render Buffer Object：渲染缓冲对象
 
+## 06-02
+
+- Character：字符
+- Quad：四边形
+- Mesh：网格
+- Glyph：字形
+- Baseline：基线
+- Bitmap：位图
+- Metric：度量值
+
 ## 06-03-01
 
 - Level：关卡

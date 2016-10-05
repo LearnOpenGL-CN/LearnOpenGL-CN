@@ -52,7 +52,7 @@ pages:
       - SSAO: '05 Advanced Lighting/09 SSAO.md'
     - 实战:
       - 调试: '06 In Practice/01 Debugging.md'
-      - 文字渲染: '06 In Practice/02 Text Rendering.md'
+      - 文本渲染: '06 In Practice/02 Text Rendering.md'
       - 2D游戏:
         - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
         - 准备工作: '06 In Practice/2D-Game/02 Setting up.md'
