@@ -73,7 +73,7 @@ const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess
 * `aiProcess_SplitLargeMeshes` : 把大的网格分成几个小的的下级网格，当你渲染有一个最大数量顶点的限制时或者只能处理小块网格时很有用。
 * `aiProcess_OptimizeMeshes` : 和上个选项相反，它把几个网格结合为一个更大的网格。以减少绘制函数调用的次数的方式来优化。
 
-Assimp提供了后处理说明，你可以从这里找到所有内容。事实上通过Assimp加载一个模型超级简单。困难的是使用返回的场景对象把加载的数据变换到一个Mesh对象的数组。
+Assimp提供了后处理说明，你可以从[这里](http://assimp.sourceforge.net/lib_html/postprocess_8h.html)找到所有内容。事实上通过Assimp加载一个模型超级简单。困难的是使用返回的场景对象把加载的数据变换到一个Mesh对象的数组。
 
 完整的`loadModel`函数在这里列出：
 
