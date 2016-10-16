@@ -181,7 +181,7 @@ vertex.Position = vector;
 
 !!! Important
 
-    Assimp调用他们的顶点位置数组`mVertices`真有点违反直觉。
+    Assimp将它的顶点位置数组称为<var>mVertices</var>，这其实并不是非常直观。
 
 对应法线的步骤毫无疑问是这样的：
 
