@@ -9,6 +9,7 @@
 !!! note "译注"
 
 	在学习此节之前，建议将这三个单词先记下来：
+	
 	- 顶点数组对象：Vertex Array Object，VAO
 	- 顶点缓冲对象：Vertex Buffer Object，VBO
 	- 索引缓冲对象：Element Buffer Object，EBO或Index Buffer Object，IBO
