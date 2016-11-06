@@ -335,7 +335,7 @@ someOpenGLFunctionThatDrawsOurTriangle();
 
 - <fun>glEnableVertexAttribArray</fun>和<fun>glDisableVertexAttribArray</fun>的调用。
 - 通过<fun>glVertexAttribPointer</fun>设置的顶点属性配置。
-- 通过`glVertexAttribPointer`调用进行的顶点缓冲对象与顶点属性链接。
+- 通过<fun>glVertexAttribPointer</fun>调用与顶点属性关联的顶点缓冲对象。
 
 ![](../img/01/04/vertex_array_objects.png)
 
