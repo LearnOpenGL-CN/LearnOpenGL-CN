@@ -155,6 +155,9 @@
 - Viewing Box：观察箱
 - Perspective Division：透视除法
 - Z-buffer：Z缓冲
+- Draw：绘制
+- Depth Testing：深度测试
+- Depth Buffer：深度缓冲
 
 ## 06-01
 
