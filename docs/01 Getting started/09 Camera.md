@@ -482,6 +482,6 @@ glfwSetScrollCallback(window, scroll_callback);
 
 ## 练习
 
-- 看看你是否能够变换摄像机类从而使得其能够变- 成一个**真正的**FPS摄像机(也就是说不能够随意飞行)；你只能够呆在xz平面上: [参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise1)
+- 看看你是否能够变换摄像机类从而使得其能够变成一个**真正的**FPS摄像机(也就是说不能够随意飞行)；你只能够呆在xz平面上: [参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise1)
 
 - 试着创建你自己的LookAt函数，使你能够手动创建一个我们在一开始讨论的观察矩阵。用你的函数实现来替换glm的LookAt函数，看看它是否还能一样的工作：[参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise2)
