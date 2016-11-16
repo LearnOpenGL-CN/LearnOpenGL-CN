@@ -51,9 +51,9 @@ pages:
       - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
       - SSAO: '05 Advanced Lighting/09 SSAO.md'
     - PBR:
-      - 理论: 'PBR/Theory.md'
-      - 光照: 'PBR/Lighting.md'
-      - IBL: 'PBR/IBL.md'
+      - 理论: '07 PBR/01 Theory.md'
+      - 光照: '07 PBR/02 Lighting.md'
+      - IBL: '07 PBR/03 IBL.md'
     - 实战:
       - 调试: '06 In Practice/01 Debugging.md'
       - 文本渲染: '06 In Practice/02 Text Rendering.md'
