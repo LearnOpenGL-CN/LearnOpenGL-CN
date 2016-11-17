@@ -159,6 +159,19 @@
 - Depth Testing：深度测试
 - Depth Buffer：深度缓冲
 
+## 01-09
+
+- Direction Vector：方向向量
+- Camera Space：摄像机空间
+- Gram-Schmidt Process：格拉姆—施密特正交化
+- LookAt Matrix：LookAt矩阵
+- Strafe：(?)扫射
+- Deltatime：时间差
+- Euler Angles：欧拉角
+- Pitch：俯仰角
+- Yaw：偏航角
+- Roll：滚转角
+
 ## 06-01
 
 - Debugging：调试
