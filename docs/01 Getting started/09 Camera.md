@@ -258,7 +258,7 @@ void do_movement()
 
 ![](../img/01/09/camera_triangle.png)
 
-如果我们把斜边边长定义为1，我们就能知道邻边的长度是\(\cos \ \color{red}x/\color{purple}h = \cos \ \color{red}x/\color{purple}1 = \cos\ \color{red}x\)，它的对边是\(\sin \ \color{green}y/\color{purple}h = \sin \ \color{green}y/\color{purple}1 = \sin\ \color{green}y\)。这样我们获得了能够得到x和y方向的长度的通用公式，它们取决于所给的角度。我们使用它来计算方向向量的分量：
+如果我们把斜边边长定义为1，我们就能知道邻边的长度是\(\cos \ \color{red}x/\color{purple}h = \cos \ \color{red}x/\color{purple}1 = \cos\ \color{red}x\)，它的对边是\(\sin \ \color{green}y/\color{purple}h = \sin \ \color{green}y/\color{purple}1 = \sin\ \color{green}y\)。这样我们获得了能够得到x和y方向长度的通用公式，它们取决于所给的角度。我们使用它来计算方向向量的分量：
 
 ![](../img/01/09/camera_pitch.png)
 
@@ -281,10 +281,6 @@ direction.z = cos(glm::radians(pitch));
 
 就像俯仰角的三角形一样，我们可以看到x分量取决于`cos(yaw)`的值，z值同样取决于偏航角的正弦值。把这个加到前面的值中，会得到基于俯仰角和偏航角的方向向量：
 
-!!! note "译注"
-
-    这里的球坐标与笛卡尔坐标的转换把x和z弄反了，如果你去看最后的源码，会发现作者在摄像机源码那里写了`yaw = yaw – 90`，实际上在这里x就应该是`sin(glm::radians(yaw))`，z也是同样处理，当然也可以认为是这个诡异的坐标系，但是在这里使用球坐标转笛卡尔坐标有个大问题，就是在初始渲染时，无法指定摄像机的初始朝向，还要花一些功夫自己实现这个；此外这只能实现像第一人称游戏一样的简易摄像机，类似Maya、Unity3D编辑器窗口的那种摄像机还是最好自己设置摄像机的位置、上、右、前轴，在旋转时用四元数对这四个变量进行调整，才能获得更好的效果，而不是仅仅调整摄像机前轴。
-
 ```c++
 direction.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw)); // 译注：direction代表摄像机的前轴(Front)，这个前轴是和本文第一幅图片的第二个摄像机的方向向量是相反的
 direction.y = sin(glm::radians(pitch));
@@ -295,47 +291,46 @@ direction.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 
 ## 鼠标输入
 
-偏航角和俯仰角是从鼠标移动获得的，鼠标水平移动影响偏航角，鼠标垂直移动影响俯仰角。它的思想是储存上一帧鼠标的位置，在当前帧中我们当前计算鼠标位置和上一帧的位置相差多少。如果差别越大那么俯仰角或偏航角就改变越大。
+偏航角和俯仰角是通过鼠标（或手柄）移动获得的，水平的移动影响偏航角，竖直的移动影响俯仰角。它的原理就是，储存上一帧鼠标的位置，在当前帧中我们当前计算鼠标位置与上一帧的位置相差多少。如果水平/竖直差别越大那么俯仰角或偏航角就改变越大，也就是摄像机需要移动更多的距离。
 
-首先我们要告诉GLFW，应该隐藏光标，并**捕捉(Capture)**它。捕捉鼠标意味着当应用集中焦点到鼠标上的时候光标就应该留在窗口中(除非应用拾取焦点或退出)。我们可以进行简单的配置:
-
+首先我们要告诉GLFW，它应该隐藏光标，并<def>捕捉</def>(Capture)它。捕捉光标表示的是，如果焦点在你的程序上（译注：即表示你正在操作这个程序，Windows中拥有焦点的程序标题栏通常是有颜色的那个，而失去焦点的程序标题栏则是灰色的），光标应该停留在窗口中（除非程序失去焦点或者退出）。我们可以用一个简单地配置调用来完成：
 
 ```c++
 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 ```
 
-这个函数调用后，无论我们怎么去移动鼠标，它都不会显示了，也不会离开窗口。对于FPS摄像机系统来说很好：
+在调用这个函数之后，无论我们怎么去移动鼠标，光标都不会显示了，它也不会离开窗口。对于FPS摄像机系统来说非常完美。
 
-为计算俯仰角和偏航角我们需要告诉GLFW监听鼠标移动事件。我们用下面的原型创建一个回调函数来做这件事(和键盘输入差不多)：
+为了计算俯仰角和偏航角，我们需要让GLFW监听鼠标移动事件。（和键盘输入相似）我们会用一个回调函数来完成，函数的原型如下：
 
 ```c++
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 ```
 
-这里的`xpos`和`ypos`代表当前鼠标的位置。我们注册了GLFW的回调函数，鼠标一移动`mouse_callback`函数就被调用：
+这里的<var>xpos</var>和<var>ypos</var>代表当前鼠标的位置。当我们用GLFW注册了回调函数之后，鼠标一移动<fun>mouse_callback</fun>函数就会被调用：
 
 ```c++
 glfwSetCursorPosCallback(window, mouse_callback);
 ```
 
-在处理FPS风格的摄像机鼠标输入的时候，我们必须在获取最终的方向向量之前做下面这几步：
+在处理FPS风格摄像机的鼠标输入的时候，我们必须在最终获取方向向量之前做下面这几步：
 
-1. 计算鼠标和上一帧的偏移量。
-2. 把偏移量添加到摄像机和俯仰角和偏航角中。
+1. 计算鼠标距上一帧的偏移量。
+2. 把偏移量添加到摄像机的俯仰角和偏航角中。
 3. 对偏航角和俯仰角进行最大和最小值的限制。
 4. 计算方向向量。
 
-第一步计算鼠标自上一帧的偏移量。我们必须先储存上一帧的鼠标位置，我们把它的初始值设置为屏幕的中心(屏幕的尺寸是800乘600)：
+第一步是计算鼠标自上一帧的偏移量。我们必须先在程序中储存上一帧的鼠标位置，我们把它的初始值设置为屏幕的中心（屏幕的尺寸是800x600）：
 
 ```c++
 GLfloat lastX = 400, lastY = 300;
 ```
 
-然后在回调函数中我们计算当前帧和上一帧鼠标位置的偏移量：
+然后在鼠标的回调函数中我们计算当前帧和上一帧鼠标位置的偏移量：
 
 ```c++
 GLfloat xoffset = xpos - lastX;
-GLfloat yoffset = lastY - ypos; // 注意这里是相反的，因为y坐标的范围是从下往上的
+GLfloat yoffset = lastY - ypos; // 注意这里是相反的，因为y坐标是从底部往顶部依次增大的
 lastX = xpos;
 lastY = ypos;
 
@@ -344,16 +339,16 @@ xoffset *= sensitivity;
 yoffset *= sensitivity;
 ```
 
-注意我们把偏移量乘以了`sensitivity`值。如果我们移除它，鼠标移动就会太大了；你可以自己调整`sensitivity`的值。
+注意我们把偏移量乘以了<var>sensitivity</var>（灵敏度）值。如果我们忽略这个值，鼠标移动就会太大了；你可以自己实验一下，找到适合自己的灵敏度值。
 
-下面我们把偏移量加到全局变量`pitch`和`yaw`上：
+接下来我们把偏移量加到全局变量<var>pitch</var>和<var>yaw</var>上：
 
 ```c++
 yaw   += xoffset;
 pitch += yoffset;  
 ```
 
-第三步我们给摄像机添加一些限制，这样摄像机就不会发生奇怪的移动了。对于俯仰角，要让用户不能看向高于89度(90度时视角会逆转，所以我们把89度作为极限)的地方，同样也不允许小于-89度。这样能够保证用户只能看到天空或脚下但是不能更进一步超越过去。限制可以这样做：
+第三步，我们需要给摄像机添加一些限制，这样摄像机就不会发生奇怪的移动了（这样也会避免一些奇怪的问题）。对于俯仰角，要让用户不能看向高于89度的地方（在90度时视角会发生逆转，所以我们把89度作为极限），同样也不允许小于-89度。这样能够保证用户只能看到天空或脚下，但是不能超越这个限制。我们可以在值超过限制的时候将其改为极限值来实现：
 
 ```c++
 if(pitch > 89.0f)
@@ -362,9 +357,9 @@ if(pitch < -89.0f)
   pitch = -89.0f;
 ```
 
-注意我们没有给偏航角设置限制是因为我们不希望限制用户的水平旋转。然而，给偏航角设置限制也很容易，只要你愿意。
+注意我们没有给偏航角设置限制，这是因为我们不希望限制用户的水平旋转。当然，给偏航角设置限制也很容易，如果你愿意可以自己实现。
 
-第四也是最后一步，就是通过俯仰角和偏航角来计算以得到前面提到的实际方向向量：
+第四也是最后一步，就是通过俯仰角和偏航角来计算以得到真正的方向向量：
 
 ```c++
 glm::vec3 front;
@@ -374,12 +369,12 @@ front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 cameraFront = glm::normalize(front);
 ```
 
-这回计算出方向向量，根据鼠标点的移动它包含所有的旋转。由于`cameraFront`向量已经包含在`glm::lookAt`函数中，我们直接去设置。
+计算出来的方向向量就会包含根据鼠标移动计算出来的所有旋转了。由于<var>cameraFront</var>向量已经包含在GLM的<fun>lookAt</fun>函数中，我们这就没什么问题了。
 
-如果你现在运行代码，你会发现当程序运行第一次捕捉到鼠标的时候摄像机会突然跳一下。原因是当你的鼠标进入窗口鼠标回调函数会使用这时的`xpos`和`ypos`。这通常是一个距离屏幕中心很远的地方，因而产生一个很大的偏移量，所以就会跳了。我们可以简单的使用一个布尔变量检验我们是否是第一次获取鼠标输入，如果是，那么我们先把鼠标的位置更新为`xpos`和`ypos`，这样就能解决这个问题；最后的鼠标移动会使用进入以后鼠标的位置坐标来计算它的偏移量：
+如果你现在运行代码，你会发现在窗口第一次获取焦点的时候摄像机会突然跳一下。这个问题产生的原因是，在你的鼠标移动进窗口的那一刻，鼠标回调函数就会被调用，这时候的<var>xpos</var>和<var>ypos</var>会等于鼠标刚刚进入屏幕的那个位置。这通常是一个距离屏幕中心很远的地方，因而产生一个很大的偏移量，所以就会跳了。我们可以简单的使用一个`bool`变量检验我们是否是第一次获取鼠标输入，如果是，那么我们先把鼠标的初始位置更新为<var>xpos</var>和<var>ypos</var>值，这样就能解决这个问题；接下来的鼠标移动就会使用刚进入的鼠标位置坐标来计算偏移量了：
 
 ```c++
-if(firstMouse) // 这个bool变量一开始是设定为true的
+if(firstMouse) // 这个bool变量初始时是设定为true的
 {
   lastX = xpos;
   lastY = ypos;
@@ -421,67 +416,69 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     front.y = sin(glm::radians(pitch));
     front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(front);
-}  
+}
 ```
 
-现在我们可以自由的在3D场景中移动了！如果你遇到困难，[这是](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera_mouse)源码。
+现在我们就可以自由地在3D场景中移动了！如果你遇到困难，可以来看一下[源代码](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera_mouse)。
 
 ## 缩放
 
-我们还要往摄像机系统里加点东西，实现一个缩放接口。前面教程中我们说视野(Field of View或fov)定义了我们可以看到场景中多大的范围。当视野变小时可视区域就会减小，产生放大了的感觉。我们用鼠标滚轮来放大。和鼠标移动、键盘输入一样我们需要一个鼠标滚轮的回调函数：
+作为我们摄像机系统的一个附加内容，我们还会来实现一个缩放(Zoom)接口。在之前的教程中我们说**视野**(Field of View)或**fov**定义了我们可以看到场景中多大的范围。当视野变小时，场景投影出来的空间就会减小，产生放大(Zoom In)了的感觉。我们会使用鼠标的滚轮来放大。与鼠标移动、键盘输入一样，我们需要一个鼠标滚轮的回调函数：
 
 ```c++
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-  if(aspect >= 1.0f && aspect <= 45.0f)
-  	aspect -= yoffset;
-  if(aspect <= 1.0f)
-  	aspect = 1.0f;
-  if(aspect >= 45.0f)
-  	aspect = 45.0f;
+  if(fov >= 1.0f && fov <= 45.0f)
+  	fov -= yoffset;
+  if(fov <= 1.0f)
+  	fov = 1.0f;
+  if(fov >= 45.0f)
+  	fov = 45.0f;
 }
 ```
 
-`yoffset`值代表我们滚动的大小。当`scroll_callback`函数调用后，我们改变全局`aspect`变量的内容。因为`45.0f`是默认的`fov`，我们将会把缩放级别限制在`1.0f`到`45.0f`。
+当滚动鼠标滚轮的时候，<var>yoffset</var>值代表我们竖直滚动的大小。当<fun>scroll_callback</fun>函数被调用后，我们改变全局变量<var>fov</var>变量的内容。因为`45.0f`是默认的视野值，我们将会把缩放级别(Zoom Level)限制在`1.0f`到`45.0f`。
 
-我们现在在每一帧都必须把透视投影矩阵上传到GPU，但这一次使`aspect`变量作为它的fov：
+我们现在在每一帧都必须把透视投影矩阵上传到GPU，但现在使用<var>fov</var>变量作为它的视野：
 
 ```c++
-projection = glm::perspective(aspect, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.0f);
+projection = glm::perspective(fov, (GLfloat)WIDTH/(GLfloat)HEIGHT, 0.1f, 100.0f);  
 ```
 
-最后不要忘记注册滚动回调函数：
+最后不要忘记注册鼠标滚轮的回调函数：
 
 ```c++
 glfwSetScrollCallback(window, scroll_callback);
 ```
 
-现在我们实现了一个简单的摄像机系统，它能够让我们在3D环境中自由移动。
+现在，我们就实现了一个简单的摄像机系统了，它能够让我们在3D环境中自由移动。
 
 <video src="../../img/01/09/camera_mouse.mp4" controls="controls">
 </video>
 
-自由的去实验，如果遇到困难对比[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/camera_zoom)。
+你可以去自由地实验，如果遇到困难，可以对比[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/camera_zoom)。
 
 !!! Important
 
-	注意，使用欧拉角作为摄像机系统并不完美。你仍然可能遇到[万向节死锁](http://en.wikipedia.org/wiki/Gimbal_lock)。最好的摄像机系统是使用四元数的，后面会有讨论。
+	注意，使用欧拉角的摄像机系统并不完美。根据你的视角限制或者是配置，你仍然可能引入[万向节死锁](http://en.wikipedia.org/wiki/Gimbal_lock)问题。最好的摄像机系统是使用四元数(Quaternions)的，但我们将会把这个留到后面讨论。
 
 # 摄像机类
 
-接下来的教程我们会使用一个摄像机来浏览场景，从各个角度观察结果。然而由于一个摄像机会占教程的很大的篇幅，我们会从细节抽象出创建一个自己的摄像机对象。与着色器教程不同我们不会带你一步一步创建摄像机类，如果你想知道怎么工作的的话，只会给你提供一个(有完整注释的)源码。
+接下来的教程中，我们将会一直使用一个摄像机来浏览场景，从各个角度观察结果。然而，由于一个摄像机会占用每篇教程很大的篇幅，我们将会从细节抽象出来，创建我们自己的摄像机对象，它会完成大多数的工作，而且还会提供一些附加的功能。与着色器教程不同，我们不会带你一步一步创建摄像机类，我们只会提供你一份（有完整注释的）代码，如果你想知道它的内部构造的话可以自己去阅读。
 
-像着色器对象一样，我们把摄像机类写在一个单独的头文件中。你可以在[这里](http://learnopengl.com/code_viewer.php?type=header&code=camera)找到它。你应该能够理解所有的代码。我们建议您至少看一看这个类，看看如何创建一个自己的摄像机类。
+和着色器对象一样，我们把摄像机类写在一个单独的头文件中。你可以在[这里](http://learnopengl.com/code_viewer.php?type=header&code=camera)找到它，你现在应该能够理解所有的代码了。我们建议您至少看一看这个类，看看如何创建一个自己的摄像机类。
 
 !!! Attention
 
-	我们介绍的欧拉角FPS风格摄像机系统能够满足大多数情况需要，但是在创建不同的摄像机系统，比如飞行模拟就要当心。每个摄像机系统都有自己的优点和不足，所以确保对它们进行了详细研究。比如，这个FPS摄像机不允许俯仰角大于90度，由于使用了固定的上向量(0, 1, 0)，我们就不能用滚转角。
+	我们介绍的摄像机系统是一个FPS风格的摄像机，它能够满足大多数情况需要，而且与欧拉角兼容，但是在创建不同的摄像机系统，比如飞行模拟摄像机，时就要当心。每个摄像机系统都有自己的优点和不足，所以确保对它们进行了详细研究。比如，这个FPS摄像机不允许俯仰角大于90度，而且我们使用了一个固定的上向量(0, 1, 0)，这在需要考虑滚转角的时候就不能用了。
 
-使用新的摄像机对象的更新后的版本源码可以[在这里找到](http://learnopengl.com/code_viewer.php?code=getting-started/camera_with_class)。(译注：总而言之这个摄像机实现并不十分完美，你可以看看最终的源码。建议先看[这篇文章](https://github.com/cybercser/OpenGL_3_3_Tutorial_Translation/blob/master/Tutorial%2017%20Rotations.md)，对旋转有更深的理解后，你就能做出更好的摄像机类，不过本文有些内容比如如何防止按键停顿和glfw鼠标事件实现摄像机的注意事项比较重要，其它的就要做一定的取舍了)
+使用新摄像机对象，更新后版本的源码可以在[这里](http://learnopengl.com/code_viewer.php?code=getting-started/camera_with_class)找到。
+
+（译注：总而言之这个摄像机实现并不十分完美，你可以看看最终的源码。建议先看[这篇文章](https://github.com/cybercser/OpenGL_3_3_Tutorial_Translation/blob/master/Tutorial%2017%20Rotations.md)，对旋转有更深的理解后，你就能做出更好的摄像机类，不过本文有些内容比如如何防止按键停顿和GLFW鼠标事件实现摄像机的注意事项比较重要，其它的就要做一定的取舍了）
 
 
 ## 练习
 
-- 看看你是否能够变换摄像机类从而使得其能够变成一个**真正的**FPS摄像机(也就是说不能够随意飞行)；你只能够呆在xz平面上: [参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise1)
+- 看看你是否能够修改摄像机类，使得其能够变成一个**真正的**FPS摄像机（也就是说不能够随意飞行）；你只能够呆在xz平面上：[参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise1)
 
-- 试着创建你自己的LookAt函数，使你能够手动创建一个我们在一开始讨论的观察矩阵。用你的函数实现来替换glm的LookAt函数，看看它是否还能一样的工作：[参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise2)
+- 试着创建你自己的LookAt函数，其中你需要手动创建一个我们在一开始讨论的观察矩阵。用你的函数实现来替换GLM的LookAt函数，看看它是否还能一样地工作：[参考解答](http://www.learnopengl.com/code_viewer.php?code=getting-started/camera-exercise2)

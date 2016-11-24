@@ -171,6 +171,7 @@
 - Pitch：俯仰角
 - Yaw：偏航角
 - Roll：滚转角
+- Field of View(FoV)：视野
 
 ## 06-01
 
