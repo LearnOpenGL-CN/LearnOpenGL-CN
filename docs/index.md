@@ -5,6 +5,8 @@
 	由于网站的改版，本教程现在迁移至：[https://learnopengl-cn.github.io/](https://learnopengl-cn.github.io/)。
 	这个网站仍然会有无规律的更新，但是大体上是不再维护了。如果要阅读最新版本的教程，还请访问以上地址。
 
+	This site has been moved to [https://learnopengl-cn.github.io/](https://learnopengl-cn.github.io/).
+
 欢迎来到OpenGL的世界。这个工程只是我([JoeyDeVries](http://joeydevries.com/))的一次小小的尝试，希望能够建立起一个完善的OpenGL教学平台。无论你学习OpenGL是为了学业，找工作，或仅仅是因为兴趣，这个网站都将能够教会你**现代**(Core-profile) OpenGL的基础，中级，以及高级知识。LearnOpenGL的目标是使用易于理解的形式，使用清晰的例子，展现现代OpenGL的所有知识点，与此同时为以后的学习提供有用的参考。
 
 ## 为什么要阅读这些教程呢？
