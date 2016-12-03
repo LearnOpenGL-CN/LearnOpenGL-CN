@@ -102,7 +102,7 @@ glGetError();
 
 ## 调试输出
 
-虽然没有<fun>glGetError</fun>普遍，但一个叫做<def>调试输出</def>(Debug Output)的OpenGL拓展十一个非常游泳的工具，它在4.3版本之后变为了核心OpenGL的一部分。通过使用调试输出拓展，OpenGL自身会直接发送一个比起<fun>glGetError</fun>更为完善的错误或警告信息给用户。它不仅提供了更多的信息，也能够帮助你使用一个调试器(Debugger)捕捉错误源头。
+虽然没有<fun>glGetError</fun>普遍，但一个叫做<def>调试输出</def>(Debug Output)的OpenGL拓展是一个非常有用的工具，它在4.3版本之后变为了核心OpenGL的一部分。通过使用调试输出拓展，OpenGL自身会直接发送一个比起<fun>glGetError</fun>更为完善的错误或警告信息给用户。它不仅提供了更多的信息，也能够帮助你使用一个调试器(Debugger)捕捉错误源头。
 
 !!! important
 
