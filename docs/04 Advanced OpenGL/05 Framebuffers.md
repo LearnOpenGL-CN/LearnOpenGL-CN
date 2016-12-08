@@ -295,7 +295,7 @@ void main()
 
 虽然反相是一种相对简单的后处理特效，但是已经很有趣了：
 
-![image description](../img/04/05/framebuffers_grayscale.png)
+![image description](../img/04/05/framebuffers_inverse.png)
 
 整个场景现在的颜色都反转了，只需在着色器中写一行代码就能做到，酷吧？
 
@@ -391,7 +391,7 @@ void main()
 创建模糊(Blur)效果的kernel定义如下：
 
 $$
-\(\begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} / 16\)
+\begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} / 16
 $$
 
 由于所有数值加起来的总和为16,简单返回结合起来的采样颜色是非常亮的,所以我们必须将kernel的每个值除以16.最终的kernel数组会是这样的:
