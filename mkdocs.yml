@@ -54,6 +54,8 @@ pages:
       - 理论: '07 PBR/01 Theory.md'
       - 光照: '07 PBR/02 Lighting.md'
       - IBL: '07 PBR/03 IBL.md'
+        - 漫反射辐照: '07 PBR/03 IBL/01 Diffuse irradiance.md'
+        - 镜面IBL: '07 PBR/03 IBL/02 Specular IBL.md'
     - 实战:
       - 调试: '06 In Practice/01 Debugging.md'
       - 文本渲染: '06 In Practice/02 Text Rendering.md'
@@ -61,7 +63,17 @@ pages:
         - Breakout: '06 In Practice/2D-Game/01 Breakout.md'
         - 准备工作: '06 In Practice/2D-Game/02 Setting up.md'
         - 渲染精灵: '06 In Practice/2D-Game/03 Rendering Sprites.md'
+        - 关卡: '06 In Practice/2D-Game/04 Levels.md'
+        - 碰撞:
+          - 球: '06 In Practice/2D-Game/05 Collisions/01 Ball.md'
+          - 碰撞检测: '06 In Practice/2D-Game/05 Collisions/02 Collision detection.md'
+          - 碰撞处理: '06 In Practice/2D-Game/05 Collisions/03 Collision resolution.md'
         - 粒子: '06 In Practice/2D-Game/06 Particles.md'
+        - 后期处理: '06 In Practice/2D-Game/07 Postprocessing.md'
+        - 道具: '06 In Practice/2D-Game/08 Powerups.md'
+        - 音效: '06 In Practice/2D-Game/09 Audio.md'
+        - 渲染文字: '06 In Practice/2D-Game/10 Render Text.md'
+        - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
 
 site_name: 'LearnOpenGL CN'
 
