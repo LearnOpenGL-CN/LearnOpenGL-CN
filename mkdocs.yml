@@ -53,7 +53,7 @@ pages:
     - PBR:
       - 理论: '07 PBR/01 Theory.md'
       - 光照: '07 PBR/02 Lighting.md'
-      - IBL: '07 PBR/03 IBL.md'
+      - IBL:
         - 漫反射辐照: '07 PBR/03 IBL/01 Diffuse irradiance.md'
         - 镜面IBL: '07 PBR/03 IBL/02 Specular IBL.md'
     - 实战:
