@@ -32,7 +32,7 @@
 
 
 ```c++
-vec3 rgb_normal = normal * 0.5 - 0.5; // transforms from [-1,1] to [0,1]  
+vec3 rgb_normal = normal * 0.5 + 0.5; // 从 [-1,1] 转换至 [0,1]
 ```
 
 将法线向量变换为像这样的RGB颜色元素，我们就能把根据表面的形状的fragment的法线保存在2D纹理中。教程开头展示的那个砖块的例子的法线贴图如下所示：
