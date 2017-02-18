@@ -108,7 +108,7 @@ RenderScene();
 GLfloat aspect = (GLfloat)SHADOW_WIDTH/(GLfloat)SHADOW_HEIGHT;
 GLfloat near = 1.0f;
 GLfloat far = 25.0f;
-glm::mat4 shadowProj = glm::perspective(90.0f, aspect, near, far);
+glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
 ```
 
 非常重要的一点是，这里glm::perspective的视野参数，设置为90度。90度我们才能保证视野足够大到可以合适地填满立方体贴图的一个面，立方体贴图的所有面都能与其他面在边缘对齐。
@@ -202,7 +202,7 @@ void main()
     lightDistance = lightDistance / far_plane;
     
     // Write this as modified depth
-    gl_FragDepth = gl_FragCoord.z;
+    gl_FragDepth = lightDistance;
 }
 ``` 
 
