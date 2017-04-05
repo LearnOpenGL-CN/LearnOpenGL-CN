@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+校对     | [Geequlim](http://geequlim.com), [KenLee](https://hellokenlee.github.io/)
 
 
 这章不会向你展示什么新的功能，也不会对你的场景的视觉效果有较大提升。本文多多少少地深入探讨了一些GLSL有趣的知识，它们可能在将来能帮助你。基本来说有些不可不知的内容和功能在你去使用GLSL创建OpenGL应用的时候能让你的生活更轻松。
@@ -306,7 +306,7 @@ layout (std140) uniform ExampleBlock
 
 尝试自己计算出偏移量，把它们和表格对比，你可以把这件事当作一个练习。使用计算出来的偏移量，根据std140布局规则，我们可以用`glBufferSubData`这样的函数，使用变量数据填充缓冲。虽然不是很高效，但std140布局可以保证在每个程序中声明的这个uniform块的布局保持一致。
 
-在定义uniform块前面添加layout (std140)声明，我们就能告诉OpenGL这个uniform块使用了std140布局。另外还有两种其他的布局可以选择，它们需要我们在填充缓冲之前查询每个偏移量。我们已经了解了分享布局（shared layout）和其他的布局都将被封装（packed）。当使用封装（packed）布局的时候，不能保证布局在别的程序中能够保持一致，因为它允许编译器从uniform块中优化出去uniform变量，这在每个着色器中都可能不同。
+在定义uniform 块前面添加`layout (std140)`的声明表示这个uniform块使用 std140 布局。 另外我们还有两种布局可以选择，但是这两种布局都要求我们在填充缓冲之前查询每一个变量的偏移。 我们已经介绍了** 共享布局(shared layout) **，剩下另一种布局则是 ** 封装布局（packed layout） **。当我们使用封装布局(pack layout)的时候， OpenGL不保证所有程序的数据布局方式是一样的（也就是不共享），因为该布局允许编译器去优化uniform变量的数据放置方式，而这种优化的结果因不同的Shader而异。
 
 ## 使用uniform缓冲
 
