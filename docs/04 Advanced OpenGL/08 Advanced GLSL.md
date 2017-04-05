@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+校对     | [Geequlim](http://geequlim.com), [KenLee](https://hellokenlee.github.io/)
 
 
 这章不会向你展示什么新的功能，也不会对你的场景的视觉效果有较大提升。本文多多少少地深入探讨了一些GLSL有趣的知识，它们可能在将来能帮助你。基本来说有些不可不知的内容和功能在你去使用GLSL创建OpenGL应用的时候能让你的生活更轻松。
