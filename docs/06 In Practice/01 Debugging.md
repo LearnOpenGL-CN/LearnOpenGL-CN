@@ -1,10 +1,10 @@
 # 调试
 
-| 原文   | [Debugging](http://learnopengl.com/#!In-Practice/Debugging) |
-| ---- | ---------------------------------------- |
-| 作者   | JoeydeVries                              |
-| 翻译   | [Meow J](https://github.com/Meow-J)      |
-| 校对   | 暂无                                       |
+原文    | [Debugging](http://learnopengl.com/#!In-Practice/Debugging)
+-----   |  ----
+作者    | JoeydeVries
+翻译    | [Meow J](https://github.com/Meow-J)
+校对    | 暂无
 
 图形编程可以带来很多的乐趣，然而如果什么东西渲染错误，或者甚至根本就没有渲染，它同样可以给你带来大量的沮丧感！由于我们大部分时间都在与像素打交道，当出现错误的时候寻找错误的源头可能会非常困难。调试(Debug)这样的**视觉**错误与往常熟悉的CPU调试不同。我们没有一个可以用来输出文本的控制台，在GLSL代码中也不能设置断点，更没有方法检测GPU的运行状态。
 
@@ -20,16 +20,16 @@ GLenum glGetError();
 
 当<fun>glGetError</fun>被调用时，它要么会返回错误标记之一，要么返回无错误。<fun>glGetError</fun>会返回的错误值如下：
 
-|                标记                |  代码  |                描述                |
-| :------------------------------: | :--: | :------------------------------: |
-|           GL_NO_ERROR            |  0   | 自上次调用<fun>glGetError</fun>以来没有错误 |
-|         GL_INVALID_ENUM          | 1280 |             枚举参数不合法              |
-|         GL_INVALID_VALUE         | 1281 |              值参数不合法              |
-|       GL_INVALID_OPERATION       | 1282 |         一个指令的状态对指令的参数不合法         |
-|        GL_STACK_OVERFLOW         | 1283 |       压栈操作造成栈上溢(Overflow)        |
-|        GL_STACK_UNDERFLOW        | 1284 |  弹栈操作时栈在最低点（译注：即栈下溢(Underflow)）  |
-|         GL_OUT_OF_MEMORY         | 1285 |        内存调用操作无法调用（足够的）内存         |
-| GL_INVALID_FRAMEBUFFER_OPERATION | 1286 |          读取或写入一个不完整的帧缓冲          |
+| 标记 | 代码 | 描述 |
+| :------: | :------: | :------: |
+| GL_NO_ERROR | 0 | 自上次调用<fun>glGetError</fun>以来没有错误 |
+| GL_INVALID_ENUM | 1280 | 枚举参数不合法 |
+| GL_INVALID_VALUE | 1281 | 值参数不合法 |
+| GL_INVALID_OPERATION | 1282 | 一个指令的状态对指令的参数不合法 |
+| GL_STACK_OVERFLOW | 1283 | 压栈操作造成栈上溢(Overflow) |
+| GL_STACK_UNDERFLOW | 1284 | 弹栈操作时栈在最低点（译注：即栈下溢(Underflow)） |
+| GL_OUT_OF_MEMORY | 1285 | 内存调用操作无法调用（足够的）内存 |
+| GL_INVALID_FRAMEBUFFER_OPERATION | 1286 | 读取或写入一个不完整的帧缓冲 |
 
 在OpenGL的函数文档中你可以找到函数在错误时生成的错误代码。比如说，如果你看一下[glBindTexture](http://docs.gl/gl3/glBindTexture)函数的文档，在 *Errors* 部分中你可以看到它可能生成的所有用户错误代码。
 
