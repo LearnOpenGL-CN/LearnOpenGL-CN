@@ -370,7 +370,7 @@ void main()
     {
         sampleTex[i] = vec3(texture(screenTexture, TexCoords.st + offsets[i]));
     }
-    vec3 col;
+    vec3 col = vec3(0.0);
     for(int i = 0; i < 9; i++)
         col += sampleTex[i] * kernel[i];
 

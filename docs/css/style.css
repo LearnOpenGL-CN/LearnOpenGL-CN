@@ -128,3 +128,10 @@ var {
     font-family: "Courier New", Courier, monospace;
     color: #227;
 }
+
+img.patreon {
+	border: none;
+	display: inline-block;
+	max-height: 13px;
+	margin-bottom: 2px;
+}

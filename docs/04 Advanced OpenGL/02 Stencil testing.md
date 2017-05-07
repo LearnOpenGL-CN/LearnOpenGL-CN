@@ -40,7 +40,7 @@ glEnable(GL_STENCIL_TEST);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 ```
 
-同时，和深度测试的`glDepthMask`函数一样，模板缓冲也有一个相似函数。`glStencilMask`允许我们给模板值设置一个**位遮罩(Bitmask)**，它与模板值进行按位与(AND)运算决定缓冲是否可写。默认设置的位遮罩都是1，这样就不会影响输出，但是如果我们设置为0x00，所有写入深度缓冲最后都是0。这和深度缓冲的`glDepthMask(GL_FALSE)`很类似：
+同时，和深度测试的`glDepthMask`函数一样，模板缓冲也有一个相似函数。`glStencilMask`允许我们给模板值设置一个**位掩码(Bitmask)**，它与模板值进行按位与(AND)运算决定缓冲是否可写。默认设置的位掩码都是1，这样就不会影响输出，但是如果我们设置为0x00，所有写入深度缓冲最后都是0。这和深度缓冲的`glDepthMask(GL_FALSE)`很类似：
 
 ```c++
 
@@ -53,7 +53,7 @@ glStencilMask(0xFF);
 glStencilMask(0x00); 
 ```
 
-大多数情况你的模板遮罩（stencil mask）写为0x00或0xFF就行，但是最好知道有一个选项可以自定义位遮罩。
+大多数情况你的模板掩码（stencil mask）写为0x00或0xFF就行，但是最好知道有一个选项可以自定义位掩码。
 
 ## 模板函数
 
@@ -62,8 +62,8 @@ glStencilMask(0x00);
 `void glStencilFunc(GLenum func, GLint ref, GLuint mask)`函数有三个参数：
 
 * **func**：设置模板测试操作。这个测试操作应用到已经储存的模板值和`glStencilFunc`的`ref`值上，可用的选项是：`GL_NEVER`、`GL_LEQUAL`、`GL_GREATER`、`GL_GEQUAL`、`GL_EQUAL`、`GL_NOTEQUAL`、`GL_ALWAYS`。它们的语义和深度缓冲的相似。
-* **ref**：指定模板测试的引用值。模板缓冲的内容会与这个值对比。
-* **mask**：指定一个遮罩，在模板测试对比引用值和储存的模板值前，对它们进行按位与（and）操作，初始设置为1。
+* **ref**：指定模板测试的参考值。模板缓冲的内容会与这个值对比。
+* **mask**：指定一个掩码值。在模板测试比较参考值和储存的模板值前，会用掩码值对它们分别进行按位与(AND)操作。初始情况下所有位都为1。
 
 在上面简单模板的例子里，方程应该设置为：
 
@@ -71,7 +71,7 @@ glStencilMask(0x00);
 glStencilFunc(GL_EQUAL, 1, 0xFF)
 ```
 
-它会告诉OpenGL，无论何时，一个片段模板值等于(`GL_EQUAL`)引用值`1`，片段就能通过测试被绘制了，否则就会被丢弃。
+它会告诉OpenGL，无论何时，一个片段模板值等于(`GL_EQUAL`)参考值`1`，片段就能通过测试被绘制了，否则就会被丢弃。
 
 但是`glStencilFunc`只描述了OpenGL对模板缓冲做什么，而不是描述我们如何更新缓冲。这就需要`glStencilOp`登场了。
 
@@ -145,7 +145,7 @@ normalShader.Use();
 DrawTwoContainers();
 ```
 
-使用`GL_ALWAYS`模板测试函数，我们确保箱子的每个片段用模板值1更新模板缓冲。因为片段总会通过模板测试，在我们绘制它们的地方，模板缓冲用引用值更新。
+使用`GL_ALWAYS`模板测试函数，我们确保箱子的每个片段用模板值1更新模板缓冲。因为片段总会通过模板测试，在我们绘制它们的地方，模板缓冲用参考值更新。
 
 现在箱子绘制之处，模板缓冲更新为1了，我们将要绘制放大的箱子，但是这次关闭模板缓冲的写入：
 

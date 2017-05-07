@@ -6,30 +6,30 @@
 翻译     | [Django](http://bullteacher.com/)
 校对     | [Geequlim](http://geequlim.com)
 
-现在是时候着手启用Assimp，并开始创建实际的加载和转换代码了。本教程的目标是创建另一个类，这个类可以表达模型(Model)的全部。更确切的说，一个模型包含多个网格(Mesh)，一个网格可能带有多个对象。一个别墅，包含一个木制阳台，一个尖顶或许也有一个游泳池，它仍然被加载为一个单一模型。我们通过Assimp加载模型，把它们转变为多个`Mesh`对象，这些对象是是上一节教程里创建的。
+现在是时候着手启用Assimp，并开始创建实际的加载和转换代码了。本教程的目标是创建另一个能够完整表示模型(Model)的类，更确切的说，是一个包含多个网格(Mesh)，并且可能带有多个对象的模型。也就是说，一个包含木制阳台、塔楼、甚至游泳池的房子，仍然可以被加载为单独的一个模型。我们将通过Assimp加载模型，把它们转变为多个在[上一节](02 Mesh.md)中创建的<fun>Mesh</fun>对象。
 
-闲话少说，我把Model类的结构呈现给你：
+闲话少说，我会先把<fun>Model</fun>类的结构给你：
 
 ```c++
 class Model 
 {
     public:
-        /*  成员函数   */
+        /*  函数   */
         Model(GLchar* path)
         {
             this->loadModel(path);
         }
-        void Draw(Shader shader); 
+        void Draw(Shader shader);	
     private:
         /*  模型数据  */
         vector<Mesh> meshes;
         string directory;
-        
-        /*  私有成员函数   */
+        /*  函数   */
         void loadModel(string path);
         void processNode(aiNode* node, const aiScene* scene);
         Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-        vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
+        vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, 
+                                             string typeName);
 };
 ```
 

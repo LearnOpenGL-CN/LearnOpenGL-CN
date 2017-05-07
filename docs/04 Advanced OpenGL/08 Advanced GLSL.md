@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+校对     | [Geequlim](http://geequlim.com), [KenLee](https://hellokenlee.github.io/)
 
 
 这章不会向你展示什么新的功能，也不会对你的场景的视觉效果有较大提升。本文多多少少地深入探讨了一些GLSL有趣的知识，它们可能在将来能帮助你。基本来说有些不可不知的内容和功能在你去使用GLSL创建OpenGL应用的时候能让你的生活更轻松。
@@ -82,7 +82,7 @@ void main()
 
 因为窗口的宽是800，当一个像素的x坐标小于400，那么它一定在窗口的左边，这样我们就让物体有个不同的颜色。
 
-![](../img/04/08/advanced_glsl_frontfacing.png)
+![](../img/04/08/advanced_glsl_fragcoord.png)
 
 我们现在可以计算出两个完全不同的片段着色器结果，每个显示在窗口的一端。这对于测试不同的光照技术很有好处。
 
@@ -306,7 +306,7 @@ layout (std140) uniform ExampleBlock
 
 尝试自己计算出偏移量，把它们和表格对比，你可以把这件事当作一个练习。使用计算出来的偏移量，根据std140布局规则，我们可以用`glBufferSubData`这样的函数，使用变量数据填充缓冲。虽然不是很高效，但std140布局可以保证在每个程序中声明的这个uniform块的布局保持一致。
 
-在定义uniform块前面添加layout (std140)声明，我们就能告诉OpenGL这个uniform块使用了std140布局。另外还有两种其他的布局可以选择，它们需要我们在填充缓冲之前查询每个偏移量。我们已经了解了分享布局（shared layout）和其他的布局都将被封装（packed）。当使用封装（packed）布局的时候，不能保证布局在别的程序中能够保持一致，因为它允许编译器从uniform块中优化出去uniform变量，这在每个着色器中都可能不同。
+通过在uniform块的定义前面添加`layout (std140)`声明，我们告诉OpenGL这个uniform块使用了std140布局。我们还有其它的另外两种布局可以选择，但它们都需要我们在填充缓冲之前查询每个的偏移量。前面我们已经见过的**共享**布局(Shared Layout)，还有一种则是**紧凑**布局(Packed Layout)。当我们使用紧凑布局的时候，不能保证这个布局在所有程序间能够保持一致（即并非共享），因为它允许编译器从uniform块中优化出去uniform变量，而具体优化出去的是哪个则根据着色器的不同会有所变化。
 
 ## 使用uniform缓冲
 

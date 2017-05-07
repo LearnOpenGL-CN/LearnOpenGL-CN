@@ -165,7 +165,7 @@ float LinearizeDepth(float depth)
 
 void main()
 {
-    float depth = LinearizeDepth(gl_FragCoord.z);
+    float depth = LinearizeDepth(gl_FragCoord.z) / far; // 为了演示除以far
     color = vec4(vec3(depth), 1.0f);
 }
 ```
