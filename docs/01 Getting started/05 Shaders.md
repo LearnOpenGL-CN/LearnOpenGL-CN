@@ -170,7 +170,7 @@ glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
 首先我们通过<fun>glfwGetTime()</fun>获取运行的秒数。然后我们使用<fun>sin</fun>函数让颜色在0.0到1.0之间改变，最后将结果储存到<var>greenValue</var>里。
 
-接着，我们用<fun>glGetUniformLocation</fun>查询uniform `ourColor`的位置值。我们为查询函数提供着色器程序和uniform的名字（这是我们希望获得的位置值的来源）。如果<fun>glGetUniformLocation</fun>返回`-1`就代表没有找到这个位置值。最后，我们可以通过<fun>glUniform4f</fun>函数设置uniform值。注意，查询uniform地址不要求你之前使用过着色器程序，但是更新一个unform之前你**必须**先使用程序（调用<fun>glUseProgram</fun>)，因为它是在当前激活的着色器程序中设置unform的。
+接着，我们用<fun>glGetUniformLocation</fun>查询uniform `ourColor`的位置值。我们为查询函数提供着色器程序和uniform的名字（这是我们希望获得的位置值的来源）。如果<fun>glGetUniformLocation</fun>返回`-1`就代表没有找到这个位置值。最后，我们可以通过<fun>glUniform4f</fun>函数设置uniform值。注意，查询uniform地址不要求你之前使用过着色器程序，但是更新一个uniform之前你**必须**先使用程序（调用<fun>glUseProgram</fun>)，因为它是在当前激活的着色器程序中设置uniform的。
 
 !!! Important
 
