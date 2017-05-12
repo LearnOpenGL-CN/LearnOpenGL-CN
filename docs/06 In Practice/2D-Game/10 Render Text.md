@@ -1,12 +1,10 @@
 # 渲染文字
 
-**暂无翻译**
-
-这篇教程暂时还没有进行翻译，您可以先阅读[原文](https://learnopengl.com/#!In-Practice/2D-Game/Render-text)，或经常来刷新看看是否有更新的进展。当然，我们更欢迎您在[GitHub上](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN)认领翻译这篇文章，帮助我们完善这个教程系列。
-
-<img src="../../../img/development.png" class="clean">
-
-# Render text
+原文    | [Particles](https://learnopengl.com/#!In-Practice/2D-Game/Render-text)
+-----   |  ----
+作者    | JoeydeVries
+翻译    | [aillieo](https://github.com/aillieo)
+校对    | 暂无
 
 In this tutorial we're adding the final enhancements to the game by adding a life system, a win condition and feedback in the form of rendered text. This tutorial heavily builds upon the earlier introduced [Text Rendering](https://learnopengl.com/#!In-Practice/Text-Rendering) tutorial so it is highly advised to first work your way through that tutorial if you haven't already.
 
@@ -47,6 +45,8 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 The reason for it being slightly different is that we use a different orthographic projection matrix than the one we've used in the text rendering tutorial. In the text rendering tutorial, all `y` values ranged from bottom to top while in the Breakout game all `y` values range from top to bottom with a `y` coordinate of `0.0` corresponding to the top edge of the screen. This means we have to slightly modify how we calculate the vertical offset.
 
 Since we now render downwards from RenderText's y parameter we calculate the vertical offset as the distance a glyph is pushed downwards from the top of the glyph space. Looking back at the glyph metrics image from FreeType this is indicated by the red arrow:
+
+![img](https://learnopengl.com/img/in-practice/breakout/glyph_offset.png)
 
 To calculate this vertical offset we need to get the top of the glyph space (basically the length of the black vertical arrow from the origin). Unfortunately, FreeType has no such metric for us. What we do know is that that some glyphs always touch this top edge; characters like 'H', 'T' or 'X'. So what if we calculate the length of this red vector by subtracting `bearingY` from any of these *top-reaching* glyphs by `bearingY` of the glyph in question. This way, we push the glyph down based on how far its top point differs from the top edge.
 
@@ -142,6 +142,8 @@ void Game::Render()
 
 Here we convert the number of lives to a string and display it at the top-left of the screen. It'll now look a bit like this:
 
+![img](https://learnopengl.com/img/in-practice/breakout/render_text_lives.png)
+
 As soon as the ball touches the bottom edge, the player's life total is decreased which is instantly visible at the top-left of the screen.
 
 ## Level selection
@@ -187,6 +189,8 @@ void Game::Render()
 ```
 
 Here we render the game whenever we're in either the GAME_ACTIVE state or the GAME_MENU state and whenever we're in the GAME_MENU state we also render two lines of text to inform the player to select a level and/or accept his choice. Note that for this to work when launching the game you do have to set the game's state as GAME_MENU by default.
+
+![img](https://learnopengl.com/img/in-practice/breakout/render_text_select.png)
 
 It looks great, but once you try to run the code you'll probably notice that as soon as you press either the 'w' or the 's' key the game rapidly scrolls through the levels making it difficult to select the level you want to play in. This happens because the game records the key press for multiple frames until we release the key. This causes the ProcessInput function to process the pressed key more than once.
 
@@ -332,6 +336,8 @@ void Game::ProcessInput(GLfloat dt)
 ```
 
 If you can then actually manage to win the game you'd get the following image:
+
+![img](https://learnopengl.com/img/in-practice/breakout/render_text_win.png)
 
 And that is it! The final piece of the puzzle of the Breakout game we've been working on. Try it out, customize it to your liking and show it to all your family and friends!
 
