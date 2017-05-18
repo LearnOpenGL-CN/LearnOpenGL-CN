@@ -1,6 +1,6 @@
 # 渲染文本
 
-| 原文   | [Particles](https://learnopengl.com/#!In-Practice/2D-Game/Render-text) |
+| 原文   | [Render text](https://learnopengl.com/#!In-Practice/2D-Game/Render-text) |
 | ---- | ---------------------------------------- |
 | 作者   | JoeydeVries                              |
 | 翻译   | [aillieo](https://github.com/aillieo)    |
