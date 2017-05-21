@@ -72,7 +72,7 @@ pages:
         - 后期处理: '06 In Practice/2D-Game/07 Postprocessing.md'
         - 道具: '06 In Practice/2D-Game/08 Powerups.md'
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
-        - 渲染文字: '06 In Practice/2D-Game/10 Render Text.md'
+        - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
 
 site_name: 'LearnOpenGL CN'
