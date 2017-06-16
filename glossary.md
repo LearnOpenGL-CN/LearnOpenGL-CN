@@ -14,7 +14,7 @@
 - State Machine：状态机
 - Context：上下文
 - State-changing Function：状态设置函数
-- State-using Function：状态应用函数
+- State-using Function：状态使用函数
 - Object：对象
 - Primitive Type：基元类型
 - Option：选项
@@ -35,6 +35,7 @@
 - Viewport：视口
 - Dimension（窗口）：维度
 - Game Loop：游戏循环
+- Render Loop：渲染循环
 - Color Buffer：颜色缓冲
 - Double Buffer：双缓冲
 - Front Buffer：前缓冲
