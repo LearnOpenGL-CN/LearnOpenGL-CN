@@ -11,7 +11,7 @@
 
 <img alt="OpenGL Logo" src="../../img/01/01/opengl.jpg" class="right" />
 
-OpenGL规范严格规定了每个函数该如何执行，以及它们的输出值。至于内部具体每个函数是如何实现(Implement)的，将由OpenGL库的开发者自行决定（注：这里开发者是指编写OpenGL库的人）。因为OpenGL规范并没有规定实现的细节，具体的OpenGL库允许使用不同的实现，只要其功能和结果与规范相匹配（亦即，作为用户不会感受到功能上的差异）。
+OpenGL规范严格规定了每个函数该如何执行，以及它们的输出值。至于内部具体每个函数是如何实现(Implement)的，将由OpenGL库的开发者自行决定（译注：这里开发者是指编写OpenGL库的人）。因为OpenGL规范并没有规定实现的细节，具体的OpenGL库允许使用不同的实现，只要其功能和结果与规范相匹配（亦即，作为用户不会感受到功能上的差异）。
 
 实际的OpenGL库的开发者通常是显卡的生产商。你购买的显卡所支持的OpenGL版本都为这个系列的显卡专门开发的。当你使用Apple系统的时候，OpenGL库是由Apple自身维护的。在Linux下，有显卡生产商提供的OpenGL库，也有一些爱好者改编的版本。这也意味着任何时候OpenGL库表现的行为与规范规定的不一致时，基本都是库的开发者留下的bug。
 
@@ -23,9 +23,9 @@ OpenGL规范严格规定了每个函数该如何执行，以及它们的输出�
 
 ## 核心模式与立即渲染模式
 
-早期的OpenGL使用<def>立即渲染模式</def>（Immediate mode，也就是<def>固定渲染管线</def>），这个模式下绘制图形很方便。OpenGL的大多数功能都被库隐藏起来，开发者很少能控制OpenGL如何进行计算的自由。而开发者迫切希望能有更多的灵活性。随着时间推移，规范越来越灵活，开发者对绘图细节有了更多的掌控。立即渲染模式确实容易使用和理解，但是效率太低。因此从OpenGL3.2开始，规范文档开始废弃立即渲染模式，推出<def>核心模式</def>(Core-profile)，这个模式完全移除了旧的特性。
+早期的OpenGL使用<def>立即渲染模式</def>（Immediate mode，也就是<def>固定渲染管线</def>），这个模式下绘制图形很方便。OpenGL的大多数功能都被库隐藏起来，开发者很少能控制OpenGL如何进行计算的自由。而开发者迫切希望能有更多的灵活性。随着时间推移，规范越来越灵活，开发者对绘图细节有了更多的掌控。立即渲染模式确实容易使用和理解，但是效率太低。因此从OpenGL3.2开始，规范文档开始废弃立即渲染模式，并鼓励开发者在OpenGL的<def>核心模式</def>(Core-profile)下进行开发，这个分支的规范完全移除了旧的特性。
 
-当使用OpenGL的核心模式时，OpenGL迫使我们使用现代的函数。当我们试图使用一个已废弃的函数时，OpenGL会抛出一个错误并终止绘图。现代函数的优势是更高的灵活性和效率，然而也更难于学习。立即渲染模式从OpenGL**实际**运作中抽象掉了很多细节，因而它易于学习的同时，也很难去把握OpenGL具体是如何运作的。现代函数要求使用者真正理解OpenGL和图形编程，它有一些难度，然而提供了更多的灵活性，更高的效率，更重要的是可以更深入的理解图形编程。
+当使用OpenGL的核心模式时，OpenGL迫使我们使用现代的函数。当我们试图使用一个已废弃的函数时，OpenGL会抛出一个错误并终止绘图。现代函数的优势是更高的灵活性和效率，然而也更难于学习。立即渲染模式从OpenGL**实际**运作中抽象掉了很多细节，因此它在易于学习的同时，也很难让人去把握OpenGL具体是如何运作的。现代函数要求使用者真正理解OpenGL和图形编程，它有一些难度，然而提供了更多的灵活性，更高的效率，更重要的是可以更深入的理解图形编程。
 
 这也是为什么我们的教程面向OpenGL3.3的核心模式。虽然上手更困难，但这份努力是值得的。
 
@@ -46,7 +46,7 @@ OpenGL的一大特性就是对扩展(Extension)的支持，当一个显卡公司
 ```c++
 if(GL_ARB_extension_name)
 {
-    // 使用一些新的特性
+    // 使用硬件支持的全新的现代特性
 }
 else
 {
@@ -72,33 +72,26 @@ OpenGL库是用C语言写的，同时也支持多种语言的派生，但其内�
 
 ```c++
 struct object_name {
-    GLfloat  option1;
-    GLuint   option2;
-    GLchar[] name;
+    float  option1;
+    int    option2;
+    char[] name;
 };
 ```
-
-!!! important
-	
-	**基元类型(Primitive Type)**
-	
-	使用OpenGL时，建议使用OpenGL定义的基元类型。比如使用`float`时我们加上前缀`GL`（因此写作`GLfloat`）。`int`、`uint`、`char`、`bool`等等也类似。OpenGL定义的这些GL基元类型的内存布局是与平台无关的，而int等基元类型在不同操作系统上可能有不同的内存布局。使用GL基元类型可以保证你的程序在不同的平台上工作一致。
 
 当我们使用一个对象时，通常看起来像如下一样（把OpenGL上下文看作一个大的结构体）：
 
 ```c++
 // OpenGL的状态
-struct OpenGL_Context 
-{
-    ...
-    object* object_Window_Target;
-    ...  	
+struct OpenGL_Context {
+  	...
+  	object* object_Window_Target;
+  	...  	
 };
 ```
 
 ```c++
 // 创建对象
-GLuint objectId = 0;
+unsigned int objectId = 0;
 glGenObject(1, &objectId);
 // 绑定对象至上下文
 glBindObject(GL_WINDOW_TARGET, objectId);
