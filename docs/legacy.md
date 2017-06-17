@@ -253,3 +253,106 @@ glBindVertexArray(0);
 ![](img/01/06/textures_combined2.png)
 
 如果你看到了一个开心的箱子，你就做对了。你可以对比一下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)着色器。
+
+## 01-09 摄像机
+
+
+### 自由移动
+
+让摄像机绕着场景转的确很有趣，但是让我们自己移动摄像机会更有趣！首先我们必须设置一个摄像机系统，所以在我们的程序前面定义一些摄像机变量很有用：
+
+```c++
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+```
+
+`LookAt`函数现在成了：
+
+```c++
+view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+```
+
+我们首先将摄像机位置设置为之前定义的<var>cameraPos</var>。方向是当前的位置加上我们刚刚定义的方向向量。这样能保证无论我们怎么移动，摄像机都会注视着目标方向。让我们摆弄一下这些向量，在按下某些按钮时更新<var>cameraPos</var>向量。
+
+我们已经为GLFW的键盘输入定义了一个<fun>key_callback</fun>函数，我们来新添加几个需要检查的按键命令：
+
+```c++
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    ...
+    GLfloat cameraSpeed = 0.05f;
+    if(key == GLFW_KEY_W)
+        cameraPos += cameraSpeed * cameraFront;
+    if(key == GLFW_KEY_S)
+        cameraPos -= cameraSpeed * cameraFront;
+    if(key == GLFW_KEY_A)
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if(key == GLFW_KEY_D)
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;  
+}
+```
+
+当我们按下**WASD**键的任意一个，摄像机的位置都会相应更新。如果我们希望向前或向后移动，我们就把位置向量加上或减去方向向量。如果我们希望向左右移动，我们使用叉乘来创建一个**右向量**(Right Vector)，并沿着它相应移动就可以了。这样就创建了使用摄像机时熟悉的<def>扫射</def>(Strafe)效果。
+
+!!! important
+
+	注意，我们对**右向量**进行了标准化。如果我们没对这个向量进行标准化，最后的叉乘结果会根据<var>cameraFront</var>变量返回大小不同的向量。如果我们不对向量进行标准化，我们就得根据摄像机的朝向不同加速或减速移动了，但假如进行了标准化移动就是匀速的。
+
+如果你用这段代码更新<fun>key_callback</fun>函数，你就可以在场景中自由的前后左右移动了。
+
+<video src="../img/01/09/camera_inside.mp4" controls="controls">
+</video>
+
+在摆弄这个基础的摄像机系统之后你可能会注意到这个摄像机系统不能同时朝两个方向移动（对角线移动），而且当你按下一个按键时，它会先顿一下才开始移动。这是因为大多数事件输入系统一次只能处理一个键盘输入，它们的函数只有当我们激活了一个按键时才被调用。虽然这对大多数GUI系统都没什么问题，它对摄像机来说并不合理。我们可以用一些小技巧解决这个问题。
+
+这个技巧是在回调函数中只跟踪哪个按键被按下/释放。在游戏循环中我们读取这些值，检查哪个按键是**激活的**，然后做出相应反应。我们只储存哪个按键被按下/释放的状态信息，并在游戏循环中对状态做出反应。首先，我们来创建一个boolean数组代表被按下/释放的按键：
+
+```c++
+bool keys[1024];
+```
+
+然后我们需要在<fun>key_callback</fun>函数中设置被按下/释放的按键为`true`或`false`：
+
+```c++
+if(action == GLFW_PRESS)
+    keys[key] = true;
+else if(action == GLFW_RELEASE)
+    keys[key] = false;
+```
+
+并且我们创建一个新的叫做<fun>do_movement</fun>的函数，在这个函数中，我们将根据正在被按下的按键更新摄像机的值。：
+
+```c++
+void do_movement()
+{
+  // 摄像机控制
+  GLfloat cameraSpeed = 0.01f;
+  if(keys[GLFW_KEY_W])
+  	cameraPos += cameraSpeed * cameraFront;
+  if(keys[GLFW_KEY_S])
+  	cameraPos -= cameraSpeed * cameraFront;
+  if(keys[GLFW_KEY_A])
+  	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+  if(keys[GLFW_KEY_D])
+  	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+```
+
+之前的代码现在被移动到<fun>do_movement</fun>函数中。由于所有GLFW的按键枚举值本质上都是整数，我们可以把它们当数组索引使用。
+
+最后，我们需要在游戏循环中添加新函数的调用：
+
+```c++
+while(!glfwWindowShouldClose(window))
+{
+  // 检测并调用事件
+  glfwPollEvents();
+  do_movement();  
+  
+  // 渲染
+  ...
+}
+```
+
+至此，你应该可以同时向多个方向移动了，并且当你按下按钮时也会立刻移动了。如遇困难，可以查看下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/camera_keyboard)。

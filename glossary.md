@@ -166,7 +166,7 @@
 - Camera Space：摄像机空间
 - Gram-Schmidt Process：格拉姆—施密特正交化
 - LookAt Matrix：LookAt矩阵
-- Strafe：(?)扫射
+- Strafe：横移
 - Deltatime：时间差
 - Euler Angles：欧拉角
 - Pitch：俯仰角
