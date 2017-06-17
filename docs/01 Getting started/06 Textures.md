@@ -29,7 +29,7 @@
 纹理坐标看起来就像这样：
 
 ```c++
-GLfloat texCoords[] = {
+float texCoords[] = {
     0.0f, 0.0f, // 左下角
     1.0f, 0.0f, // 右下角
     0.5f, 1.0f // 上中
@@ -131,31 +131,38 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 使用纹理之前要做的第一件事是把它们加载到我们的应用中。纹理图像可能被储存为各种各样的格式，每种都有自己的数据结构和排列，所以我们如何才能把这些图像加载到应用中呢？一个解决方案是选一个需要的文件格式，比如`.PNG`，然后自己写一个图像加载器，把图像转化为字节序列。写自己的图像加载器虽然不难，但仍然挺麻烦的，而且如果要支持更多文件格式呢？你就不得不为每种你希望支持的格式写加载器了。
 
-另一个解决方案也许是一种更好的选择，使用一个支持多种流行格式的图像加载库来为我们解决这个问题。比如说我们要用的SOIL库。
+另一个解决方案也许是一种更好的选择，使用一个支持多种流行格式的图像加载库来为我们解决这个问题。比如说我们要用的`stb_image.h`库。
 
-## SOIL
+## stb_image.h
 
-SOIL是简易OpenGL图像库(Simple OpenGL Image Library)的缩写，它支持大多数流行的图像格式，使用起来也很简单，你可以从他们的[主页](http://www.lonesock.net/soil.html)下载。像其它库一样，你必须自己生成**.lib**。你可以使用**/projects**文件夹内的任意一个解决方案(Solution)文件（不用担心他们的Visual Studio版本太老，你可以把它们转变为新的版本，这一般是没问题的。译注：用VS2010的时候，你要用VC8而不是VC9的解决方案，想必更高版本的情况亦是如此）来生成你自己的**.lib**文件。你还要添加**src**文件夹里面的文件到你的**includes**文件夹；对了，不要忘记添加**SOIL.lib**到你的链接器选项，并在你代码文件的开头加上`#include <SOIL.h>`。
-
-下面的教程中，我们会使用一张[木箱](../img/01/06/container.jpg)的图片。要使用SOIL加载图片，我们需要使用它的<fun>SOIL_load_image</fun>函数：
+`stb_image.h`是[Sean Barrett](https://github.com/nothings)的一个非常流行的单头文件图像加载库，它能够加载大部分流行的文件格式，并且能够很简单得整合到你的工程之中。`stb_image.h`可以在[这里](https://github.com/nothings/stb/blob/master/stb_image.h)下载。下载这一个头文件，将它以`stb_image.h`的名字加入你的工程，并另创建一个新的C++文件，输入以下代码：
 
 ```c++
-int width, height;
-unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 ```
 
-函数首先需要输入图片文件的路径。然后需要两个`int`指针作为第二个和第三个参数，SOIL会分别返回图片的**宽度**和**高度**到其中。后面我们在生成纹理的时候会用图像的宽度和高度。第四个参数指定图片的**通道**(Channel)数量，但是这里我们只需留为`0`。最后一个参数告诉SOIL如何来加载图片：我们只关注图片的`RGB`值。结果会储存为一个很大的char/byte数组。
+通过定义<var>STB_IMAGE_IMPLEMENTATION</var>，预处理器会修改头文件，让其只包含相关的函数定义源码，等于是将这个头文件变为一个 `.cpp` 文件了。现在只需要在你的程序中包含`stb_image.h`并编译就可以了。
+
+下面的教程中，我们会使用一张[木箱](../img/01/06/container.jpg)的图片。要使用`stb_image.h`加载图片，我们需要使用它的<fun>stbi_load</fun>函数：
+
+```c++
+int width, height, nrChannels;
+unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+```
+
+这个函数首先接受一个图像文件的位置作为输入。接下来它需要三个`int`作为它的第二、第三和第四个参数，`stb_image.h`将会用图像的**宽度**、**高度**和**颜色通道的个数**填充这三个变量。我们之后生成纹理的时候会用到的图像的宽度和高度的。
 
 ## 生成纹理
 
 和之前生成的OpenGL对象一样，纹理也是使用ID引用的。让我们来创建一个：
 
 ```c++
-GLuint texture;
+unsigned int texture;
 glGenTextures(1, &texture);
 ```
 
-<fun>glGenTextures</fun>函数首先需要输入生成纹理的数量，然后把它们储存在第二个参数的`GLuint`数组中（我们的例子中只是一个单独的`GLuint`），就像其他对象一样，我们需要绑定它，让之后任何的纹理指令都可以配置当前绑定的纹理：
+<fun>glGenTextures</fun>函数首先需要输入生成纹理的数量，然后把它们储存在第二个参数的`unsigned int`数组中（我们的例子中只是单独的一个`unsigned int`），就像其他对象一样，我们需要绑定它，让之后任何的纹理指令都可以配置当前绑定的纹理：
 
 ```c++
 glBindTexture(GL_TEXTURE_2D, texture);
@@ -164,7 +171,7 @@ glBindTexture(GL_TEXTURE_2D, texture);
 现在纹理已经绑定了，我们可以使用前面载入的图片数据生成一个纹理了。纹理可以通过<fun>glTexImage2D</fun>来生成：
 
 ```c++
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 glGenerateMipmap(GL_TEXTURE_2D);
 ```
 
@@ -174,34 +181,42 @@ glGenerateMipmap(GL_TEXTURE_2D);
 - 第二个参数为纹理指定多级渐远纹理的级别，如果你希望单独手动设置每个多级渐远纹理的级别的话。这里我们填0，也就是基本级别。
 - 第三个参数告诉OpenGL我们希望把纹理储存为何种格式。我们的图像只有`RGB`值，因此我们也把纹理储存为`RGB`值。
 - 第四个和第五个参数设置最终的纹理的宽度和高度。我们之前加载图像的时候储存了它们，所以我们使用对应的变量。
-- 下个参数应该总是被设为`0`（历史遗留问题）。
+- 下个参数应该总是被设为`0`（历史遗留的问题）。
 - 第七第八个参数定义了源图的格式和数据类型。我们使用RGB值加载这个图像，并把它们储存为`char`(byte)数组，我们将会传入对应值。
 - 最后一个参数是真正的图像数据。
 
 当调用<fun>glTexImage2D</fun>时，当前绑定的纹理对象就会被附加上纹理图像。然而，目前只有基本级别(Base-level)的纹理图像被加载了，如果要使用多级渐远纹理，我们必须手动设置所有不同的图像（不断递增第二个参数）。或者，直接在生成纹理之后调用<fun>glGenerateMipmap</fun>。这会为当前绑定的纹理自动生成所有需要的多级渐远纹理。
 
-生成了纹理和相应的多级渐远纹理后，释放图像的内存并解绑纹理对象是一个很好的习惯。
+生成了纹理和相应的多级渐远纹理后，释放图像的内存是一个很好的习惯。
 
 ```c++
-SOIL_free_image_data(image);
-glBindTexture(GL_TEXTURE_2D, 0);
+stbi_image_free(data);
 ```
 
 生成一个纹理的过程应该看起来像这样：
 
 ```c++
-GLuint texture;
+unsigned int texture;
 glGenTextures(1, &texture);
 glBindTexture(GL_TEXTURE_2D, texture);
 // 为当前绑定的纹理对象设置环绕、过滤方式
-...
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 // 加载并生成纹理
-int width, height;
-unsigned char* image = SOIL_load_image("container.jpg", &width, &height, 0, SOIL_LOAD_RGB);
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-glGenerateMipmap(GL_TEXTURE_2D);
-SOIL_free_image_data(image);
-glBindTexture(GL_TEXTURE_2D, 0); 
+int width, height, nrChannels;
+unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+if (data)
+{
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+else
+{
+    std::cout << "Failed to load texture" << std::endl;
+}
+stbi_image_free(data);
 ```
 
 ## 应用纹理
@@ -209,7 +224,7 @@ glBindTexture(GL_TEXTURE_2D, 0);
 后面的这部分我们会使用<fun>glDrawElements</fun>绘制[「你好，三角形」](04 Hello Triangle.md)教程最后一部分的矩形。我们需要告知OpenGL如何采样纹理，所以我们必须使用纹理坐标更新顶点数据：
 
 ```c++
-GLfloat vertices[] = {
+float vertices[] = {
 //     ---- 位置 ----       ---- 颜色 ----     - 纹理坐标 -
      0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // 右上
      0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // 右下
@@ -223,46 +238,46 @@ GLfloat vertices[] = {
 ![](../img/01/06/vertex_attribute_pointer_interleaved_textures.png)
 
 ```c++
-glVertexAttribPointer(2, 2, GL_FLOAT,GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 glEnableVertexAttribArray(2);
 ```
 
-注意，我们同样需要调整前面两个顶点属性的步长参数为`8 * sizeof(GLfloat)`。
+注意，我们同样需要调整前面两个顶点属性的步长参数为`8 * sizeof(float)`。
 
 接着我们需要调整顶点着色器使其能够接受顶点坐标为一个顶点属性，并把坐标传给片段着色器：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 color;
-layout (location = 2) in vec2 texCoord;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
 
 out vec3 ourColor;
 out vec2 TexCoord;
 
 void main()
 {
-    gl_Position = vec4(position, 1.0f);
-    ourColor = color;
-    TexCoord = texCoord;
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor;
+    TexCoord = aTexCoord;
 }
 ```
-片段着色器应该把输出变量`TexCoord`作为输入变量。
+片段着色器应该接下来会把输出变量`TexCoord`作为输入变量。
 
 片段着色器也应该能访问纹理对象，但是我们怎样能把纹理对象传给片段着色器呢？GLSL有一个供纹理对象使用的内建数据类型，叫做<def>采样器</def>(Sampler)，它以纹理类型作为后缀，比如`sampler1D`、`sampler3D`，或在我们的例子中的`sampler2D`。我们可以简单声明一个`uniform sampler2D`把一个纹理添加到片段着色器中，稍后我们会把纹理赋值给这个uniform。
 
 ```c++
 #version 330 core
+out vec4 FragColor;
+  
 in vec3 ourColor;
 in vec2 TexCoord;
-
-out vec4 color;
 
 uniform sampler2D ourTexture;
 
 void main()
 {
-    color = texture(ourTexture, TexCoord);
+    FragColor = texture(ourTexture, TexCoord);
 }
 ```
 
@@ -274,19 +289,22 @@ void main()
 glBindTexture(GL_TEXTURE_2D, texture);
 glBindVertexArray(VAO);
 glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-glBindVertexArray(0);
 ```
 
 如果你跟着这个教程正确地做完了，你会看到下面的图像：
 
 ![](../img/01/06/textures2.png)
 
-如果你的矩形是全黑或全白的你可能在哪儿做错了什么。检查你的着色器日志，并尝试对比一下[源码](http://learnopengl.com/code_viewer.php?code=getting-started/textures)。
+如果你的矩形是全黑或全白的你可能在哪儿做错了什么。检查你的着色器日志，并尝试对比一下[源码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.1.textures/textures.cpp)。
+
+!!! attention
+
+	如果你的纹理代码不能正常工作或者显示是全黑，请继续阅读，并一直跟进我们的代码到最后的例子，它是应该能够工作的。在一些驱动中，必须要对每个采样器uniform都附加上纹理单元才可以，这个会在下面介绍。
 
 我们还可以把得到的纹理颜色与顶点颜色混合，来获得更有趣的效果。我们只需把纹理颜色与顶点颜色在片段着色器中相乘来混合二者的颜色：
 
 ```c++
-color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);
+FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);
 ```
 
 最终的效果应该是顶点颜色和纹理颜色的混合色：
@@ -302,7 +320,7 @@ color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);
 纹理单元的主要目的是让我们在着色器中可以使用多于一个的纹理。通过把纹理单元赋值给采样器，我们可以一次绑定多个纹理，只要我们首先激活对应的纹理单元。就像<fun>glBindTexture</fun>一样，我们可以使用<fun>glActiveTexture</fun>激活纹理单元，传入我们需要使用的纹理单元：
 
 ```c++
-glActiveTexture(GL_TEXTURE0); //在绑定纹理之前先激活纹理单元
+glActiveTexture(GL_TEXTURE0); // 在绑定纹理之前先激活纹理单元
 glBindTexture(GL_TEXTURE_2D, texture);
 ```
 
@@ -323,7 +341,7 @@ uniform sampler2D ourTexture2;
 
 void main()
 {
-    color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2);
+    FragColor = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2);
 }
 ```
 
@@ -336,42 +354,47 @@ void main()
 ```c++
 glActiveTexture(GL_TEXTURE0);
 glBindTexture(GL_TEXTURE_2D, texture1);
-glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
 glActiveTexture(GL_TEXTURE1);
 glBindTexture(GL_TEXTURE_2D, texture2);
-glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
 
 glBindVertexArray(VAO);
-glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-glBindVertexArray(0);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
 ```
 
-注意，我们使用<fun>glUniform1i</fun>设置uniform采样器的位置值，或者说纹理单元。通过<fun>glUniform1i</fun>的设置，我们保证每个uniform采样器对应着正确的纹理单元。你应该能得到下面的结果：
+我们还要通过使用<fun>glUniform1i</fun>设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可，所以这个会放在渲染循环的前面：
+
+```c++
+ourShader.use(); // 别忘记在激活着色器前先设置uniform！
+glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); // 手动设置
+ourShader.setInt("texture2", 1); // 或者使用着色器类设置
+  
+while(...) 
+{
+    [...]
+}
+```
+
+通过使用<fun>glUniform1i</fun>设置采样器，我们保证了每个uniform采样器对应着正确的纹理单元。你应该能得到下面的结果：
 
 ![](../img/01/06/textures_combined.png)
 
-你可能注意到纹理上下颠倒了！这是因为OpenGL要求y轴`0.0`坐标是在图片的底部的，但是图片的y轴`0.0`坐标通常在顶部。一些图片加载器比如[DevIL](http://openil.sourceforge.net/tuts/tut_10/index.htm)在加载的时候有选项重置y原点，但是SOIL没有。SOIL却有一个叫做<fun>SOIL_load_OGL_texture</fun>函数可以使用一个叫做<var>SOIL_FLAG_INVERT_Y</var>的标记加载**并**生成纹理，这可以解决我们的问题。不过这个函数用了一些在现代OpenGL中失效的特性，所以现在我们仍需坚持使用<fun>SOIL_load_image</fun>，自己做纹理的生成。
+你可能注意到纹理上下颠倒了！这是因为OpenGL要求y轴`0.0`坐标是在图片的底部的，但是图片的y轴`0.0`坐标通常在顶部。很幸运，`stb_image.h`能够在图像加载时帮助我们翻转y轴，只需要在加载任何图像前加入以下语句即可：
 
-所以修复我们的小问题，有两个选择：
+```c++
+stbi_set_flip_vertically_on_load(true);
+```
 
-1. 我们可以改变顶点数据的纹理坐标，翻转`y`值（用1减去y坐标）。
-2. 我们可以编辑顶点着色器来自动翻转`y`坐标，替换`TexCoord`的值为`TexCoord = vec2(texCoord.x, 1.0f - texCoord.y);`。
-
-!!! Attention
-
-	上面提供的解决方案仅仅通过一些黑科技让图片翻转。它们在大多数情况下都能正常工作，然而实际上这种方案的效果取决于你的实现和纹理，所以最好的解决方案是调整你的图片加载器，或者以一种y原点符合OpenGL需求的方式编辑你的纹理图像。
-        
-如果你编辑了顶点数据，在顶点着色器中翻转了纵坐标，你会得到下面的结果：
+在让`stb_image.h`在加载图片时翻转y轴之后你就应该能够获得下面的结果了：
 
 ![](../img/01/06/textures_combined2.png)
 
-如果你看到了一个开心的箱子，你就做对了。你可以对比一下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)着色器。
+如果你看到了一个开心的箱子，你就做对了。你可以对比一下[源代码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.2.textures_combined/textures_combined.cpp)。
 
 ## 练习
 
 为了更熟练地使用纹理，建议在继续之后的学习之前做完这些练习：
 
-- 修改片段着色器，**仅**让笑脸图案朝另一个方向看，[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise1)
-- 尝试用不同的纹理环绕方式，设定一个从`0.0f`到`2.0f`范围内的（而不是原来的`0.0f`到`1.0f`）纹理坐标。试试看能不能在箱子的角落放置4个笑脸：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise2)，[结果](http://learnopengl.com/img/getting-started/textures_exercise2.png)。记得一定要试试其他的环绕方式。
-- 尝试在矩形上只显示纹理图像的中间一部分，修改纹理坐标，达到能看见单个的像素的效果。尝试使用<var>GL_NEAREST</var>的纹理过滤方式让像素显示得更清晰：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise3)
-- 使用一个uniform变量作为<fun>mix</fun>函数的第三个参数来改变两个纹理可见度，使用上和下键来改变箱子或笑脸的可见度：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise4)，[片段着色器](http://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise4_fragment)。
+- 修改片段着色器，**仅**让笑脸图案朝另一个方向看，[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/textures-exercise1)
+- 尝试用不同的纹理环绕方式，设定一个从`0.0f`到`2.0f`范围内的（而不是原来的`0.0f`到`1.0f`）纹理坐标。试试看能不能在箱子的角落放置4个笑脸：[参考解答](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.3.textures_exercise2/textures_exercise2.cpp)，[结果](../img/01/06/textures_exercise2.png)。记得一定要试试其它的环绕方式。
+- 尝试在矩形上只显示纹理图像的中间一部分，修改纹理坐标，达到能看见单个的像素的效果。尝试使用<var>GL_NEAREST</var>的纹理过滤方式让像素显示得更清晰：[参考解答](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.4.textures_exercise3/textures_exercise3.cpp)
+- 使用一个uniform变量作为<fun>mix</fun>函数的第三个参数来改变两个纹理可见度，使用上和下键来改变箱子或笑脸的可见度：[参考解答](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/4.5.textures_exercise4/textures_exercise4.cpp)。
