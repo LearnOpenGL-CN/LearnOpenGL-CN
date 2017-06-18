@@ -1,6 +1,6 @@
 # 复习
 
-原文     | [Review](http：//learnopengl.com/#!Getting-started/Review)
+原文     | [Review](https://learnopengl.com/#!Getting-started/Review)
       ---|---
 作者     | JoeyDeVries
 翻译     | Meow J
