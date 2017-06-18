@@ -174,6 +174,13 @@
 - Roll：滚转角
 - Field of View(FoV)：视野
 
+## 02-01
+
+- Lighting：光照
+- Reflect：反射
+- Absorb：吸收
+- Container（第一章创建的那个物体）：箱子
+
 ## 06-01
 
 - Debugging：调试
