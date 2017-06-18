@@ -15,7 +15,7 @@ pages:
       - 复习: '01 Getting started/10 Review.md'
     - 光照:
       - 颜色: '02 Lighting/01 Colors.md'
-      - 光照基础: '02 Lighting/02 Basic Lighting.md'
+      - 基础光照: '02 Lighting/02 Basic Lighting.md'
       - 材质: '02 Lighting/03 Materials.md'
       - 光照贴图: '02 Lighting/04 Lighting maps.md'
       - 投光物: '02 Lighting/05 Light casters.md'

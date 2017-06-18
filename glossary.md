@@ -180,6 +180,30 @@
 - Reflect：反射
 - Absorb：吸收
 - Container（第一章创建的那个物体）：箱子
+- Lamp：灯
+
+## 02-02
+
+- Phong Lighting Model：冯氏光照模型
+- Ambient Lighting：环境光照
+- Diffuse Lighting：漫反射光照
+- Specular Lighting：镜面光照
+- Directional Impact：方向性影响
+- Global Illumination：全局性照明
+- Factor：因子
+- Normal Vector：法向量
+- Normal Matrix：法线矩阵
+- Ambient Component：环境光分量
+- Diffuse Component：漫反射分量
+- Specular Component：镜面光分量
+- Inverse Matrix：逆矩阵
+- Transpose Matrix：转置矩阵
+- Specular Highlight：镜面高光
+- Intensity：强度
+- Specular Intensity：镜面强度
+- Shininess：反光度
+- Gouraud Shading：Gouraud着色
+- Phong Shading：冯氏着色
 
 ## 06-01
 
