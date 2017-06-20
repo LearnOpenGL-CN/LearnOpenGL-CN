@@ -205,6 +205,14 @@
 - Gouraud Shading：Gouraud着色
 - Phong Shading：冯氏着色
 
+## 02-03
+
+- Material：材质
+- Struct：结构体
+- Layout：布局
+- Light Property：光照属性
+- Scatter（光）：散射
+
 ## 06-01
 
 - Debugging：调试

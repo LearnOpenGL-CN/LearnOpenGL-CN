@@ -251,7 +251,7 @@ float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
 vec3 specular = specularStrength * spec * lightColor;
 ```
 
-我们先计算视线方向与反射方向的点乘（并确保它不是负值），然后取它的32次幂。这个32是高光的<def>反光度</def>(Shininess)。一个物体的反光度越高，反射光的能力越强，散射得越少，高光就会越小。在下面的图片里，你会看到不同反光度的视觉效果影响：
+我们先计算视线方向与反射方向的点乘（并确保它不是负值），然后取它的32次幂。这个32是高光的<def>反光度</def>(Shininess)。一个物体的反光度越高，反射光的能力越强，散射得越少，高光点就会越小。在下面的图片里，你会看到不同反光度的视觉效果影响：
 
 ![](../img/02/02/basic_lighting_specular_shininess.png)
 
