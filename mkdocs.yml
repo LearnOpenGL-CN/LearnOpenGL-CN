@@ -15,7 +15,7 @@ pages:
       - 复习: '01 Getting started/10 Review.md'
     - 光照:
       - 颜色: '02 Lighting/01 Colors.md'
-      - 光照基础: '02 Lighting/02 Basic Lighting.md'
+      - 基础光照: '02 Lighting/02 Basic Lighting.md'
       - 材质: '02 Lighting/03 Materials.md'
       - 光照贴图: '02 Lighting/04 Lighting maps.md'
       - 投光物: '02 Lighting/05 Light casters.md'
@@ -74,10 +74,12 @@ pages:
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
         - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
+    - 历史存档: 'legacy.md'
+  - 代码仓库: 'code_repo.md'
 
 site_name: 'LearnOpenGL CN'
 
-site_description: 'http://learnopengl.com 系列教程的中文翻译'
+site_description: 'http://learnopengl.com 系列教程的简体中文翻译'
 
 site_url: https://learnopengl-cn.github.io/
 

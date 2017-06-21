@@ -20,7 +20,6 @@
 
 ```c++
 #version version_number
-
 in type in_variable_name;
 in type in_variable_name;
 
@@ -40,7 +39,7 @@ int main()
 当我们特别谈论到顶点着色器的时候，每个输入变量也叫<def>顶点属性</def>(Vertex Attribute)。我们能声明的顶点属性是有上限的，它一般由硬件来决定。OpenGL确保至少有16个包含4分量的顶点属性可用，但是有些硬件或许允许更多的顶点属性，你可以查询<var>GL_MAX_VERTEX_ATTRIBS</var>来获取具体的上限：
 
 ```c++
-GLint nrAttributes;
+unsigned int nrAttributes;
 glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 ```
@@ -79,9 +78,9 @@ vec4 otherVec = someVec.xxxx + anotherVec.yxzy;
 你可以使用上面4个字母任意组合来创建一个和原来向量一样长的（同类型）新向量，只要原来向量有那些分量即可；然而，你不允许在一个`vec2`向量中去获取`.z`元素。我们也可以把一个向量作为一个参数传给不同的向量构造函数，以减少需求参数的数量：
 
 ```c++
-vec2 vect = vec2(0.5f, 0.7f);
-vec4 result = vec4(vect, 0.0f, 0.0f);
-vec4 otherResult = vec4(result.xyz, 1.0f);
+vec2 vect = vec2(0.5, 0.7);
+vec4 result = vec4(vect, 0.0, 0.0);
+vec4 otherResult = vec4(result.xyz, 1.0);
 ```
 
 向量是一种灵活的数据类型，我们可以把用在各种输入和输出上。学完教程你会看到很多新颖的管理向量的例子。
@@ -104,27 +103,27 @@ vec4 otherResult = vec4(result.xyz, 1.0f);
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position; // position变量的属性位置值为0
+layout (location = 0) in vec3 aPos; // 位置变量的属性位置值为0
 
 out vec4 vertexColor; // 为片段着色器指定一个颜色输出
 
 void main()
 {
-    gl_Position = vec4(position, 1.0); // 注意我们如何把一个vec3作为vec4的构造器的参数
-    vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f); // 把输出变量设置为暗红色
+    gl_Position = vec4(aPos, 1.0); // 注意我们如何把一个vec3作为vec4的构造器的参数
+    vertexColor = vec4(0.5, 0.0, 0.0, 1.0); // 把输出变量设置为暗红色
 }
 ```
 **片段着色器**
 
 ```c++
 #version 330 core
+out vec4 FragColor;
+  
 in vec4 vertexColor; // 从顶点着色器传来的输入变量（名称相同、类型相同）
-
-out vec4 color; // 片段着色器输出的变量名可以任意命名，类型必须是vec4
 
 void main()
 {
-    color = vertexColor;
+    FragColor = vertexColor;
 }
 ```
 
@@ -142,14 +141,14 @@ void main()
 
 ```c++
 #version 330 core
-out vec4 color;
-
+out vec4 FragColor;
+  
 uniform vec4 ourColor; // 在OpenGL程序代码中设定这个变量
 
 void main()
 {
-    color = ourColor;
-}  
+    FragColor = ourColor;
+}
 ```
 
 我们在片段着色器中声明了一个uniform `vec4`的<var>ourColor</var>，并把片段着色器的输出颜色设置为uniform值的内容。因为uniform是全局变量，我们可以在任何着色器中定义它们，而无需通过顶点着色器作为中介。顶点着色器中不需要这个uniform，所以我们不用在那里定义它。
@@ -161,16 +160,16 @@ void main()
 这个uniform现在还是空的；我们还没有给它添加任何数据，所以下面我们就做这件事。我们首先需要找到着色器中uniform属性的索引/位置值。当我们得到uniform的索引/位置值后，我们就可以更新它的值了。这次我们不去给像素传递单独一个颜色，而是让它随着时间改变颜色：
 
 ```c++
-GLfloat timeValue = glfwGetTime();
-GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+float timeValue = glfwGetTime();
+float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
 glUseProgram(shaderProgram);
 glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 ```
 
 首先我们通过<fun>glfwGetTime()</fun>获取运行的秒数。然后我们使用<fun>sin</fun>函数让颜色在0.0到1.0之间改变，最后将结果储存到<var>greenValue</var>里。
 
-接着，我们用<fun>glGetUniformLocation</fun>查询uniform `ourColor`的位置值。我们为查询函数提供着色器程序和uniform的名字（这是我们希望获得的位置值的来源）。如果<fun>glGetUniformLocation</fun>返回`-1`就代表没有找到这个位置值。最后，我们可以通过<fun>glUniform4f</fun>函数设置uniform值。注意，查询uniform地址不要求你之前使用过着色器程序，但是更新一个uniform之前你**必须**先使用程序（调用<fun>glUseProgram</fun>)，因为它是在当前激活的着色器程序中设置uniform的。
+接着，我们用<fun>glGetUniformLocation</fun>查询uniform <var>ourColor</var>的位置值。我们为查询函数提供着色器程序和uniform的名字（这是我们希望获得的位置值的来源）。如果<fun>glGetUniformLocation</fun>返回`-1`就代表没有找到这个位置值。最后，我们可以通过<fun>glUniform4f</fun>函数设置uniform值。注意，查询uniform地址不要求你之前使用过着色器程序，但是更新一个uniform之前你**必须**先使用程序（调用<fun>glUseProgram</fun>)，因为它是在当前激活的着色器程序中设置uniform的。
 
 !!! Important
 
@@ -191,27 +190,30 @@ glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 ```c++
 while(!glfwWindowShouldClose(window))
 {
-    // 检测并调用事件
-    glfwPollEvents();
+    // 输入
+    processInput(window);
 
     // 渲染
-    // 清空颜色缓冲
+    // 清除颜色缓冲
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // 记得激活着色器
     glUseProgram(shaderProgram);
-
+  
     // 更新uniform颜色
-    GLfloat timeValue = glfwGetTime();
-    GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-    GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+    float timeValue = glfwGetTime();
+    float greenValue = sin(timeValue) / 2.0f + 0.5f;
+    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
     glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
     // 绘制三角形
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(0);
+  
+    // 交换缓冲并查询IO事件
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 ```
 
@@ -219,7 +221,7 @@ while(!glfwWindowShouldClose(window))
 
 <video src="../../img/01/05/shaders.mp4" controls="controls"/></video>
 
-如果你在哪儿卡住了，可以到[这里](http://www.learnopengl.com/code_viewer.php?code=getting-started/shaders-uniform)查看源码。
+如果你在哪儿卡住了，可以到[这里](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.1.shaders_uniform/shaders_uniform.cpp)查看源码。
 
 可以看到，uniform对于设置一个在渲染迭代中会改变的属性是一个非常有用的工具，它也是一个在程序和着色器间数据交互的很好工具，但假如我们打算为每个顶点设置一个颜色的时候该怎么办？这种情况下，我们就不得不声明和顶点数目一样多的uniform了。在这一问题上更好的解决方案是在顶点属性中包含更多的数据，这是我们接下来要做的事情。
 
@@ -228,7 +230,7 @@ while(!glfwWindowShouldClose(window))
 在前面的教程中，我们了解了如何填充VBO、配置顶点属性指针以及如何把它们都储存到一个VAO里。这次，我们同样打算把颜色数据加进顶点数据中。我们将把颜色数据添加为3个float值至<var>vertices</var>数组。我们将把三角形的三个角分别指定为红色、绿色和蓝色：
 
 ```c++
-GLfloat vertices[] = {
+float vertices[] = {
     // 位置              // 颜色
      0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 右下
     -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 左下
@@ -236,19 +238,19 @@ GLfloat vertices[] = {
 };
 ```
 
-由于现在有更多的数据要发送到顶点着色器，我们有必要去调整一下顶点着色器，使它能够接收颜色值作为一个顶点属性输入。需要注意的是我们用`layout`标识符来把<var>color</var>属性的位置值设置为1：
+由于现在有更多的数据要发送到顶点着色器，我们有必要去调整一下顶点着色器，使它能够接收颜色值作为一个顶点属性输入。需要注意的是我们用`layout`标识符来把<var>aColor</var>属性的位置值设置为1：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position; // 位置变量的属性位置值为 0 
-layout (location = 1) in vec3 color;	// 颜色变量的属性位置值为 1
-
+layout (location = 0) in vec3 aPos;   // 位置变量的属性位置值为 0 
+layout (location = 1) in vec3 aColor; // 颜色变量的属性位置值为 1
+  
 out vec3 ourColor; // 向片段着色器输出一个颜色
 
 void main()
 {
-    gl_Position = vec4(position, 1.0);
-    ourColor = color; // 将ourColor设置为我们从顶点数据那里得到的输入颜色
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor; // 将ourColor设置为我们从顶点数据那里得到的输入颜色
 }
 ```
 
@@ -256,12 +258,12 @@ void main()
 
 ```c++
 #version 330 core
+out vec4 FragColor;  
 in vec3 ourColor;
-out vec4 color;
   
 void main()
 {
-    color = vec4(ourColor, 1.0f);
+    FragColor = vec4(ourColor, 1.0);
 }
 ```
 
@@ -273,23 +275,23 @@ void main()
 
 ```c++
 // 位置属性
-glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 glEnableVertexAttribArray(0);
 // 颜色属性
-glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3* sizeof(GLfloat)));
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
 glEnableVertexAttribArray(1);
 ```
 
 <fun>glVertexAttribPointer</fun>函数的前几个参数比较明了。这次我们配置属性位置值为1的顶点属性。颜色值有3个float那么大，我们不去标准化这些值。
 
 由于我们现在有了两个顶点属性，我们不得不重新计算**步长**值。为获得数据队列中下一个属性值（比如位置向量的下个`x`分量）我们必须向右移动6个float，其中3个是位置值，另外3个是颜色值。这使我们的步长值为6乘以float的字节数（=24字节）。  
-同样，这次我们必须指定一个偏移量。对于每个顶点来说，位置顶点属性在前，所以它的偏移量是0。颜色属性紧随位置数据之后，所以偏移量就是`3 * sizeof(GLfloat)`，用字节来计算就是12字节。
+同样，这次我们必须指定一个偏移量。对于每个顶点来说，位置顶点属性在前，所以它的偏移量是0。颜色属性紧随位置数据之后，所以偏移量就是`3 * sizeof(float)`，用字节来计算就是12字节。
 
 运行程序你应该会看到如下结果：
 
 ![](../img/01/05/shaders3.png)
 
-如果你在哪卡住了，可以在[这里](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-interpolated)查看源码。
+如果你在哪卡住了，可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.2.shaders_interpolation/shaders_interpolation.cpp)查看源码。
 
 这个图片可能不是你所期望的那种，因为我们只提供了3个颜色，而不是我们现在看到的大调色板。这是在片段着色器中进行的所谓<def>片段插值</def>(Fragment Interpolation)的结果。当渲染一个三角形时，光栅化(Rasterization)阶段通常会造成比原指定顶点更多的片段。光栅会根据每个片段在三角形形状上所处相对位置决定这些片段的位置。  
 基于这些位置，它会<def>插值</def>(Interpolate)所有片段着色器的输入变量。比如说，我们有一个线段，上面的端点是绿色的，下面的端点是蓝色的。如果一个片段着色器在线段的70%的位置运行，它的颜色输入属性就会是一个绿色和蓝色的线性结合；更精确地说就是30%蓝 + 70%绿。
@@ -306,24 +308,30 @@ glEnableVertexAttribArray(1);
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <glad/glad.h>; // 包含glad来获取所有的必须OpenGL头文件
+  
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
-#include <GL/glew.h>; // 包含glew来获取所有的必须OpenGL头文件
+  
 
 class Shader
 {
 public:
-  	// 程序ID
-  	GLuint Program;
-  	// 构造器读取并构建着色器
-  	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
-  	// 使用程序
-  	void Use();
+    // 程序ID
+    unsigned int ID;
+  
+    // 构造器读取并构建着色器
+    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    // 使用/激活程序
+    void use();
+    // uniform工具函数
+    void setBool(const std::string &name, bool value) const;  
+    void setInt(const std::string &name, int value) const;   
+    void setFloat(const std::string &name, float value) const;
 };
-
+  
 #endif
 ```
 
@@ -331,14 +339,14 @@ public:
 
 	在上面，我们在头文件顶部使用了几个<def>预处理指令</def>(Preprocessor Directives)。这些预处理指令会告知你的编译器只在它没被包含过的情况下才包含和编译这个头文件，即使多个文件都包含了这个着色器头文件。它是用来防止链接冲突的。
 
-着色器类储存了着色器程序的ID。它的构造器需要顶点和片段着色器源代码的文件路径，这样我们就可以把源码的文本文件储存在硬盘上了。我们还添加了一个<fun>Use</fun>函数，它其实不那么重要，但是能够显示这个自造类如何让我们的生活变得轻松（虽然只有一点）。
+着色器类储存了着色器程序的ID。它的构造器需要顶点和片段着色器源代码的文件路径，这样我们就可以把源码的文本文件储存在硬盘上了。除此之外，为了让我们的生活更轻松一点，还加入了一些工具函数：<fun>use</fun>用来激活着色器程序，所有的<fun>set...</fun>函数能够查询一个unform的位置值并设置它的值。
 
 ## 从文件读取
 
 我们使用C++文件流读取着色器内容，储存到几个`string`对象里：
 
 ```c++
-Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
+Shader(const char* vertexPath, const char* fragmentPath)
 {
     // 1. 从文件路径中获取顶点/片段着色器
     std::string vertexCode;
@@ -346,30 +354,30 @@ Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
     std::ifstream vShaderFile;
     std::ifstream fShaderFile;
     // 保证ifstream对象可以抛出异常：
-    vShaderFile.exceptions(std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::badbit);
+    vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+    fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     try 
     {
         // 打开文件
         vShaderFile.open(vertexPath);
         fShaderFile.open(fragmentPath);
         std::stringstream vShaderStream, fShaderStream;
-        // 读取文件的缓冲内容到流中
+        // 读取文件的缓冲内容到数据流中
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();		
-        // 关闭文件
+        // 关闭文件处理器
         vShaderFile.close();
         fShaderFile.close();
-        // 转换流至GLchar数组
-        vertexCode = vShaderStream.str();
+        // 转换数据流到string
+        vertexCode   = vShaderStream.str();
         fragmentCode = fShaderStream.str();		
     }
     catch(std::ifstream::failure e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
-    const GLchar* vShaderCode = vertexCode.c_str();
-    const GLchar* fShaderCode = fragmentCode.c_str();
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
     [...]
 ```
 
@@ -377,10 +385,10 @@ Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 
 ```c++
 // 2. 编译着色器
-GLuint vertex, fragment;
-GLint success;
-GLchar infoLog[512];
-
+unsigned int vertex, fragment;
+int success;
+char infoLog[512];
+   
 // 顶点着色器
 vertex = glCreateShader(GL_VERTEX_SHADER);
 glShaderSource(vertex, 1, &vShaderCode, NULL);
@@ -414,7 +422,7 @@ glDeleteShader(vertex);
 glDeleteShader(fragment);
 ```
 
-最后我们也会实现<fun>Use</fun>函数：
+<fun>use</fun>函数非常简单：
 
 ```c++
 void Use()
@@ -423,25 +431,42 @@ void Use()
 }
 ```
 
-现在我们就写完了一个完整的着色器类。使用这个着色器类很简单；只要创建一个着色器对象，从那一点开始我们就可以开始使用了：
+uniform的setter函数也很类似：
 
 ```c++
-Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.frag");
+void setBool(const std::string &name, bool value) const
+{         
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); 
+}
+void setInt(const std::string &name, int value) const
+{ 
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value); 
+}
+void setFloat(const std::string &name, float value) const
+{ 
+    glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
+}
+```
+
+现在我们就写完了一个完整的[着色器类](https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h)。使用这个着色器类很简单；只要创建一个着色器对象，从那一点开始我们就可以开始使用了：
+
+```c++
+Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.fs");
 ...
 while(...)
 {
-    ourShader.Use();
-    glUniform1f(glGetUniformLocation(ourShader.Program, "someUniform"), 1.0f);
+    ourShader.use();
+    ourShader.setFloat("someUniform", 1.0f);
     DrawStuff();
 }
 ```
 
-我们把顶点和片段着色器储存为两个叫做`shader.vs`和`shader.frag`的文件。你可以使用自己喜欢的名字命名着色器文件；我自己觉得用`.vs`和`.frag`作为扩展名很直观。
+我们把顶点和片段着色器储存为两个叫做`shader.vs`和`shader.fs`的文件。你可以使用自己喜欢的名字命名着色器文件；我自己觉得用`.vs`和`.fs`作为扩展名很直观。
 
-源码：[使用新着色器类的程序](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-using-object)，[着色器类](http://learnopengl.com/code_viewer.php?type=header&code=shader)，[顶点着色器](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/basic)，和[片段着色器](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/basic)。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/3.3.shaders_class/shaders_class.cpp)找到使用[新着色器类](https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h)的源代码。注意你可以点击源码中的着色器文件路径来查看每一个着色器的源代码。
 
 # 练习
 
-1. 修改顶点着色器让三角形上下颠倒：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise1)
-2. 使用uniform定义一个水平偏移量，在顶点着色器中使用这个偏移量把三角形移动到屏幕右侧：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise2)
-3. 使用`out`关键字把顶点位置输出到片段着色器，并将片段的颜色设置为与顶点位置相等（来看看连顶点位置值都在三角形中被插值的结果）。做完这些后，尝试回答下面的问题：为什么在三角形的左下角是黑的?：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise3)
+1. 修改顶点着色器让三角形上下颠倒：[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise1)
+2. 使用uniform定义一个水平偏移量，在顶点着色器中使用这个偏移量把三角形移动到屏幕右侧：[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise2)
+3. 使用`out`关键字把顶点位置输出到片段着色器，并将片段的颜色设置为与顶点位置相等（来看看连顶点位置值都在三角形中被插值的结果）。做完这些后，尝试回答下面的问题：为什么在三角形的左下角是黑的?：[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/shaders-exercise3)

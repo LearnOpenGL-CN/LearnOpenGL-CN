@@ -402,34 +402,27 @@ std::cout << vec.x << vec.y << vec.z << std::endl;
 
 ```c++
 glm::mat4 trans;
-trans = glm::rotate(trans, 90.0f, glm::vec3(0.0, 0.0, 1.0));
-trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); 
 ```
 
-首先，我们把箱子在每个轴都缩放到0.5倍，然后沿z轴旋转90度。注意有纹理的那面矩形是在XY平面上的，所以我们需要把它绕着z轴旋转。因为我们把这个矩阵传递给了GLM的每个函数，GLM会自动将矩阵相乘，返回的结果是一个包括了多个变换的变换矩阵。
-
-!!! Attention
-
-	有些GLM版本接收的是弧度而不是角度，这种情况下你可以用`glm::radians(90.0f)`将角度转换为弧度。
+首先，我们把箱子在每个轴都缩放到0.5倍，然后沿z轴旋转90度。GLM希望它的角度是弧度制的(Radian)，所以我们使用`glm::radians`将角度转化为弧度。注意有纹理的那面矩形是在XY平面上的，所以我们需要把它绕着z轴旋转。因为我们把这个矩阵传递给了GLM的每个函数，GLM会自动将矩阵相乘，返回的结果是一个包括了多个变换的变换矩阵。
 
 下一个大问题是：如何把矩阵传递给着色器？我们在前面简单提到过GLSL里也有一个`mat4`类型。所以我们将修改顶点着色器让其接收一个`mat4`的uniform变量，然后再用矩阵uniform乘以位置向量：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 color;
-layout (location = 2) in vec2 texCoord;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
 
-out vec3 ourColor;
 out vec2 TexCoord;
   
 uniform mat4 transform;
 
 void main()
 {
-    gl_Position = transform * vec4(position, 1.0f);
-    ourColor = color;
-    TexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+    gl_Position = transform * vec4(aPos, 1.0f);
+    TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
 }
 ```
 
@@ -440,7 +433,7 @@ void main()
 在把位置向量传给<var>gl_Position</var>之前，我们先添加一个uniform，并且将其与变换矩阵相乘。我们的箱子现在应该是原来的二分之一大小并（向左）旋转了90度。当然，我们仍需要把变换矩阵传递给着色器：
 
 ```c++
-GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
+unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
 glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 ```
 
@@ -455,7 +448,7 @@ glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 ```c++
 glm::mat4 trans;
 trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-trans = glm::rotate(trans,(GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 ```
 
 要记住的是前面的例子中我们可以在任何地方声明变换矩阵，但是现在我们必须在每一次迭代中创建它，从而保证我们能够不断更新旋转角度。这也就意味着我们不得不在每次游戏循环的迭代中重新创建变换矩阵。通常在渲染场景的时候，我们也会有多个需要在每次渲染迭代中都用新值重新创建的变换矩阵
@@ -466,13 +459,17 @@ trans = glm::rotate(trans,(GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.0f, 0.0f, 
 
 <video src="../../img/01/07/transformations.mp4" controls="controls"></video>
 
-这就是我们刚刚做到的！一个位移过的箱子，它会一直转，一个变换矩阵就做到了！现在你可以明白为什么矩阵在图形领域是一个如此重要的工具了。我们可以定义一个无限数量的变换，把它们组合为仅仅一个矩阵，如果愿意的话我们还可以重复使用它。在着色器中使用矩阵可以省去重新定义顶点数据的功夫，它也能够节省处理时间，因为我们没有一直重新发送我们的数据（这是个非常慢的过程）。
+这就是我们刚刚做到的！一个位移过的箱子，它会一直转，一个变换矩阵就做到了！现在你可以明白为什么矩阵在图形领域是一个如此重要的工具了。我们可以定义无限数量的变换，而把它们组合为仅仅一个矩阵，如果愿意的话我们还可以重复使用它。在着色器中使用矩阵可以省去重新定义顶点数据的功夫，它也能够节省处理时间，因为我们没有一直重新发送我们的数据（这是个非常慢的过程）。
 
-如果你没有得到正确的结果，或者你有哪儿不清楚的地方。可以看[源码](http://learnopengl.com/code_viewer.php?code=getting-started/transformations)和[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/transformations&type=vertex)、[片段](http://learnopengl.com/code_viewer.php?code=getting-started/transformations&type=fragment)着色器。
+如果你没有得到正确的结果，或者你有哪儿不清楚的地方。可以看[源码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/5.1.transformations/transformations.cpp)。
 
 下一节中，我们会讨论怎样使用矩阵为顶点定义不同的坐标空间。这将是我们进入实时3D图像的第一步！
 
+## 拓展阅读
+
+- [线性代数的本质](https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)：Grant Sanderson制作的非常棒的视频教程系列，它讨论了变换和线性代数内在的数学本质（[中文字幕版本](http://space.bilibili.com/88461692#!/channel/detail?cid=9450)）。
+
 ## 练习
 
-- 使用应用在箱子上的最后一个变换，尝试将其改变为先旋转，后位移。看看发生了什么，试着想想为什么会发生这样的事情：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/transformations-exercise1)
-- 尝试再次调用<fun>glDrawElements</fun>画出第二个箱子，**只**使用变换将其摆放在不同的位置。让这个箱子被摆放在窗口的左上角，并且会不断的缩放（而不是旋转）。`sin`函数在这里会很有用，不过注意使用`sin`函数时应用负值会导致物体被翻转：[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/transformations-exercise2)
+- 使用应用在箱子上的最后一个变换，尝试将其改变为先旋转，后位移。看看发生了什么，试着想想为什么会发生这样的事情：[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/transformations-exercise1)
+- 尝试再次调用<fun>glDrawElements</fun>画出第二个箱子，**只**使用变换将其摆放在不同的位置。让这个箱子被摆放在窗口的左上角，并且会不断的缩放（而不是旋转）。（`sin`函数在这里会很有用，不过注意使用`sin`函数时应用负值会导致物体被翻转）：[参考解答](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/5.2.transformations_exercise2/transformations_exercise2.cpp)

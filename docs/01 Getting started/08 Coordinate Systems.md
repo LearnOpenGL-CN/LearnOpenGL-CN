@@ -103,12 +103,12 @@ $$
 out = \begin{pmatrix} x /w \\ y / w \\ z / w \end{pmatrix}
 $$
 
-顶点坐标的每个分量都会除以它的w分量，距离观察者越远顶点坐标就会越小。这是也是w分量非常重要的另一个原因，它能够帮助我们进行透视投影。最后的结果坐标就是处于标准化设备空间中的。如果你对正射投影矩阵和透视投影矩阵是如何计算的很感兴趣（且不会对数学感到恐惧的话）我推荐这篇由Songho写的[]文章](http://www.songho.ca/opengl/gl_projectionmatrix.html)。
+顶点坐标的每个分量都会除以它的w分量，距离观察者越远顶点坐标就会越小。这是也是w分量非常重要的另一个原因，它能够帮助我们进行透视投影。最后的结果坐标就是处于标准化设备空间中的。如果你对正射投影矩阵和透视投影矩阵是如何计算的很感兴趣（且不会对数学感到恐惧的话）我推荐这篇由Songho写的[文章](http://www.songho.ca/opengl/gl_projectionmatrix.html)。
 
 在GLM中可以这样创建一个透视投影矩阵：
 
 ```c++
-glm::mat4 proj = glm::perspective(45.0f, (float)width/(float)height, 0.1f, 100.0f);
+glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
 ```
 
 同样，`glm::perspective`所做的其实就是创建了一个定义了可视空间的大**平截头体**，任何在这个平截头体以外的东西最后都不会出现在裁剪空间体积内，并且将会受到裁剪。一个透视平截头体可以被看作一个不均匀形状的箱子，在这个箱子内部的每个坐标都会被映射到裁剪空间上的一个点。下面是一张透视平截头体的图片：
@@ -153,12 +153,12 @@ $$
 
 ```c++
 glm::mat4 model;
-model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 ```
 
 通过将顶点坐标乘以这个模型矩阵，我们将该顶点坐标变换到世界坐标。我们的平面看起来就是在地板上，代表全局世界里的平面。
 
-接下来我们需要创建一个观察矩阵。我们想要在场景里面稍微往后移动，以使得物体变成可见的（当在世界空间时，我们位于原点(0,0,0)）。要想在场景里面移动，先想一想下面这个问题：
+接下来我们需要创建一个观察矩阵。我们想要在场景里面稍微往后移动，以使得物体变成可见的（当在世界空间时，我们位于原点(0,0,0)）。要想在场景里面移动，先仔细想一想下面这个句子：
 
 - 将摄像机向后移动，和将整个场景向前移动是一样的。
  
@@ -186,25 +186,21 @@ model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 ```c++
 glm::mat4 view;
 // 注意，我们将矩阵向我们要进行移动场景的反方向移动。
-view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 ```
 
 最后我们需要做的是定义一个投影矩阵。我们希望在场景中使用透视投影，所以像这样声明一个投影矩阵：
 
 ```c++
 glm::mat4 projection;
-projection = glm::perspective(45.0f, screenWidth / screenHeight, 0.1f, 100.0f);
+projection = glm::perspective(glm::radians(45.0f), screenWidth / screenHeight, 0.1f, 100.0f);
 ```
-
-!!! attention
-
-	再重复一遍，在glm中指定角度的时候要注意。这里我们将参数fov设置为**45**度，但有些GLM的实现是将fov当成弧度，在这种情况你需要使用`glm::radians(45.0)`来设置。
 
 既然我们已经创建了变换矩阵，我们应该将它们传入着色器。首先，让我们在顶点着色器中声明一个uniform变换矩阵然后将它乘以顶点坐标：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
+layout (location = 0) in vec3 aPos;
 ...
 uniform mat4 model;
 uniform mat4 view;
@@ -212,8 +208,8 @@ uniform mat4 projection;
 
 void main()
 {
-    // 注意从右向左读
-    gl_Position = projection * view * model * vec4(position, 1.0f);
+    // 注意乘法要从右向左读
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
     ...
 }
 ```
@@ -221,7 +217,7 @@ void main()
 我们还应该将矩阵传入着色器（这通常在每次的渲染迭代中进行，因为变换矩阵会经常变动）：
 
 ```c++
-GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+int modelLoc = glGetUniformLocation(ourShader.ID, "model"));
 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 ... // 观察矩阵和投影矩阵与之类似
 ```
@@ -236,16 +232,16 @@ glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 ![coordinate_systems_result](../img/01/08/coordinate_systems_result.png)
 
-它看起来就像是一个3D的平面，静止在一个虚构的地板上。如果你得到的不是相同的结果，请检查下完整的[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems) 以及[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=getting-started/transform&type=fragment)着色器。
+它看起来就像是一个3D的平面，静止在一个虚构的地板上。如果你得到的不是相同的结果，请检查下完整的[源代码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.1.coordinate_systems/coordinate_systems.cpp)。
 
 ## 更多的3D
 
-到目前为止，我们一直都在使用一个2D平面，而且甚至是在3D空间里！所以，让我们大胆地拓展我们的2D平面为一个3D立方体。要想渲染一个立方体，我们一共需要36个顶点（6个面 x 每个面有2个三角形组成 x 每个三角形有3个顶点），这36个顶点的位置你可以从[这里](http://learnopengl.com/code_viewer.php?code=getting-started/cube_vertices)获取。注意，这一次我们省略了颜色值，因为我们只通过纹理来获取最终的颜色值。
+到目前为止，我们一直都在使用一个2D平面，而且甚至是在3D空间里！所以，让我们大胆地拓展我们的2D平面为一个3D立方体。要想渲染一个立方体，我们一共需要36个顶点（6个面 x 每个面有2个三角形组成 x 每个三角形有3个顶点），这36个顶点的位置你可以从[这里](https://learnopengl.com/code_viewer.php?code=getting-started/cube_vertices)获取。
 
 为了有趣一点，我们将让立方体随着时间旋转：
 
 ```c++
-model = glm::rotate(model, (GLfloat)glfwGetTime() * 50.0f, glm::vec3(0.5f, 1.0f, 0.0f));  
+model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 ```
 
 然后我们使用<fun>glDrawArrays</fun>来绘制立方体，但这一次总共有36个顶点。
@@ -282,7 +278,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 <video src="../../img/01/08/coordinate_system_depth.mp4" controls="controls"></video>
 
-就是这样！一个开启了深度测试，各个面都是纹理，并且还在旋转的立方体！如果你的程序有问题可以到[这里](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems_with_depth)下载源码进行比对。
+就是这样！一个开启了深度测试，各个面都是纹理，并且还在旋转的立方体！如果你的程序有问题可以到[这里](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.2.coordinate_systems_depth/coordinate_systems_depth.cpp)下载源码进行比对。
 
 ### 更多的立方体！
 
@@ -309,28 +305,27 @@ glm::vec3 cubePositions[] = {
 
 ```c++
 glBindVertexArray(VAO);
-for(GLuint i = 0; i < 10; i++)
+for(unsigned int i = 0; i < 10; i++)
 {
   glm::mat4 model;
   model = glm::translate(model, cubePositions[i]);
-  GLfloat angle = 20.0f * i; 
-  model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-  glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+  float angle = 20.0f * i; 
+  model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+  ourShader.setMat4("model", model);
 
   glDrawArrays(GL_TRIANGLES, 0, 36);
 }
-glBindVertexArray(0);
 ```
 
 这段代码将会在每次新立方体绘制出来的时候更新模型矩阵，如此总共重复10次。然后我们应该就能看到一个拥有10个正在奇葩地旋转着的立方体的世界。
 
 ![coordinate_systems_multiple_objects](../img/01/08/coordinate_systems_multiple_objects.png)
 
-完美！这就像我们的箱子找到了志同道合的小伙伴一样。如果你在这里卡住了，你可以对照一下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems_multiple_objects) 以及[顶点](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems&type=vertex)和[片段](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems&type=fragment) 着色器。
+完美！这就像我们的箱子找到了志同道合的小伙伴一样。如果你在这里卡住了，你可以对照一下[源代码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp) 。
 
 ## 练习
 
 - 对GLM的`projection`函数中的`FoV`和`aspect-ratio`参数进行实验。看能否搞懂它们是如何影响透视平截头体的。
 - 将观察矩阵在各个方向上进行位移，来看看场景是如何改变的。注意把观察矩阵当成摄像机对象。
-- 使用模型矩阵只让是3倍数的箱子旋转（以及第1个箱子），而让剩下的箱子保持静止。[参考解答](http://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems-exercise3)。
+- 使用模型矩阵只让是3倍数的箱子旋转（以及第1个箱子），而让剩下的箱子保持静止。[参考解答](https://learnopengl.com/code_viewer.php?code=getting-started/coordinate_systems-exercise3)。
 

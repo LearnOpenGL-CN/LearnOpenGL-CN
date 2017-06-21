@@ -14,7 +14,7 @@
 - State Machine：状态机
 - Context：上下文
 - State-changing Function：状态设置函数
-- State-using Function：状态应用函数
+- State-using Function：状态使用函数
 - Object：对象
 - Primitive Type：基元类型
 - Option：选项
@@ -35,6 +35,7 @@
 - Viewport：视口
 - Dimension（窗口）：维度
 - Game Loop：游戏循环
+- Render Loop：渲染循环
 - Color Buffer：颜色缓冲
 - Double Buffer：双缓冲
 - Front Buffer：前缓冲
@@ -165,13 +166,52 @@
 - Camera Space：摄像机空间
 - Gram-Schmidt Process：格拉姆—施密特正交化
 - LookAt Matrix：LookAt矩阵
-- Strafe：(?)扫射
+- Strafe：横移
 - Deltatime：时间差
 - Euler Angles：欧拉角
 - Pitch：俯仰角
 - Yaw：偏航角
 - Roll：滚转角
 - Field of View(FoV)：视野
+
+## 02-01
+
+- Lighting：光照
+- Reflect：反射
+- Absorb：吸收
+- Container（第一章创建的那个物体）：箱子
+- Lamp：灯
+
+## 02-02
+
+- Phong Lighting Model：冯氏光照模型
+- Ambient Lighting：环境光照
+- Diffuse Lighting：漫反射光照
+- Specular Lighting：镜面光照
+- Directional Impact：方向性影响
+- Global Illumination：全局性照明
+- Factor：因子
+- Normal Vector：法向量
+- Normal Matrix：法线矩阵
+- Ambient Component：环境光分量
+- Diffuse Component：漫反射分量
+- Specular Component：镜面光分量
+- Inverse Matrix：逆矩阵
+- Transpose Matrix：转置矩阵
+- Specular Highlight：镜面高光
+- Intensity：强度
+- Specular Intensity：镜面强度
+- Shininess：反光度
+- Gouraud Shading：Gouraud着色
+- Phong Shading：冯氏着色
+
+## 02-03
+
+- Material：材质
+- Struct：结构体
+- Layout：布局
+- Light Property：光照属性
+- Scatter（光）：散射
 
 ## 06-01
 

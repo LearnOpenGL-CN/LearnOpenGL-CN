@@ -1,6 +1,6 @@
 # 复习
 
-原文     | [Review](http：//learnopengl.com/#!Getting-started/Review)
+原文     | [Review](https://learnopengl.com/#!Getting-started/Review)
       ---|---
 作者     | JoeyDeVries
 翻译     | Meow J
@@ -13,7 +13,7 @@
 ## 词汇表
 
 - **OpenGL**： 一个定义了函数布局和输出的图形API的正式规范。
-- **GLEW**： 一个拓展加载库，用来为我们加载并设定所有OpenGL函数指针，从而让我们能够使用所有（现代）OpenGL函数。
+- **GLAD**： 一个拓展加载库，用来为我们加载并设定所有OpenGL函数指针，从而让我们能够使用所有（现代）OpenGL函数。
 - **视口(Viewport)**： 我们需要渲染的窗口。
 - **图形管线(Graphics Pipeline)**： 一个顶点在呈现为像素之前通过的过程。
 - **着色器(Shader)**： 一个运行在显卡上的小型程序。很多阶段的图形管道都可以使用自定义的着色器来代替原来的功能。
@@ -26,7 +26,7 @@
 - **纹理缠绕(Texture Wrapping)**： 定义了一种当纹理顶点超出范围(0, 1)时指定OpenGL如何采样纹理的模式。
 - **纹理过滤(Texture Filtering)**： 定义了一种当有多种纹素选择时指定OpenGL如何采样纹理的模式。这通常在纹理被放大情况下发生。
 - **多级渐远纹理(Mipmaps)**： 被存储的材质的一些缩小版本，根据距观察者的距离会使用材质的合适大小。
-- **SOIL**： 图像加载库。
+- **stb_image.h**： 图像加载库。
 - **纹理单元(Texture Units)**： 通过绑定纹理到不同纹理单元从而允许多个纹理在同一对象上渲染。
 - **向量(Vector)**： 一个定义了在空间中方向和/或位置的数学实体。
 - **矩阵(Matrix)**： 一个矩形阵列的数学表达式。
