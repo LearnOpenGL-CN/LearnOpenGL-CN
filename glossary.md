@@ -213,6 +213,18 @@
 - Light Property：光照属性
 - Scatter（光）：散射
 
+## 02-04
+
+- Map：贴图
+- Diffuse Map：漫反射贴图
+- Opaque Type：不透明类型
+- Specular Map：镜面光贴图
+- Normal Map：法线贴图
+- Bump Map：凹凸贴图
+- Reflection Map：反射贴图
+- Emission Map：放射光贴图
+- Emission Value：发光值
+
 ## 06-01
 
 - Debugging：调试
