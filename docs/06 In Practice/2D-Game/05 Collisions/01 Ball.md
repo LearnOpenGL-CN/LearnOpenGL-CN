@@ -6,11 +6,11 @@
 | 翻译   | [aillieo](https://github.com/aillieo)    |
 | 校对   | 暂无                                       |
 
-At this moment we have a level full of bricks and a movable player paddle. The only thing missing from the classic Breakout recipe is the ball. The objective is to let the ball collide with all the bricks until each of the destroyable bricks are destroyed, but this all within the condition that the ball is not allowed to reach the bottom edge of the screen.
+此时我们已经有了一个包含很多砖块以及一个玩家挡板的关卡。与经典的Breakout内容相比只差一个球了。游戏的目的是让球撞击所有的砖块，直到所有的可销毁砖块都被销毁，但同时也要满足条件：球不能碰触屏幕的下边缘。
 
-Aside from the general game object components, a ball has a radius and an extra boolean value indicating whether the ball is stuck on the player paddle or its allowed free movement. When the game starts, the ball is initially stuck on the player paddle until the player starts the game by pressing some arbitrary key.
+除了通用的游戏对象组件(game object components)，球还需要有半径和一个布尔值，该布尔值用于指示球固定在玩家挡板上还是在其被允许的自由运动状态。当游戏开始时，球被初始固定在玩家挡板上，直到玩家按下任意键开始游戏。
 
-Because the ball is basically a GameObject with a few extra properties it makes sense to create a BallObject class as a subclass of GameObject:
+由于球只是一个附带了一些额外属性的GameObject，所以按照常规需要创建BallObject类作为GameObject的子类。
 
 ```
 class BallObject : public GameObject
@@ -28,7 +28,9 @@ class BallObject : public GameObject
         void      Reset(glm::vec2 position, glm::vec2 velocity);
 }; 
 ```
-The constructor of BallObject initializes its own values, but also initializes the underlying GameObject. The BallObject class hosts a Move function that moves the ball based on its velocity and checks if it reaches any of the scene's edges and if so reverses the ball's velocity:
+
+BallObject的构造函数不但初始化了其自身的值，而且实际上也潜在地初始化了GameObject。BallObject类拥有一个Move函数，该函数用于根据球的速度来移动球，并检查它是否碰到了场景的任何边界，如果碰到的话就会反转球的速度：
+
 
 ```
 glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width)
@@ -59,13 +61,18 @@ glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width)
     return this->Position;
 }  
 ```
-Aside from reversing the ball's velocity we also want relocate the ball back along the edge. The ball is only able to move if it isn't stuck.
 
-Because the player is game over (or loses a life) if the ball reaches the bottom edge there is no code to let the ball bounce of the bottom edge. We do need to later implement this logic somewhere in the game code though.
-You can find the code for the ball object below:
+除了反转球的速度之外，我们还需要把球沿着边界重新放置回来。只有在没有被固定时球才能够移动。
 
-BallObject: header, code
-First let's add the ball to the game. Similar to the player paddle, we create a BallObject and define two constants that we use to initialize the ball. As the texture of the ball, we're going to use an image that makes perfect sense in a LearnOpenGL Breakout game: ball texture.
+因为如果球碰触到底部边界时玩家会结束游戏（或失去一条命），所以在底部边界没有代码来控制球反弹。我们稍后需要在代码中某些地方实现这一逻辑。
+
+
+你可以在下边看到球对象的代码：
+
+_ BallObject: header, code
+
+
+首先我们在游戏中添加球。与玩家挡板相似，我们创建一个球对象并且定义两个用来初始化球的常量。对于球的纹理，我们会使用在LearnOpenGL Breakout游戏中完美适用的一张图片：球纹理。
 
 ```
 // Initial velocity of the Ball
@@ -91,7 +98,8 @@ void Game::Update(GLfloat dt)
     Ball->Move(dt, this->Width);
 }  
 ```
-Furthermore, because the ball is initially stuck to the paddle, we have to give the player the ability to remove it from its stuck position. We select the space key for freeing the ball from the paddle. This means we have to change the processInput function a little:
+
+除此之外，由于球初始是固定在挡板上的，我们必须让玩家能够从固定的位置重新移动它。我们选择使用空格键来从挡板释放球。这意味着我们必须稍微修改processInput函数：
 
 ```
 void Game::ProcessInput(GLfloat dt)
@@ -123,9 +131,10 @@ void Game::ProcessInput(GLfloat dt)
     }
 }
 ```
-Here, if the user presses the space bar, the ball's Stuck variable is set to false. We also updated the ProcessInput function to move the position of the ball alongside the paddle's position whenever the ball is stuck.
 
-Last, we need to render the ball which by now should be fairly obvious:
+现在如果玩家按下了空格键，球的Stuck值会设置为false。我们还需要更新ProcessInput函数，当球被固定的时候，会跟随挡板的位置来移动球。
+
+最后我们需要渲染球，此时这应该很显而易见了：
 
 ```
 void Game::Render()
@@ -137,10 +146,13 @@ void Game::Render()
     }
 }  
 ```
-The result is a ball that follows the paddle and roams freely whenever we press the spacebar. The ball also properly bounces of the left, right and top edge, but it doesn't yet seem to collide with any of the bricks as we can see in the following video:
+
+结果就是球会跟随挡板，并且当我们按下空格键时球开始自由运动。球会在左侧、右侧和顶部边界合理地反弹，但看起来不会撞击任何的砖块，就像我们可以在下边的视频中看到的那样：
 
 
 <video src="../../../../img/06/Breakout/05/01/no_collisions.mp4" controls="controls"></video>
 
 
-What we want is to create one or several function(s) that check if the ball object is colliding with any of the bricks in the level and if so, destroy this brick. These so called collision detection functions is what we'll focus on in the next tutorial.
+
+我们要做的就是创建一个或多个函数用于检查球对象是否撞击关卡中的任何砖块，如果撞击的话就销毁砖块。这些所谓的碰撞检测函数将是我们下一个教程的重点。
+
