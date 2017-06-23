@@ -225,6 +225,19 @@
 - Emission Map：放射光贴图
 - Emission Value：发光值
 
+## 02-05
+
+- Cast（光）：投射
+- Light Caster：投光物
+- Directional Light：定向光
+- Point Light：点光源
+- Spotlight：聚光
+- Positional Light Source：位置光源
+- Fixed-functionality (OpenGL)：固定函数式
+- Attenuation：衰减
+- Cutoff Angle：切光角
+- Flashlight：手电筒
+
 ## 06-01
 
 - Debugging：调试
