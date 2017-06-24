@@ -147,8 +147,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 现在我们已经定义了一个计算定向光的函数和一个计算点光源的函数了，我们可以将它们合并放到<fun>main</fun>函数中。
 
-我们现在定义了用于计算平行光和点光源的函数，现在我们把这些代码放到一起，写入文开始的一般结构中：
-
 ```c++
 void main()
 {
