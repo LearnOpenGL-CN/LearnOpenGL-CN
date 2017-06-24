@@ -1,95 +1,49 @@
 # 碰撞检测
 
-At the end of the last tutorial we had a working collision detection scheme. However, the ball does not react in any way to the detected collisions; it just moves straight through all the bricks. We want the ball to *bounce* of the collided bricks. This tutorial discusses how we can accomplish this so called collision resolution within the AABB - circle collision detection scheme.
+When trying to determine if a collision occurs between two objects, we generally do not use the data of the objects themselves since these objects are often quite complicated; this in turn also makes the collision detection complicated. For this reason, it is a common practice to use more simple shapes (that usually have a nice mathematical definition) for collision detection that we *overlay* on top of the original object. We then check for collisions based on these simple shapes which makes the code easier and saves a lot of performance. Several examples of such collision shapes are circles, spheres, rectangles and boxes; these are a lot simpler to work with compared to meshes with hundreds of triangles.
 
-Whenever a collision occurs we want two things to happen: we want to reposition the ball so it is no longer inside the other object and second, we want to change the direction of the ball's velocity so it looks like its bouncing of the object.
+While they do give us easier and more efficient collision detection algorithms, the simpler collision shapes share a common disadvantage in that these shapes usually do not fully surround the object. The effect is that a collision might be detected that didn't really collide with the actual object; one should always keep in mind that these shapes are just approximations of the real shapes.
 
-### Collision repositioning
+## AABB - AABB collisions
 
-To position the ball object outside the collided AABB we have to figure out the distance the ball penetrated the bounding box. For this we'll revisit the diagrams from the previous tutorial:
+AABB stands for axis-aligned bounding box which is a rectangular collision shape aligned to the base axes of the scene, which in 2D aligns to the x and y axis. Being axis-aligned means the rectangular box is not rotated and its edges are parallel to the base axes of the scene (e.g. left and right edge are parallel to the y axis). The fact that these boxes are always aligned to the axes of the scene makes all calculations easier. Here we surround the ball object with an AABB:
 
-Here the ball moved slightly into the AABB and a collision was detected. We now want to move the ball out of the shape so that it merely touches the AABB as if no collision occurred. To figure out how much we need to move the ball out of the AABB we need to retrieve the vector R¯R¯ which is the level of penetration into the AABB. To get this vector R¯R¯ we subtract V¯V¯ from the ball's radius. Vector V¯V¯ is the difference between closest point P¯P¯ and the ball's center C¯C¯.
+Almost all the objects in Breakout are rectangular based objects so it makes perfect sense to use axis aligned bounding boxes for detecting collisions. This is exactly what we're going to do.
 
-Knowing R¯R¯ we offset the ball's position by R¯R¯ and position the ball directly alongside the AABB; the ball is now properly positioned.
+Axis aligned bounding boxes can be defined in several ways. One of the ways to define an AABB is by having a top-left position and a bottom-right position. The GameObject class that we defined already contains a top-left position (its Positionvector) and we can easily calculate its bottom-right position by adding its size to the top-left position vector (Position` +`Size). Effectively, each GameObject contains an AABB that we can use for collisions.
 
-### Collision direction
+So how do we determine collisions? A collision occurs when two collision shapes enter each other's regions e.g. the shape that determines the first object is in some way inside the shape of the second object. For AABBs this is quite easy to determine due to the fact that they're aligned to the scene's axes: we check for each axis if the two object' edges on that axis overlap. So basically we check if the horizontal edges overlap and if the vertical edges overlap of both objects. If both the horizontal **and**vertical edges overlap we have a collision.
 
-Next we need to figure out how to update the ball's velocity after a collision. For Breakout we use the following rules to change the ball's velocity:
-
-1. If the ball collides with the right or left side of an AABB, its horizontal velocity (`x`) is reversed.
-2. If the ball collides with the bottom or top side of an AABB, its vertical velocity (`y`) is reversed.
-
-But how do we figure out the direction the ball hit the AABB? There are several approaches to this problem and one of them is that instead of 1 AABB we use 4 AABBs for each brick that we position each at one of its edges. This way we can determine which AABB and thus which edge was hit. However, a simpler approach exists with the help of the dot product.
-
-You probably still remember from the [transformations](https://learnopengl.com/#!Getting-started/Transformations) tutorial that the dot product gives us the angle between two normalized vectors. What if we were to define four vectors pointing north, south, west or east and calculate the dot product between them and a given vector? The resulting dot product between these four direction vectors and the given vector that is highest (dot product's maximum value is `1.0f` which represents a `0` degree angle) is then the direction of the vector.
-
-This procedure looks as follows in code:
+Translating this concept to code is quite straightforward. We check for overlap on both axes and if so, return a collision:
 
 ```
-Direction VectorDirection(glm::vec2 target)
+GLboolean CheckCollision(GameObject &one, GameObject &two) // AABB - AABB collision
 {
-    glm::vec2 compass[] = {
-        glm::vec2(0.0f, 1.0f),	// up
-        glm::vec2(1.0f, 0.0f),	// right
-        glm::vec2(0.0f, -1.0f),	// down
-        glm::vec2(-1.0f, 0.0f)	// left
-    };
-    GLfloat max = 0.0f;
-    GLuint best_match = -1;
-    for (GLuint i = 0; i < 4; i++)
-    {
-        GLfloat dot_product = glm::dot(glm::normalize(target), compass[i]);
-        if (dot_product > max)
-        {
-            max = dot_product;
-            best_match = i;
-        }
-    }
-    return (Direction)best_match;
-}    
-
+    // Collision x-axis?
+    bool collisionX = one.Position.x + one.Size.x >= two.Position.x &&
+        two.Position.x + two.Size.x >= one.Position.x;
+    // Collision y-axis?
+    bool collisionY = one.Position.y + one.Size.y >= two.Position.y &&
+        two.Position.y + two.Size.y >= one.Position.y;
+    // Collision only if on both axes
+    return collisionX && collisionY;
+}  
 ```
 
-The function compares target to each of the direction vectors in the compass array. The compass vector target is closest to in angle, is the direction returned to the function caller. Here Direction is part of an enum defined in the game class's header file:
+We check if the right side of the first object is greater than the left side of the second object **and** if the second object's right side is greater than the first object's left side; similarly for the vertical axis. If you have trouble visualizing this, try to draw the edges/rectangles on paper and determine this for yourself.
+
+To keep the collision code a bit more organized we add an extra function to the Game class:
 
 ```
-enum Direction {
-	UP,
-	RIGHT,
-	DOWN,
-	LEFT
-};    
-
-```
-
-Now that we know how to get vector R¯R¯ and how to determine the direction the ball hit the AABB we can start writing the collision resolution code.
-
-### AABB - Circle collision resolution
-
-To calculate the required values for collision resolution we need a bit more information from the collision function(s) than just a `true` or `false` so we're going to return a tuple of information, namely if a collision occurred, what direction it occurred and the difference vector (R¯R¯). You can find the `tuple` container in the `<tuple>` header.
-
-To keep the code slightly more organized we'll typedef the collision relevant data as Collision:
-
-```
-typedef std::tuple<GLboolean, Direction, glm::vec2> Collision;    
-
-```
-
-Then we also have to change the code of the CheckCollision function to not only return `true` or `false`, but also the direction and difference vector:
-
-```
-Collision CheckCollision(BallObject &one, GameObject &two) // AABB - AABB collision
+class Game
 {
-    [...]
-    if (glm::length(difference) <= one.Radius)
-        return std::make_tuple(GL_TRUE, VectorDirection(difference), difference);
-    else
-        return std::make_tuple(GL_FALSE, UP, glm::vec2(0, 0));
-}
-
+    public:
+        [...]
+        void DoCollisions();
+};
 ```
 
-The game's DoCollision function now doesn't just check if a collision occurred, but also acts appropriately whenever a collision did occur. The function now calculates the level of penetration (as shown in the diagram at the start of this tutorial) and adds or subtracts it from the ball's position based on the direction of the collision.
+Within DoCollisions we check for collisions between the ball object and each brick of the level. If we detect a collision, we set the brick's Destroyed property to `true` which also instantly stops the level from rendering this brick.
 
 ```
 void Game::DoCollisions()
@@ -98,127 +52,83 @@ void Game::DoCollisions()
     {
         if (!box.Destroyed)
         {
-            Collision collision = CheckCollision(*Ball, box);
-            if (std::get<0>(collision)) // If collision is true
+            if (CheckCollision(*Ball, box))
             {
-                // Destroy block if not solid
                 if (!box.IsSolid)
                     box.Destroyed = GL_TRUE;
-                // Collision resolution
-                Direction dir = std::get<1>(collision);
-                glm::vec2 diff_vector = std::get<2>(collision);
-                if (dir == LEFT || dir == RIGHT) // Horizontal collision
-                {
-                    Ball->Velocity.x = -Ball->Velocity.x; // Reverse horizontal velocity
-                    // Relocate
-                    GLfloat penetration = Ball->Radius - std::abs(diff_vector.x);
-                    if (dir == LEFT)
-                        Ball->Position.x += penetration; // Move ball to right
-                    else
-                        Ball->Position.x -= penetration; // Move ball to left;
-                }
-                else // Vertical collision
-                {
-                    Ball->Velocity.y = -Ball->Velocity.y; // Reverse vertical velocity
-                    // Relocate
-                    GLfloat penetration = Ball->Radius - std::abs(diff_vector.y);
-                    if (dir == UP)
-                        Ball->Position.y -= penetration; // Move ball back up
-                    else
-                        Ball->Position.y += penetration; // Move ball back down
-                }
             }
         }
     }
-}    
-
+}  
 ```
 
-Don't get too scared by the function's complexity since it is basically a direct translation of the concepts introduced so far. First we check for a collision and if so we destroy the block if it is non-solid. Then we obtain the collision direction dir and the vector V¯V¯ as diff_vector from the tuple and finally do the collision resolution.
-
-We first check if the collision direction is either horizontal or vertical and then reverse the velocity accordingly. If horizontal, we calculate the penetration value RR from the diff_vector's x component and either add or subtract this from the ball's position based on its direction. The same applies to the vertical collisions, but this time we operate on the `y` component of all the vectors.
-
-Running your application should now give you a working collision scheme, but it's probably difficult to really see its effect since the ball will bounce towards the bottom edge as soon as you hit a single block and be lost forever. We can fix this by also handling player paddle collisions.
-
-## Player - ball collisions
-
-Collisions between the ball and the player are slightly different than what we've previously discussed since this time the ball's horizontal velocity should be updated based on how far it hit the paddle from its center. The further the ball hits the paddle from its center, the stronger its horizontal velocity should be.
-
-```
-void Game::DoCollisions()
-{
-    [...]
-    Collision result = CheckCollision(*Ball, *Player);
-    if (!Ball->Stuck && std::get<0>(result))
-    {
-        // Check where it hit the board, and change velocity based on where it hit the board
-        GLfloat centerBoard = Player->Position.x + Player->Size.x / 2;
-        GLfloat distance = (Ball->Position.x + Ball->Radius) - centerBoard;
-        GLfloat percentage = distance / (Player->Size.x / 2);
-        // Then move accordingly
-        GLfloat strength = 2.0f;
-        glm::vec2 oldVelocity = Ball->Velocity;
-        Ball->Velocity.x = INITIAL_BALL_VELOCITY.x * percentage * strength; 
-        Ball->Velocity.y = -Ball->Velocity.y;
-        Ball->Velocity = glm::normalize(Ball->Velocity) * glm::length(oldVelocity);
-    } 
-}
-  
-```
-
-After we checked collisions between the ball and each brick, we'll check if the ball collided with the player paddle. If so (and the ball is not stuck to the paddle) we calculate the percentage of how far the ball's center is removed from the paddle's center compared to the half-extent of the paddle. The horizontal velocity of the ball is then updated based on the distance it hit the paddle from its center. Aside from updating the horizontal velocity we also have to reverse the y velocity.
-
-Note that the old velocity is stored as oldVelocity. The reason for storing the old velocity is that we only update the horizontal velocity of the ball's velocity vector while keeping its `y` velocity constant. This would mean that the length of the vector constantly changes which has the effect that the ball's velocity vector is much larger (and thus stronger) if the ball hit the edge of the paddle compared to if the ball would hit the center of the paddle. For this reason the new velocity vector is normalized and multiplied by the length of the old velocity vector. This way, the strength and thus the velocity of the ball is always consistent, regardless of where it hits the paddle.
-
-### Sticky paddle
-
-You may or may not have noticed it when you ran the code, but there is still a large issue with the player and ball collision resolution. The following video clearly shows what might happen:
-
-This issue is called the sticky paddle issue which happens because the player paddle moves with a high velocity towards the ball that results in the ball's center ending up inside the player paddle. Since we did not account for the case where the ball's center is inside an AABB the game tries to continuously react to all the collisions and once it finally breaks free it will have reversed its `y` velocity so much that it's unsure whether it goes up or down after breaking free.
-
-We can easily fix this behavior by introducing a small hack which is possible due to the fact that the we can assume we always have a collision at the top of the paddle. Instead of reversing the `y` velocity we simply always return a positive `y` direction so whenever it does get stuck, it will immediately break free.
-
-```
- //Ball->Velocity.y = -Ball->Velocity.y;
-Ball->Velocity.y = -1 * abs(Ball->Velocity.y);  
-
-```
-
-If you try hard enough the effect is still noticeable, but I personally find it an acceptable trade-off.
-
-### The bottom edge
-
-The only thing that is still missing from the classic Breakout recipe is some loss condition that resets the level and the player. Within the game class's Update function we want to check if the ball reached the bottom edge, and if so, reset the game.
+Then we also need to update the game's Update function:
 
 ```
 void Game::Update(GLfloat dt)
 {
-    [...]
-    if (Ball->Position.y >= this->Height) // Did ball reach bottom edge?
-    {
-        this->ResetLevel();
-        this->ResetPlayer();
-    }
+    // Update objects
+    Ball->Move(dt, this->Width);
+    // Check for collisions
+    this->DoCollisions();
 }  
-
 ```
 
-The ResetLevel and ResetPlayer functions simply re-load the level and reset the objects' values to their original starting values. The game should now look a bit like this:
+If we run the code now, the ball should detect collisions with each of the bricks and if the brick is not solid, the brick is destroyed. If you run the game now it'll look something like this:
 
-And there you have it, we just finished creating a clone of the classical Breakout game with similar mechanics. You can find the game class' source code here: [header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions.h), [code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions).
+While the collision detection does work, it's not very precise since the ball collides with most of the bricks without directly touching them. Let's implement another collision detection technique.
 
-## A few notes
+## AABB - Circle collision detection
 
-Collision detection is a difficult topic of video game development and possibly its most challenging. Most collision detection and resolution schemes are combined with physics engines as found in most modern-day games. The collision scheme we used for the Breakout game is a very simple scheme and one specialized specifically for this type of game.
+Beacuse the ball is a circle-like object an AABB is probably not the best choice as the ball's collision shape. The collision code thinks the ball is a rectangular box so the ball often collides with a brick even though the ball sprite itself isn't yet touching the brick.
 
-It should be stressed that this type of collision detection and resolution is not perfect. It calculates possible collisions only per frame and only for the positions exactly as they are at that timestep; this means that if an object would have such a velocity that it would pass over another object within a single frame, it would look like it never collided with this object. So if there are framedrops or you reach high enough velocities, this collision detection scheme will not hold.
+It makes much more sense to represent the ball with a circle collision shape instead of an AABB. For this reason we included a Radius variable within the ball object. To define a circle collision shape all we need is a position vector and a radius.
 
-Several of the issues that can still occur:
+This does mean we have to update the detection algorithm since it currently only works between two AABBs. Detecting collisions between a circle and a rectangle is slightly more complicated, but the trick is as follows: we find the point on the AABB that is closest to the circle and if the distance from the circle to this point is less than its radius, we have a collision.
 
-- If the ball goes too fast, it might skip over an object entirely within a single frame, not detecting any collisions.
-- If the ball hits more than one object within a single frame, it will have detected two collisions and reverse its velocity twice; not affecting its original velocity.
-- Hitting a corner of a brick could reverse the ball's velocity in the wrong direction since the distance it travels in a single frame could make the difference between VectorDirection returning a vertical or horizontal direction.
+The difficult part is getting this closest point P¯P¯ on the AABB. The following image shows how we can calculate this point for any arbitrary AABB and circle:
 
-These tutorials are however aimed to teach the readers the basics of several aspects of graphics and game-development. For this reason, this collision scheme serves its purpose; its understandable and works quite well in normal scenarios. Just keep in mind that there exist better (more complicated) collision schemes that work quite well in almost all scenarios (including movable objects) like the separating axis theorem.
+We first need to get the difference vector between the ball's center C¯C¯ and the AABB's center B¯B¯ to obtain D¯D¯. What we then need to do is clamp this vector D¯D¯ to the AABB's half-extents ww and h¯h¯. The half-extents of a rectangle are the distances between the rectangle's center and its edges; basically its size divided by two. This returns a position vector that is always located somewhere at the edge of the AABB (unless the circle's center is inside the AABB).
 
-Thankfully, there exist large, practical and often quite efficient physics engines (with timestep-independent collision schemes) for use in your own games. If you wish to delve further into such systems or need more advanced physics and have trouble figuring out the mathematics, [Box2D](http://box2d.org/about/) is a perfect 2D physics library for implementing physics and collision detection in your applications.
+A clamp operation **clamps** a value to a value within a given range. This is often expressed as:`
+float clamp(float value, float min, float max) {
+​    return std::max(min, std::min(max, value));
+}  
+`For example, a value of `42.0f` is clamped as `6.0f` between `3.0f` and `6.0f` and a value of `4.20f` would be clamped to `4.20f`. 
+Clamping a 2D vector means we clamp both its `x` and its `y` component within the given range.
+
+This clamped vector P¯P¯ is then the closest point from the AABB to the circle. What we then need to do is calculate a new difference vector D′¯D′¯ that is the difference between the circle's center C¯C¯ and the vector P¯P¯.
+
+Now that we have the vector D′¯D′¯ we can compare its length to the radius of the circle to determine if we have a collision.
+
+This is all expressed in code as follows:
+
+```
+GLboolean CheckCollision(BallObject &one, GameObject &two) // AABB - Circle collision
+{
+    // Get center point circle first 
+    glm::vec2 center(one.Position + one.Radius);
+    // Calculate AABB info (center, half-extents)
+    glm::vec2 aabb_half_extents(two.Size.x / 2, two.Size.y / 2);
+    glm::vec2 aabb_center(
+        two.Position.x + aabb_half_extents.x, 
+        two.Position.y + aabb_half_extents.y
+    );
+    // Get difference vector between both centers
+    glm::vec2 difference = center - aabb_center;
+    glm::vec2 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
+    // Add clamped value to AABB_center and we get the value of box closest to circle
+    glm::vec2 closest = aabb_center + clamped;
+    // Retrieve vector between center circle and closest point AABB and check if length <= radius
+    difference = closest - center;
+    return glm::length(difference) < one.Radius;
+}      
+```
+
+An overloaded function for CheckCollision was created that specifically deals with the case between a BallObject and a GameObject. Because we did not store the collision shape information in the objects themselves we have to calculate them: first the center of the ball is calculated, then the AABB's half-extents and its center.
+
+Using these collision shape attributes we calculate vector D¯D¯ as difference that we then clamp to clamped and add to the AABB's center to get point P¯P¯ as closest. Then we calculate the difference vector D′¯D′¯ between center and closestand return whether the two shapes collided or not.
+
+Since we previously called CheckCollision with the ball object as its first argument, we do not have to change any code since the overloaded variant of CheckCollision now automatically applies. The result is now a much more precise collision detection algorithm.
+
+It seems to work, but still something is off. We properly do all the collision detection, but the ball does not react in any way to the collisions. We need to **react** to the collisions e.g. update the ball's position and/or velocity whenever a collision occurs. This is the topic of the [next](https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-resolution) tutorial.
