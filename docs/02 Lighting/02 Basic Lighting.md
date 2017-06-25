@@ -3,8 +3,8 @@
 原文     | [Basic Lighting](http://learnopengl.com/#!Lighting/Basic-Lighting)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim, [BLumia](https://github.com/blumia/)
+翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim, [BLumia](https://github.com/blumia/)
+校对     | 暂未校对
 
 现实世界的光照是极其复杂的，而且会受到诸多因素的影响，这是我们有限的计算能力所无法模拟的。因此OpenGL的光照使用的是简化的模型，对现实的情况进行近似，这样处理起来会更容易一些，而且看起来也差不多一样。这些光照模型都是基于我们对光的物理特性的理解。其中一个模型被称为<def>冯氏光照模型</def>(Phong Lighting Model)。冯氏光照模型的主要结构由3个分量组成：环境(Ambient)、漫反射(Diffuse)和镜面(Specular)光照。下面这张图展示了这些光照分量看起来的样子：
 

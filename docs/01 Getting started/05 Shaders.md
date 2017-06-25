@@ -3,8 +3,8 @@
 原文     | [Shaders](http://learnopengl.com/#!Getting-started/Shaders)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim
+翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim
+校对     | 暂未校对
 
 在[Hello Triangle](04 Hello Triangle.md)教程中提到，着色器(Shader)是运行在GPU上的小程序。这些小程序为图形渲染管线的某个特定部分而运行。从基本意义上来说，着色器只是一种把输入转化为输出的程序。着色器也是一种非常独立的程序，因为它们之间不能相互通信；它们之间唯一的沟通只有通过输入和输出。
 

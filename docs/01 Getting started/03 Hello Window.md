@@ -3,8 +3,8 @@
 原文     | [Hello Window](http://learnopengl.com/#!Getting-started/Hello-Window)
       ---|---
 作者     | JoeyDeVries
-翻译     | Geequlim
-校对     | 未校对
+翻译     | Geequlim, Meow J
+校对     | 暂未校对
 
 让我们试试能不能让GLFW正常工作。首先，新建一个`.cpp`文件，然后把下面的代码粘贴到该文件的最前面。
 

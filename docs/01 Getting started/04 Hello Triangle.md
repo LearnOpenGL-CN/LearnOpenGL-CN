@@ -3,8 +3,8 @@
 原文     | [Hello Triangle](http://www.learnopengl.com/#!Getting-started/Hello-Triangle)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim
+翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim
+校对     | 暂未校对
 
 !!! note "译注"
 

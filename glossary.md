@@ -19,7 +19,6 @@
 - Primitive Type：基元类型
 - Option：选项
 - Modern：现代
-
 ## 01-02
 
 - Abstract：抽象
@@ -237,6 +236,18 @@
 - Attenuation：衰减
 - Cutoff Angle：切光角
 - Flashlight：手电筒
+
+## 03-01
+
+- Model：模型
+- Import：导入
+- 3D Modeling Tool：3D建模工具
+- uv-mapping：UV映射
+- Assimp：Assimp
+- Asset：资产
+- Node：节点
+- Mesh：网格
+- Face：面
 
 ## 06-01
 
