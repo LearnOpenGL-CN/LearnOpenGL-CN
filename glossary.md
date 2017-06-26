@@ -255,9 +255,6 @@
 - Byte Offset：字节偏移量
 - Translate：转化
 - Concatenate：拼接
-- Crytek：Crytek
-- Crysis：孤岛危机
-- Nanosuit：纳米装
 
 ## 03-03
 
@@ -268,6 +265,9 @@
 - Local Path：本地路径
 - Relative Path：相对路径
 - Absolute Path：绝对路径
+- Crytek：Crytek
+- Crysis：孤岛危机
+- Nanosuit：纳米装
 
 ## 06-01
 
