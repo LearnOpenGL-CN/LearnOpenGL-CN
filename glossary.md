@@ -249,6 +249,11 @@
 - Mesh：网格
 - Face：面
 
+## 03-02
+
+- Sequential：连续
+- Byte Offset：字节偏移量
+
 ## 06-01
 
 - Debugging：调试
