@@ -1,20 +1,23 @@
 # 碰撞检测
 
-When trying to determine if a collision occurs between two objects, we generally do not use the data of the objects themselves since these objects are often quite complicated; this in turn also makes the collision detection complicated. For this reason, it is a common practice to use more simple shapes (that usually have a nice mathematical definition) for collision detection that we *overlay* on top of the original object. We then check for collisions based on these simple shapes which makes the code easier and saves a lot of performance. Several examples of such collision shapes are circles, spheres, rectangles and boxes; these are a lot simpler to work with compared to meshes with hundreds of triangles.
+当试图判断两个物体之间是否有碰撞发生时，我们通常不使用物体本身的数据，因为这些物体常常会很复杂，这将导致碰撞检测变得很复杂。正因这一点，使用**重叠**在物体上的更简单的外形（通常有较简单明确的数学定义）来进行碰撞检测成为常用的方法。我们基于这些简单的外形来检测碰撞，这样代码会变得更简单且节省了很多性能。这些碰撞外形例如圆、球体、长方形和立方体等，与拥有上百个三角形的网格相比简单了很多。
 
-While they do give us easier and more efficient collision detection algorithms, the simpler collision shapes share a common disadvantage in that these shapes usually do not fully surround the object. The effect is that a collision might be detected that didn't really collide with the actual object; one should always keep in mind that these shapes are just approximations of the real shapes.
+虽然它们确实提供了更简单更高效的碰撞检测算法，但这些简单的碰撞外形拥有一个共同的缺点，这些外形通常无法完全包裹物体。产生的影响就是当检测到碰撞时，实际的物体并没有真正的碰撞。必须记住的是这些外形仅仅是真实外形的近似。
 
-## AABB - AABB collisions
 
-AABB stands for axis-aligned bounding box which is a rectangular collision shape aligned to the base axes of the scene, which in 2D aligns to the x and y axis. Being axis-aligned means the rectangular box is not rotated and its edges are parallel to the base axes of the scene (e.g. left and right edge are parallel to the y axis). The fact that these boxes are always aligned to the axes of the scene makes all calculations easier. Here we surround the ball object with an AABB:
+## AABB - AABB 碰撞
 
-Almost all the objects in Breakout are rectangular based objects so it makes perfect sense to use axis aligned bounding boxes for detecting collisions. This is exactly what we're going to do.
 
-Axis aligned bounding boxes can be defined in several ways. One of the ways to define an AABB is by having a top-left position and a bottom-right position. The GameObject class that we defined already contains a top-left position (its Positionvector) and we can easily calculate its bottom-right position by adding its size to the top-left position vector (Position` +`Size). Effectively, each GameObject contains an AABB that we can use for collisions.
+AABB代表的是与坐标轴对齐的边界框(bounding box)，边界框是指与场景基础坐标轴（2D中的是x和y轴）对齐的长方形的碰撞外形。与坐标轴对齐意味着这个长方形没有经过旋转并且它的边线和场景中基础坐标轴平行（例如，左右边线和y轴平行）。这些边界框总是和场景的坐标轴平行，这使得所有的计算都变得更简单。下边是我们用一个AABB包裹一个球对象（物体）：
 
-So how do we determine collisions? A collision occurs when two collision shapes enter each other's regions e.g. the shape that determines the first object is in some way inside the shape of the second object. For AABBs this is quite easy to determine due to the fact that they're aligned to the scene's axes: we check for each axis if the two object' edges on that axis overlap. So basically we check if the horizontal edges overlap and if the vertical edges overlap of both objects. If both the horizontal **and**vertical edges overlap we have a collision.
+Breakout中几乎所有的物体都是基于长方形的物体，因此很理所应当地使用与坐标系对齐的边界框来进行碰撞检测。这就是我们接下来要做的。
 
-Translating this concept to code is quite straightforward. We check for overlap on both axes and if so, return a collision:
+有多种方式来定义与坐标轴对齐的边界框。其中一种定义AABB的方式是获取左上角点和右下角点的位置。我们定义的GameObject类已经包含了一个左上角点位置（它的Position vector）并且我们可以通过把左上角点的矢量加上它的尺寸（Position` +`Size）很容易地计算出右下角点。每个GameObject都包含一个AABB我们可以高效地使用它们碰撞。
+
+那么我们如何判断碰撞呢？当两个碰撞外形进入对方的区域时就会发生碰撞，例如定义了第一个物体的碰撞外形以某种形式进入了第二个物体的碰撞外形。对于AABB来说很容易判断，因为它们是与坐标轴对齐的：对于每个轴我们要检测两个物体的边界在此轴向是否有重叠。因此我们只是简单地检查两个物体的水平边界是否重合以及垂直边界是否重合。如果水平边界**和**垂直边界都有重叠那么我们就检测到一次碰撞。
+
+将这一概念转化为代码也是很直白的。我们对两个轴都检测是否重叠，如果都重叠就返回碰撞：
+
 
 ```
 GLboolean CheckCollision(GameObject &one, GameObject &two) // AABB - AABB collision
@@ -30,9 +33,10 @@ GLboolean CheckCollision(GameObject &one, GameObject &two) // AABB - AABB collis
 }  
 ```
 
-We check if the right side of the first object is greater than the left side of the second object **and** if the second object's right side is greater than the first object's left side; similarly for the vertical axis. If you have trouble visualizing this, try to draw the edges/rectangles on paper and determine this for yourself.
+我们检查第一个物体的最右侧是否大于第二个物体的最左侧**并且**第二个物体的最右侧是否大于第一个物体的最左侧；垂直的轴向与此相似。如果您无法顺利地将这一过程可视化，可以尝试在纸上画边界线/长方形来自行判断。
 
-To keep the collision code a bit more organized we add an extra function to the Game class:
+为更好地组织碰撞的代码，我们在Game类中加入一个额外的函数：
+
 
 ```
 class Game
@@ -43,7 +47,9 @@ class Game
 };
 ```
 
-Within DoCollisions we check for collisions between the ball object and each brick of the level. If we detect a collision, we set the brick's Destroyed property to `true` which also instantly stops the level from rendering this brick.
+我们可以使用DoCollisions来检查球与关卡中的砖块是否发生碰撞。如果检测到碰撞，就将砖块的Destroyed属性设为`true`，此举会停止关卡中对此砖块的渲染。
+
+
 
 ```
 void Game::DoCollisions()
@@ -62,7 +68,8 @@ void Game::DoCollisions()
 }  
 ```
 
-Then we also need to update the game's Update function:
+接下来我们需要更新Game的Update函数：
+
 
 ```
 void Game::Update(GLfloat dt)
@@ -75,33 +82,43 @@ void Game::Update(GLfloat dt)
 ```
 
 If we run the code now, the ball should detect collisions with each of the bricks and if the brick is not solid, the brick is destroyed. If you run the game now it'll look something like this:
+此时如果我们运行代码，球会与每个砖块进行碰撞检测，如果砖块没有被填充为实体，则表示砖块被销毁。如果运行游戏以下是你会看到的：
 
-While the collision detection does work, it's not very precise since the ball collides with most of the bricks without directly touching them. Let's implement another collision detection technique.
 
 ## AABB - Circle collision detection
 
-Beacuse the ball is a circle-like object an AABB is probably not the best choice as the ball's collision shape. The collision code thinks the ball is a rectangular box so the ball often collides with a brick even though the ball sprite itself isn't yet touching the brick.
+由于球是一个圆形的物体，AABB或许不是球的最佳碰撞外形。碰撞的代码中将球视为长方形框，因此常常会出现球碰撞了砖块但此时球精灵还没有接触到砖块。
 
-It makes much more sense to represent the ball with a circle collision shape instead of an AABB. For this reason we included a Radius variable within the ball object. To define a circle collision shape all we need is a position vector and a radius.
 
-This does mean we have to update the detection algorithm since it currently only works between two AABBs. Detecting collisions between a circle and a rectangle is slightly more complicated, but the trick is as follows: we find the point on the AABB that is closest to the circle and if the distance from the circle to this point is less than its radius, we have a collision.
+使用圆形碰撞外形而不是AABB来代表球会更合乎常理。因此我们在球对象中包含了Radius变量，为了定义圆形碰撞外形，我们需要的是一个位置矢量和一个半径。
 
-The difficult part is getting this closest point P¯P¯ on the AABB. The following image shows how we can calculate this point for any arbitrary AABB and circle:
 
-We first need to get the difference vector between the ball's center C¯C¯ and the AABB's center B¯B¯ to obtain D¯D¯. What we then need to do is clamp this vector D¯D¯ to the AABB's half-extents ww and h¯h¯. The half-extents of a rectangle are the distances between the rectangle's center and its edges; basically its size divided by two. This returns a position vector that is always located somewhere at the edge of the AABB (unless the circle's center is inside the AABB).
+这意味着我们不得不修改检测算法，因为当前的算法只适用于两个AABB的碰撞。检测圆和AABB碰撞的算法会稍稍复杂，关键点如下：我们会找到AABB上距离圆最近的一个点，如果圆到这一点的距离小于它的半径，那么就产生了碰撞。
 
-A clamp operation **clamps** a value to a value within a given range. This is often expressed as:`
+
+难点在于获取AABB上的最近点P¯P¯。下图展示了对于任意的AABB和圆我们如何计算该点：
+
+
+首先我们要获取球心C¯C¯与AABB中心B¯B¯的矢量差D¯D¯。接下来用AABB的半边长(half-extents)ww和h¯h¯来限制(clamp)矢量D¯D¯。长方形的半边长是指长方形的中心到它的边的距离；简单的说就是它的尺寸除以2。这一过程返回的是一个总是位于AABB的边上的位置矢量（除非圆心在AABB内部）。
+
+限制运算把一个值**限制**在给定范围内，并返回限制后的值。通常可以表示为：
+
+`
 float clamp(float value, float min, float max) {
 ​    return std::max(min, std::min(max, value));
 }  
-`For example, a value of `42.0f` is clamped as `6.0f` between `3.0f` and `6.0f` and a value of `4.20f` would be clamped to `4.20f`. 
-Clamping a 2D vector means we clamp both its `x` and its `y` component within the given range.
+`
 
-This clamped vector P¯P¯ is then the closest point from the AABB to the circle. What we then need to do is calculate a new difference vector D′¯D′¯ that is the difference between the circle's center C¯C¯ and the vector P¯P¯.
+例如，值`42.0f`被限制到`6.0f`和`3.0f`之间会得到`6.0f`；而`4.20f`会被限制为`4.20f`。
+限制一个2D的矢量表示将其`x`和`y`分量都限制在给定的范围内。
 
-Now that we have the vector D′¯D′¯ we can compare its length to the radius of the circle to determine if we have a collision.
+这个限制后矢量P¯P¯就是AABB上距离圆最近的点。接下来我们需要做的就是计算一个新的差矢量D′¯D′¯，它是圆心C¯C¯和P¯P¯的差矢量。
 
-This is all expressed in code as follows:
+
+既然我们已经有了矢量D′¯D′¯，我们就可以比较它的长度和圆的半径以判断是否发生了碰撞。
+
+
+这一过程通过下边的代码来表示：
 
 ```
 GLboolean CheckCollision(BallObject &one, GameObject &two) // AABB - Circle collision
@@ -125,9 +142,13 @@ GLboolean CheckCollision(BallObject &one, GameObject &two) // AABB - Circle coll
 }      
 ```
 
-An overloaded function for CheckCollision was created that specifically deals with the case between a BallObject and a GameObject. Because we did not store the collision shape information in the objects themselves we have to calculate them: first the center of the ball is calculated, then the AABB's half-extents and its center.
+
+我们创建了CheckCollision的一个重载函数用于专门处理一个BallObject和一个GameObject的情况。因为我们并没有在对象中保存碰撞外形的信息，因此我们必须为其计算：首先计算球心，然后是AABB的半边长及中心。
+
 
 Using these collision shape attributes we calculate vector D¯D¯ as difference that we then clamp to clamped and add to the AABB's center to get point P¯P¯ as closest. Then we calculate the difference vector D′¯D′¯ between center and closestand return whether the two shapes collided or not.
+
+
 
 Since we previously called CheckCollision with the ball object as its first argument, we do not have to change any code since the overloaded variant of CheckCollision now automatically applies. The result is now a much more precise collision detection algorithm.
 
