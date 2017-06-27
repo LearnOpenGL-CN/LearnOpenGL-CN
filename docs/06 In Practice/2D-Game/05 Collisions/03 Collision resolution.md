@@ -1,6 +1,8 @@
 # 碰撞处理
 
-At the end of the last tutorial we had a working collision detection scheme. However, the ball does not react in any way to the detected collisions; it just moves straight through all the bricks. We want the ball to *bounce* of the collided bricks. This tutorial discusses how we can accomplish this so called collision resolution within the AABB - circle collision detection scheme.
+上个教程的最后，我们得到了一种有效的碰撞检测方案。但是球对检测到的碰撞不会有反作用；它仅仅是径直穿过所有的砖块。我们希望球会从撞击到的砖块**反弹**。此教程将讨论如何使用AABB-圆碰撞方案实现这项称为碰撞处理 (collision resolution)的功能。
+
+
 
 Whenever a collision occurs we want two things to happen: we want to reposition the ball so it is no longer inside the other object and second, we want to change the direction of the ball's velocity so it looks like its bouncing of the object.
 

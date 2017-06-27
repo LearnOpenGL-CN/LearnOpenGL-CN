@@ -145,11 +145,9 @@ GLboolean CheckCollision(BallObject &one, GameObject &two) // AABB - Circle coll
 
 我们创建了CheckCollision的一个重载函数用于专门处理一个BallObject和一个GameObject的情况。因为我们并没有在对象中保存碰撞外形的信息，因此我们必须为其计算：首先计算球心，然后是AABB的半边长及中心。
 
+使用这些碰撞外形的参数，我们计算出矢量差D¯D¯然后得到限制后的值，并与AABB中心相加得到最近的点P¯P¯。然后计算出圆心和最近点的矢量差D′¯D′¯并返回两个外形是否碰撞。
 
-Using these collision shape attributes we calculate vector D¯D¯ as difference that we then clamp to clamped and add to the AABB's center to get point P¯P¯ as closest. Then we calculate the difference vector D′¯D′¯ between center and closestand return whether the two shapes collided or not.
+之前我们调用CheckCollision时将球对象作为其第一个参数，因此现在CheckCollision的重载变量会自动生效，我们无需修改任何代码。现在的结果会比之前的碰撞检测算法更准确。
 
 
-
-Since we previously called CheckCollision with the ball object as its first argument, we do not have to change any code since the overloaded variant of CheckCollision now automatically applies. The result is now a much more precise collision detection algorithm.
-
-It seems to work, but still something is off. We properly do all the collision detection, but the ball does not react in any way to the collisions. We need to **react** to the collisions e.g. update the ball's position and/or velocity whenever a collision occurs. This is the topic of the [next](https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-resolution) tutorial.
+看起来生效了，但仍缺少一些东西。我们准确地检测了所有碰撞，但碰撞并没有对球产生任何反作用。我们需要在碰撞时产生一些**反作用**，例如当碰撞发生时，更新球的位置和/或速度。这将是[下一个]()教程的主题。
