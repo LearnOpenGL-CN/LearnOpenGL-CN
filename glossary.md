@@ -269,6 +269,26 @@
 - Crysis：孤岛危机
 - Nanosuit：纳米装
 
+## 04-01
+
+- Depth Buffer：深度缓冲
+- Depth Value：深度值
+- z-buffer：z缓冲
+- Stencil Testing：模板测试
+- Early Depth Testing：提前深度测试
+- Discard：丢弃
+- Read-only：只读的
+- Enable：启用
+- Disable：禁用
+- Depth Mask：深度遮罩
+- Depth Function：深度函数
+- Near（平截头体）：近平面
+- Far（平截头体）：远平面
+- Linear Depth Buffer：线性深度缓冲
+- Z-fighting：深度冲突
+- Coplanar：共面
+- Anti z-fighting：抗深度冲突
+
 ## 06-01
 
 - Debugging：调试
