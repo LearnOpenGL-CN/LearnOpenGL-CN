@@ -280,7 +280,7 @@
 - Read-only：只读的
 - Enable：启用
 - Disable：禁用
-- Depth Mask：深度遮罩
+- Depth Mask：深度掩码
 - Depth Function：深度函数
 - Near（平截头体）：近平面
 - Far（平截头体）：远平面
@@ -288,6 +288,20 @@
 - Z-fighting：深度冲突
 - Coplanar：共面
 - Anti z-fighting：抗深度冲突
+
+## 04-02
+
+- Stencil Buffer：模板缓冲
+- Stencil Value：模板值
+- Bitmask：位掩码
+- Stencil Mask：模板掩码
+- Stencil Test Function：模板测试函数
+- Reference Value：参考值
+- Object Outlining：物体轮廓
+- Write：写入
+- Gaussian Blur：高斯模糊
+- Filter（后期处理）：滤镜
+- Shadow Volume：阴影体积
 
 ## 06-01
 

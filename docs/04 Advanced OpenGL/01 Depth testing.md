@@ -32,7 +32,7 @@ glEnable(GL_DEPTH_TEST);
 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 ```
 
-可以想象，在某些情况下你会需要对所有片段都执行深度测试并丢弃相应的片段，但**不**希望更新深度缓冲。基本上来说，你在使用一个<def>只读的</def>(Read-only)深度缓冲。OpenGL允许我们禁用深度缓冲的写入，只需要设置它的深度遮罩(Depth Mask)设置为`GL_FALSE`就可以了：
+可以想象，在某些情况下你会需要对所有片段都执行深度测试并丢弃相应的片段，但**不**希望更新深度缓冲。基本上来说，你在使用一个<def>只读的</def>(Read-only)深度缓冲。OpenGL允许我们禁用深度缓冲的写入，只需要设置它的深度掩码(Depth Mask)设置为`GL_FALSE`就可以了：
 
 ```c++
 glDepthMask(GL_FALSE);
