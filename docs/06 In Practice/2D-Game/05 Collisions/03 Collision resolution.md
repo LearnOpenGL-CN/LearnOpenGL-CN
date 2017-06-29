@@ -4,28 +4,43 @@
 
 
 
-Whenever a collision occurs we want two things to happen: we want to reposition the ball so it is no longer inside the other object and second, we want to change the direction of the ball's velocity so it looks like its bouncing of the object.
+当碰撞发生时，我们希望出现两个现象：重新定位球，以免它进入另一个物体，其次是改变球的速度方向，使它看起来像是物体的反弹。
+
+
+
 
 ### Collision repositioning
+### 碰撞重定位
 
-To position the ball object outside the collided AABB we have to figure out the distance the ball penetrated the bounding box. For this we'll revisit the diagrams from the previous tutorial:
 
-Here the ball moved slightly into the AABB and a collision was detected. We now want to move the ball out of the shape so that it merely touches the AABB as if no collision occurred. To figure out how much we need to move the ball out of the AABB we need to retrieve the vector R¯R¯ which is the level of penetration into the AABB. To get this vector R¯R¯ we subtract V¯V¯ from the ball's radius. Vector V¯V¯ is the difference between closest point P¯P¯ and the ball's center C¯C¯.
+为了把球对象定位到碰撞的AABB的外部，我们必须明确球侵入碰撞框的距离。为此我们要回顾上一节教程中的示意图：
 
-Knowing R¯R¯ we offset the ball's position by R¯R¯ and position the ball directly alongside the AABB; the ball is now properly positioned.
+
+此时球少量进入了AABB，所以检测到了碰撞。我们现在希望将球从移出AABB的外形使其仅仅碰触到AABB，像是没有碰撞一样。为了确定需要将球从AABB中移出多少距离，我们需要找回矢量R¯R¯，它代表的是侵入AABB的程度。为得到R¯R¯我们用球的半径减去V¯V¯。矢量V¯V¯是最近点P¯P¯和球心C¯C¯的差矢量。
+
+
+有了R¯R¯之后我们将球的位置偏移R¯R¯就将球直接放置在与AABB紧邻的位置；此时球已经被重定位到合适的位置。
+
 
 ### Collision direction
+### 碰撞方向
 
-Next we need to figure out how to update the ball's velocity after a collision. For Breakout we use the following rules to change the ball's velocity:
 
-1. If the ball collides with the right or left side of an AABB, its horizontal velocity (`x`) is reversed.
-2. If the ball collides with the bottom or top side of an AABB, its vertical velocity (`y`) is reversed.
+下一步我们需要确定碰撞之后如何更新球的速度。对于Breakout我们使用以下规则来改变球的速度：
 
-But how do we figure out the direction the ball hit the AABB? There are several approaches to this problem and one of them is that instead of 1 AABB we use 4 AABBs for each brick that we position each at one of its edges. This way we can determine which AABB and thus which edge was hit. However, a simpler approach exists with the help of the dot product.
 
-You probably still remember from the [transformations](https://learnopengl.com/#!Getting-started/Transformations) tutorial that the dot product gives us the angle between two normalized vectors. What if we were to define four vectors pointing north, south, west or east and calculate the dot product between them and a given vector? The resulting dot product between these four direction vectors and the given vector that is highest (dot product's maximum value is `1.0f` which represents a `0` degree angle) is then the direction of the vector.
+1. 如果球撞击AABB的右侧或左侧，它的水平速度（`x`）将会反转。
 
-This procedure looks as follows in code:
+2. 如果球撞击AABB的上侧或下侧，它的垂直速度（`y`）将会反转。
+
+
+但是如何判断球撞击AABB的方向呢？解决这一问题有很多种方法，其中之一是对于每个砖块使用4个AABB而不是1个AABB，并把它们放置到砖块的每个边上。使用这种方法我们可以确定被碰撞的是哪个AABB和哪个边。但是有一种使用点乘(dot product)的更简单的方法。
+
+您或许还记得[transformations](https://learnopengl.com/#!Getting-started/Transformations)教程中点乘可以得到两个正交化的矢量的夹角。如果我们定义指向北、南、西和东的四个矢量，然后计算它们和给定矢量的夹角会怎么样？由这四个方向矢量和给定的矢量点乘积的结果中的最高值（点乘积的最大值为`1.0f`，代表`0`度角）即是矢量的方向。
+
+
+这一过程如下代码所示：
+
 
 ```
 Direction VectorDirection(glm::vec2 target)
