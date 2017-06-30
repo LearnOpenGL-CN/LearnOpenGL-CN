@@ -66,7 +66,10 @@ Direction VectorDirection(glm::vec2 target)
 }    
 ```
 
-The function compares target to each of the direction vectors in the compass array. The compass vector target is closest to in angle, is the direction returned to the function caller. Here Direction is part of an enum defined in the game class's header file:
+
+此函数比较了target矢量和compass数组中各方向矢量。compass数组中与target角度最接近的矢量，即是返回给函数调用者的Direction。这里的Direction是一个game类的头文件中定义的枚举类型：
+
+
 
 ```
 enum Direction {
@@ -77,19 +80,25 @@ enum Direction {
 };    
 ```
 
-Now that we know how to get vector R¯R¯ and how to determine the direction the ball hit the AABB we can start writing the collision resolution code.
+
+既然我们已经知道了如何获得R¯R¯以及如何判断球撞击AABB的方向，我们开始编写碰撞处理的代码。
+
 
 ### AABB - Circle collision resolution
 
-To calculate the required values for collision resolution we need a bit more information from the collision function(s) than just a `true` or `false` so we're going to return a tuple of information, namely if a collision occurred, what direction it occurred and the difference vector (R¯R¯). You can find the `tuple` container in the `<tuple>` header.
 
-To keep the code slightly more organized we'll typedef the collision relevant data as Collision:
+为了计算碰撞处理所需的数值我们要从碰撞的函数中获取更多的信息而不只只是一个`true`或`false`，因此我们要返回一个包含更多信息的tuple，这些信息即是碰撞发生时的方向及差矢量（R¯R¯）。你可以在头文件`<tuple>`中找到`tuple`。
+
+
+为了更好组织代码，我们把碰撞相关的数据使用typedef定义为Collision：
 
 ```
 typedef std::tuple<GLboolean, Direction, glm::vec2> Collision;    
 ```
 
-Then we also have to change the code of the CheckCollision function to not only return `true` or `false`, but also the direction and difference vector:
+接下来我们还需要修改CheckCollision函数的代码，使其不仅仅返回`true`或`false`而是还包含方向和差矢量：
+
+
 
 ```
 Collision CheckCollision(BallObject &one, GameObject &two) // AABB - AABB collision
@@ -102,7 +111,10 @@ Collision CheckCollision(BallObject &one, GameObject &two) // AABB - AABB collis
 }
 ```
 
-The game's DoCollision function now doesn't just check if a collision occurred, but also acts appropriately whenever a collision did occur. The function now calculates the level of penetration (as shown in the diagram at the start of this tutorial) and adds or subtracts it from the ball's position based on the direction of the collision.
+
+
+Game类的DoCollision函数现在不仅仅只检测是否出现了碰撞，而且在碰撞发生时会有适当的动作。此函数现在会计算碰撞侵入的程度（如本教程一开始计时的示意图中所示）并且基于碰撞方向使球的位置矢量与其相加或相减。
+
 
 ```
 void Game::DoCollisions()
@@ -146,15 +158,21 @@ void Game::DoCollisions()
 }    
 ```
 
-Don't get too scared by the function's complexity since it is basically a direct translation of the concepts introduced so far. First we check for a collision and if so we destroy the block if it is non-solid. Then we obtain the collision direction dir and the vector V¯V¯ as diff_vector from the tuple and finally do the collision resolution.
+不要被函数的复杂度给吓到，因为它仅仅是我们目前为止的概念的直接转化。首先我们会检测碰撞如果发生了碰撞且砖块不是实心的那么就销毁砖块。然后我们从tuple中获取到了碰撞的方向dir以及表示V¯V¯的差矢量diff_vector，最终完成碰撞处理。
 
-We first check if the collision direction is either horizontal or vertical and then reverse the velocity accordingly. If horizontal, we calculate the penetration value RR from the diff_vector's x component and either add or subtract this from the ball's position based on its direction. The same applies to the vertical collisions, but this time we operate on the `y` component of all the vectors.
 
-Running your application should now give you a working collision scheme, but it's probably difficult to really see its effect since the ball will bounce towards the bottom edge as soon as you hit a single block and be lost forever. We can fix this by also handling player paddle collisions.
+我们首先检查碰撞方向是水平还是垂直，并据此反转速度。如果是水平方向，我们从diff_vector的x分量计算侵入量RR并根据碰撞方向用球的位置矢量加上或减去它。垂直方向的碰撞也是如此，但是我们要操作各矢量的y分量。
+
+
+现在运行你的应用程序，应该会向你展示一套奏效的碰撞方案，但可能会很难真正看到它的效果，因为一旦球碰撞到了一个砖块就会弹向底部并永远丢失。我们可以通过处理玩家挡板的碰撞来修复这一问题。
+
+
 
 ## Player - ball collisions
 
-Collisions between the ball and the player are slightly different than what we've previously discussed since this time the ball's horizontal velocity should be updated based on how far it hit the paddle from its center. The further the ball hits the paddle from its center, the stronger its horizontal velocity should be.
+
+球和玩家之间的碰撞与我们之前讨论的碰撞稍有不同，因为这里应当基于撞击挡板的点与（挡板）中心的距离来改变球的水平速度。撞击点距离挡板的中心点越远，则水平方向的速度就会越大。
+
 
 ```
 void Game::DoCollisions()
@@ -178,28 +196,39 @@ void Game::DoCollisions()
   
 ```
 
-After we checked collisions between the ball and each brick, we'll check if the ball collided with the player paddle. If so (and the ball is not stuck to the paddle) we calculate the percentage of how far the ball's center is removed from the paddle's center compared to the half-extent of the paddle. The horizontal velocity of the ball is then updated based on the distance it hit the paddle from its center. Aside from updating the horizontal velocity we also have to reverse the y velocity.
+在我们完成了球和各砖块的碰撞检测之后，我们来检测球和玩家挡板是否发生碰撞。如果有碰撞（并且球不是被固定在挡板上）我们要计算球的中心与挡板中心的距离和挡板的半边长的百分比。之后球的水平速度会依据它撞击挡板的点到挡板中心的距离来更新。除了更新水平速度之外我们还需要反转它的y方向速度。
 
-Note that the old velocity is stored as oldVelocity. The reason for storing the old velocity is that we only update the horizontal velocity of the ball's velocity vector while keeping its `y` velocity constant. This would mean that the length of the vector constantly changes which has the effect that the ball's velocity vector is much larger (and thus stronger) if the ball hit the edge of the paddle compared to if the ball would hit the center of the paddle. For this reason the new velocity vector is normalized and multiplied by the length of the old velocity vector. This way, the strength and thus the velocity of the ball is always consistent, regardless of where it hits the paddle.
+注意旧的速度被存储为oldVelocity。之所以要存储旧的速度是因为我们只更新球的速度矢量中水平方向的速度并保持它的y速度不变。这将意味着矢量的长度会持续变化，其产生的影响是如果球撞击到挡板的边缘则会比撞击到挡板中心有更大(也因此更强)的速度矢量。为此新的速度矢量会正交化然后乘以旧速度矢量的长度。这样一来，球的力量和速度将总是一一致的，无论它撞击到挡板的哪个地方。
+
 
 ### Sticky paddle
 
-You may or may not have noticed it when you ran the code, but there is still a large issue with the player and ball collision resolution. The following video clearly shows what might happen:
 
-This issue is called the sticky paddle issue which happens because the player paddle moves with a high velocity towards the ball that results in the ball's center ending up inside the player paddle. Since we did not account for the case where the ball's center is inside an AABB the game tries to continuously react to all the collisions and once it finally breaks free it will have reversed its `y` velocity so much that it's unsure whether it goes up or down after breaking free.
+无论你有没有注意到，但当运行代码时，球和玩家挡板的碰撞处理仍旧有一个大问题。以下的视频清楚地展示了将会出现的现象：
 
-We can easily fix this behavior by introducing a small hack which is possible due to the fact that the we can assume we always have a collision at the top of the paddle. Instead of reversing the `y` velocity we simply always return a positive `y` direction so whenever it does get stuck, it will immediately break free.
+
+
+
+这种问题称为粘板问题(sticky paddle issue)，出现的原因是玩家挡板以较高的速度移向球，导致球的中心进入玩家挡板。由于我们没有考虑球的中心在AABB内部的情况，游戏会持续试图对所有的碰撞做出响应，当球最终脱离时，已经对`y`向速度翻转了多次，以至于无法确定球在脱离后是向上还是向下运动。
+
+
+我们可以引入一个小的特殊处理来很容易地修复这种行为，这个处理之所以成为可能是基于我们可以假设碰撞总是发生在挡板顶部的事实。我们总是简单地返回正的`y`速度而不是反转`y`速度，这样当它被卡住时也可以立即脱离。
+
 
 ```
  //Ball->Velocity.y = -Ball->Velocity.y;
 Ball->Velocity.y = -1 * abs(Ball->Velocity.y);  
 ```
 
-If you try hard enough the effect is still noticeable, but I personally find it an acceptable trade-off.
+如果你足够仔细就会觉得这一影响仍然是可以被注意到的，但是我个人将此方法当作一种可接受的折衷处理。
 
-### The bottom edge
 
-The only thing that is still missing from the classic Breakout recipe is some loss condition that resets the level and the player. Within the game class's Update function we want to check if the ball reached the bottom edge, and if so, reset the game.
+### 底部边界
+
+
+
+与经典的Breakout内容相比唯一缺少的就是失败条件了，失败会重置关卡和玩家。在Game类的Update函数中，我们要检查球是否接触到了底部边界，如果接触到就重置游戏。
+
 
 ```
 void Game::Update(GLfloat dt)
@@ -213,11 +242,14 @@ void Game::Update(GLfloat dt)
 }  
 ```
 
-The ResetLevel and ResetPlayer functions simply re-load the level and reset the objects' values to their original starting values. The game should now look a bit like this:
 
-And there you have it, we just finished creating a clone of the classical Breakout game with similar mechanics. You can find the game class' source code here: [header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions.h), [code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions).
+ResetLevel和ResetPlayer函数直接重新加载关卡并重置对象的各变量值为原始的值。现在游戏看起来应该是这样的：
+
+
+就是这样了，我们创建完成了一个有相似机制的经典Breakout游戏的复制版。这里你可以找到Game类的源代码：[header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions.h), [code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions)。
 
 ## A few notes
+## 一些注意事项
 
 Collision detection is a difficult topic of video game development and possibly its most challenging. Most collision detection and resolution schemes are combined with physics engines as found in most modern-day games. The collision scheme we used for the Breakout game is a very simple scheme and one specialized specifically for this type of game.
 
@@ -232,3 +264,4 @@ Several of the issues that can still occur:
 These tutorials are however aimed to teach the readers the basics of several aspects of graphics and game-development. For this reason, this collision scheme serves its purpose; its understandable and works quite well in normal scenarios. Just keep in mind that there exist better (more complicated) collision schemes that work quite well in almost all scenarios (including movable objects) like the separating axis theorem.
 
 Thankfully, there exist large, practical and often quite efficient physics engines (with timestep-independent collision schemes) for use in your own games. If you wish to delve further into such systems or need more advanced physics and have trouble figuring out the mathematics, [Box2D](http://box2d.org/about/) is a perfect 2D physics library for implementing physics and collision detection in your applications.
+

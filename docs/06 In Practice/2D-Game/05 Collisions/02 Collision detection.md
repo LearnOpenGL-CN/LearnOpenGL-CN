@@ -81,8 +81,8 @@ void Game::Update(GLfloat dt)
 }  
 ```
 
-If we run the code now, the ball should detect collisions with each of the bricks and if the brick is not solid, the brick is destroyed. If you run the game now it'll look something like this:
-此时如果我们运行代码，球会与每个砖块进行碰撞检测，如果砖块没有被填充为实体，则表示砖块被销毁。如果运行游戏以下是你会看到的：
+
+此时如果我们运行代码，球会与每个砖块进行碰撞检测，如果砖块不是实心的，则表示砖块被销毁。如果运行游戏以下是你会看到的：
 
 
 ## AABB - Circle collision detection
