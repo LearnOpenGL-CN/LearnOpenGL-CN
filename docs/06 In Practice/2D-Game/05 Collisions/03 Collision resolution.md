@@ -251,17 +251,26 @@ ResetLevel和ResetPlayer函数直接重新加载关卡并重置对象的各变�
 ## A few notes
 ## 一些注意事项
 
-Collision detection is a difficult topic of video game development and possibly its most challenging. Most collision detection and resolution schemes are combined with physics engines as found in most modern-day games. The collision scheme we used for the Breakout game is a very simple scheme and one specialized specifically for this type of game.
 
-It should be stressed that this type of collision detection and resolution is not perfect. It calculates possible collisions only per frame and only for the positions exactly as they are at that timestep; this means that if an object would have such a velocity that it would pass over another object within a single frame, it would look like it never collided with this object. So if there are framedrops or you reach high enough velocities, this collision detection scheme will not hold.
+在视频游戏的发展过程中，碰撞检测是一个困难的话题甚至可能是最大的挑战。大多数的碰撞检测和处理方案是和物理引擎合并在一起的，正如多数现代的游戏中看到的那样。我们在Breakout游戏中使用的碰撞方案是一个非常简单的方案并且是专门给这类游戏所专用的。
 
-Several of the issues that can still occur:
 
-- If the ball goes too fast, it might skip over an object entirely within a single frame, not detecting any collisions.
-- If the ball hits more than one object within a single frame, it will have detected two collisions and reverse its velocity twice; not affecting its original velocity.
-- Hitting a corner of a brick could reverse the ball's velocity in the wrong direction since the distance it travels in a single frame could make the difference between VectorDirection returning a vertical or horizontal direction.
+需要强调的是这类碰撞检测和处理方式是不完美的。它只能计算每帧内可能发生的碰撞并且只能计算在该时间步时物体所在的各位置；这意味着如果一个物体拥有一个很大的速度以致于在一帧内穿过了另一个物体，它将看起来像是从来没有与另一个物体碰撞过。因此如果出现掉帧或出现了足够高的速度，这一碰撞检测方案将无法应对。
 
-These tutorials are however aimed to teach the readers the basics of several aspects of graphics and game-development. For this reason, this collision scheme serves its purpose; its understandable and works quite well in normal scenarios. Just keep in mind that there exist better (more complicated) collision schemes that work quite well in almost all scenarios (including movable objects) like the separating axis theorem.
 
-Thankfully, there exist large, practical and often quite efficient physics engines (with timestep-independent collision schemes) for use in your own games. If you wish to delve further into such systems or need more advanced physics and have trouble figuring out the mathematics, [Box2D](http://box2d.org/about/) is a perfect 2D physics library for implementing physics and collision detection in your applications.
+（我们使用的碰撞方案）仍然会出现这几个问题：
+
+- 如果球运动得足够快，它可能在一帧内完整地穿过一个物体，而不会检测到碰撞。
+
+
+- 如果球在一帧内同时撞击了一个以上的物体，它将会检测到两次碰撞并两次反转速度；这样不改变它的原始速度。
+
+
+- 撞击到砖块的角时会在错误的方向反转速度，这是因为它在一帧内穿过的距离会引发VectorDirection返回水平方向还是垂直方向的差别。
+
+
+但是，本教程目的在于教会读者们图形学和游戏开发的基础知识。因此，这里的碰撞方案可以服务于此目的；它更容易理解且在正常的场景中可以较好地运作。需要记住的是存在有更好的（更复杂）碰撞方案，在几乎所有的场景中都可以很好地运作（包括可移动的物体）如分离轴定理(separating axis theorem)。
+
+
+值得庆幸的是，有大量实用并且常常很高效的物理引擎（使用时间步无关的碰撞方案）可供您在游戏中使用。如果您希望在这一系统中有更深入的探索或需要更高级的物理系统又不理解其中的数学机理，[Box2D](http://box2d.org/about/)是一个实现了物理系统和碰撞检测的可以用在您的应用程序中的完美的2D物理库。
 
