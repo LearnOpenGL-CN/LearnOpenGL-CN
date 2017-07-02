@@ -109,7 +109,7 @@
 - Wrapping：环绕方式
 - Clamp：约束
 - Nearest Neighbor Filtering：临近过滤
-- Texture Pixel，Texel：纹理像素
+- Texture Pixel，Texel：纹理像素，纹素
 - (Bi)linear Filtering：线性过滤
 - Magnify：放大
 - Minify：缩小
@@ -302,6 +302,20 @@
 - Gaussian Blur：高斯模糊
 - Filter（后期处理）：滤镜
 - Shadow Volume：阴影体积
+
+## 04-03
+
+- Blending：混合
+- Transparency：透明（度）
+- Solid Color：纯色
+- Alpha Value（透明度）：Alpha值
+- Source Color Vector：源颜色向量
+- Destination Color Vector：目标颜色向量
+- Source Factor Value：源因子值
+- Destination Factor Value：目标因子值
+- Blend Equation：混合方程
+- Reverse Iterator：反向迭代器
+- Order Independent Transparency：次序无关透明度
 
 ## 06-01
 
