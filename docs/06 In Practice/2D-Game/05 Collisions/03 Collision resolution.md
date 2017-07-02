@@ -1,25 +1,28 @@
 # 碰撞处理
 
+| 原文   | [Collision resolution](https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Collision-resolution) |
+| ---- | ---------------------------------------- |
+| 作者   | JoeydeVries                              |
+| 翻译   | [aillieo](https://github.com/aillieo)    |
+| 校对   | 暂无                                       |
+
 上个教程的最后，我们得到了一种有效的碰撞检测方案。但是球对检测到的碰撞不会有反作用；它仅仅是径直穿过所有的砖块。我们希望球会从撞击到的砖块**反弹**。此教程将讨论如何使用AABB-圆碰撞方案实现这项称为碰撞处理 (collision resolution)的功能。
 
-
-
 当碰撞发生时，我们希望出现两个现象：重新定位球，以免它进入另一个物体，其次是改变球的速度方向，使它看起来像是物体的反弹。
-
-
 
 
 ### Collision repositioning
 ### 碰撞重定位
 
-
 为了把球对象定位到碰撞的AABB的外部，我们必须明确球侵入碰撞框的距离。为此我们要回顾上一节教程中的示意图：
 
+![](../../../img/06/Breakout/05/03/collisions_aabb_circle_resolution.png)
 
-此时球少量进入了AABB，所以检测到了碰撞。我们现在希望将球从移出AABB的外形使其仅仅碰触到AABB，像是没有碰撞一样。为了确定需要将球从AABB中移出多少距离，我们需要找回矢量R¯R¯，它代表的是侵入AABB的程度。为得到R¯R¯我们用球的半径减去V¯V¯。矢量V¯V¯是最近点P¯P¯和球心C¯C¯的差矢量。
+
+此时球少量进入了AABB，所以检测到了碰撞。我们现在希望将球从移出AABB的外形使其仅仅碰触到AABB，像是没有碰撞一样。为了确定需要将球从AABB中移出多少距离，我们需要找回矢量\(\bar{R}\)，它代表的是侵入AABB的程度。为得到\(\bar{R}\)我们用球的半径减去\(\bar{V}\)。矢量\(\bar{V}\)是最近点\(\bar{P}\)和球心\(\bar{C}\)的差矢量。
 
 
-有了R¯R¯之后我们将球的位置偏移R¯R¯就将球直接放置在与AABB紧邻的位置；此时球已经被重定位到合适的位置。
+有了\(\bar{R}\)之后我们将球的位置偏移\(\bar{R}\)就将球直接放置在与AABB紧邻的位置；此时球已经被重定位到合适的位置。
 
 
 ### Collision direction
@@ -36,7 +39,7 @@
 
 但是如何判断球撞击AABB的方向呢？解决这一问题有很多种方法，其中之一是对于每个砖块使用4个AABB而不是1个AABB，并把它们放置到砖块的每个边上。使用这种方法我们可以确定被碰撞的是哪个AABB和哪个边。但是有一种使用点乘(dot product)的更简单的方法。
 
-您或许还记得[transformations](https://learnopengl.com/#!Getting-started/Transformations)教程中点乘可以得到两个正交化的矢量的夹角。如果我们定义指向北、南、西和东的四个矢量，然后计算它们和给定矢量的夹角会怎么样？由这四个方向矢量和给定的矢量点乘积的结果中的最高值（点乘积的最大值为`1.0f`，代表`0`度角）即是矢量的方向。
+您或许还记得[transformations](../../../01 Getting started/07 Transformations.md)教程中点乘可以得到两个正交化的矢量的夹角。如果我们定义指向北、南、西和东的四个矢量，然后计算它们和给定矢量的夹角会怎么样？由这四个方向矢量和给定的矢量点乘积的结果中的最高值（点乘积的最大值为`1.0f`，代表`0`度角）即是矢量的方向。
 
 
 这一过程如下代码所示：
@@ -81,13 +84,13 @@ enum Direction {
 ```
 
 
-既然我们已经知道了如何获得R¯R¯以及如何判断球撞击AABB的方向，我们开始编写碰撞处理的代码。
+既然我们已经知道了如何获得\(\bar{R}\)以及如何判断球撞击AABB的方向，我们开始编写碰撞处理的代码。
 
 
 ### AABB - Circle collision resolution
 
 
-为了计算碰撞处理所需的数值我们要从碰撞的函数中获取更多的信息而不只只是一个`true`或`false`，因此我们要返回一个包含更多信息的tuple，这些信息即是碰撞发生时的方向及差矢量（R¯R¯）。你可以在头文件`<tuple>`中找到`tuple`。
+为了计算碰撞处理所需的数值我们要从碰撞的函数中获取更多的信息而不只只是一个`true`或`false`，因此我们要返回一个包含更多信息的tuple，这些信息即是碰撞发生时的方向及差矢量（\(\bar{R}\)）。你可以在头文件`<tuple>`中找到`tuple`。
 
 
 为了更好组织代码，我们把碰撞相关的数据使用typedef定义为Collision：
@@ -158,7 +161,7 @@ void Game::DoCollisions()
 }    
 ```
 
-不要被函数的复杂度给吓到，因为它仅仅是我们目前为止的概念的直接转化。首先我们会检测碰撞如果发生了碰撞且砖块不是实心的那么就销毁砖块。然后我们从tuple中获取到了碰撞的方向dir以及表示V¯V¯的差矢量diff_vector，最终完成碰撞处理。
+不要被函数的复杂度给吓到，因为它仅仅是我们目前为止的概念的直接转化。首先我们会检测碰撞如果发生了碰撞且砖块不是实心的那么就销毁砖块。然后我们从tuple中获取到了碰撞的方向dir以及表示\(\bar{V}\)的差矢量diff_vector，最终完成碰撞处理。
 
 
 我们首先检查碰撞方向是水平还是垂直，并据此反转速度。如果是水平方向，我们从diff_vector的x分量计算侵入量RR并根据碰撞方向用球的位置矢量加上或减去它。垂直方向的碰撞也是如此，但是我们要操作各矢量的y分量。
@@ -206,7 +209,7 @@ void Game::DoCollisions()
 
 无论你有没有注意到，但当运行代码时，球和玩家挡板的碰撞处理仍旧有一个大问题。以下的视频清楚地展示了将会出现的现象：
 
-
+<video src="../../../../img/06/Breakout/05/03/collisions_sticky_paddle.mp4" controls="controls"></video>
 
 
 这种问题称为粘板问题(sticky paddle issue)，出现的原因是玩家挡板以较高的速度移向球，导致球的中心进入玩家挡板。由于我们没有考虑球的中心在AABB内部的情况，游戏会持续试图对所有的碰撞做出响应，当球最终脱离时，已经对`y`向速度翻转了多次，以至于无法确定球在脱离后是向上还是向下运动。
@@ -224,8 +227,6 @@ Ball->Velocity.y = -1 * abs(Ball->Velocity.y);
 
 
 ### 底部边界
-
-
 
 与经典的Breakout内容相比唯一缺少的就是失败条件了，失败会重置关卡和玩家。在Game类的Update函数中，我们要检查球是否接触到了底部边界，如果接触到就重置游戏。
 
@@ -245,8 +246,9 @@ void Game::Update(GLfloat dt)
 
 ResetLevel和ResetPlayer函数直接重新加载关卡并重置对象的各变量值为原始的值。现在游戏看起来应该是这样的：
 
+<video src="../../../../img/06/Breakout/05/03/collisions_complete.mp4" controls="controls"></video>
 
-就是这样了，我们创建完成了一个有相似机制的经典Breakout游戏的复制版。这里你可以找到Game类的源代码：[header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions.h), [code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions)。
+就是这样了，我们创建完成了一个有相似机制的经典Breakout游戏的复制版。这里你可以找到Game类的源代码：[header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions.h)，[code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_collisions)。
 
 ## A few notes
 ## 一些注意事项
