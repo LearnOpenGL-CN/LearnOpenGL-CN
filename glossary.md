@@ -317,6 +317,19 @@
 - Reverse Iterator：反向迭代器
 - Order Independent Transparency：次序无关透明度
 
+## 04-04
+
+- Side（面）：侧
+- Face Culling：面剔除
+- Front Facing：面向
+- Back Facing：背向
+- Front Face：正向面
+- Back Face：背向面
+- Winding Order：环绕顺序
+- Front-facing Triangle：正向三角形
+- Back-facing Triangle：背向三角形
+- Cull：剔除
+
 ## 06-01
 
 - Debugging：调试
