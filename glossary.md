@@ -114,6 +114,7 @@
 - Magnify：放大
 - Minify：缩小
 - Mipmap：多级渐远纹理
+- Level (Mipmap)：级别
 - Channel：通道
 - Sampler：采样器
 - Texture Unit：纹理单元
@@ -329,6 +330,28 @@
 - Front-facing Triangle：正向三角形
 - Back-facing Triangle：背向三角形
 - Cull：剔除
+
+## 04-05
+
+- Framebuffer：帧缓冲
+- Framebuffer Object：帧缓冲对象
+- Complete（缓冲）：完整
+- Off-screen Rendering：离屏渲染
+- Renderbuffer Object：渲染缓冲对象
+- Attach：附加
+- Format：格式
+- Internalformat：内部格式
+- General Purpose Data Buffer：通用数据缓冲
+- Pass：处理阶段
+- Inversion：反相
+- Grayscale：灰度
+- Weighted：加权
+- Kernel：核
+- Convolution Matrix：卷积矩阵
+- Weight：权重
+- Sharpen：锐化
+- Blur：模糊
+- Edge-detection：边缘检测
 
 ## 06-01
 
