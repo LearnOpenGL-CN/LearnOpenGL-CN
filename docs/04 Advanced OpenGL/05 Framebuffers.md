@@ -27,7 +27,7 @@ glGenFramebuffers(1, &fbo);
 glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 ```
 
-在绑定到<var>GL_FRAMEBUFFER</var>目标之后，所有的**读取**和**写入**帧缓冲的操作将会影响当前绑定的帧缓冲。我们也可以使用<var>GL_READ_FRAMEBUFFER</var>或<var>GL_DRAW_FRAMEBUFFER</var>，将一个帧缓冲分别绑定到读取目标或写入目标。绑定到<var>GL_READ_FRAMEBUFFER</var>的帧缓冲将会使用在所有像是<fun>glReadPixels<\fun>的读取操作中，而绑定到<var>GL_READ_FRAMEBUFFER</var>的帧缓冲将会被用作渲染、清除等写入操作的目标。大部分情况你都不需要区分它们，通常都会使用<var>GL_FRAMEBUFFER</var>，绑定到两个上。
+在绑定到<var>GL_FRAMEBUFFER</var>目标之后，所有的**读取**和**写入**帧缓冲的操作将会影响当前绑定的帧缓冲。我们也可以使用<var>GL_READ_FRAMEBUFFER</var>或<var>GL_DRAW_FRAMEBUFFER</var>，将一个帧缓冲分别绑定到读取目标或写入目标。绑定到<var>GL_READ_FRAMEBUFFER</var>的帧缓冲将会使用在所有像是<fun>glReadPixels</fun>的读取操作中，而绑定到<var>GL_READ_FRAMEBUFFER</var>的帧缓冲将会被用作渲染、清除等写入操作的目标。大部分情况你都不需要区分它们，通常都会使用<var>GL_FRAMEBUFFER</var>，绑定到两个上。
 
 不幸的是，我们现在还不能使用我们的帧缓冲，因为它还不<def>完整</def>(Complete)，一个完整的帧缓冲需要满足以下的条件：
 
@@ -290,7 +290,7 @@ glDrawArrays(GL_TRIANGLES, 0, 6);
 
 ### 反相
 
-我们现在能够访问渲染输出的每个颜色，所以在片段着色器中返回这些颜色的反相(Inversion)并不是很难。我们将会从屏幕纹理中取颜色值，然后用1.0减去它，对它进行反相：
+我们现在能够访问渲染输出的每个颜色，所以在（译注：屏幕的）片段着色器中返回这些颜色的反相(Inversion)并不是很难。我们将会从屏幕纹理中取颜色值，然后用1.0减去它，对它进行反相：
 
 ```c++
 void main()
