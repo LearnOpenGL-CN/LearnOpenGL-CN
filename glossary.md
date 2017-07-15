@@ -353,6 +353,19 @@
 - Blur：模糊
 - Edge-detection：边缘检测
 
+## 04-06
+
+- Cube Map：立方体贴图
+- Skybox：天空盒
+- Environment Mapping：环境映射
+- Reflection：反射
+- Refraction：折射
+- Reflection Map：反射贴图
+- Snell's Law：斯涅尔定律
+- Refractive Index：折射率
+- Single-side Refraction：单面折射
+- Dynamic Environment Mapping：动态环境映射
+
 ## 06-01
 
 - Debugging：调试
