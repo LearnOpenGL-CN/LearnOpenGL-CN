@@ -82,11 +82,11 @@ void setupMesh()
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices[0], GL_STATIC_DRAW);  
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), 
-                 indices[0], GL_STATIC_DRAW);
+                 &indices[0], GL_STATIC_DRAW);
 
     // 顶点位置
     glEnableVertexAttribArray(0);	
@@ -117,7 +117,7 @@ vertex.TexCoords = glm::vec2(1.0f, 0.0f);
 由于有了这个有用的特性，我们能够直接传入一大列的<fun>Vertex</fun>结构体的指针作为缓冲的数据，它们将会完美地转换为<fun>glBufferData</fun>所能用的参数：
 
 ```c++
-glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices[0], GL_STATIC_DRAW);
+glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 ```
 
 自然`sizeof`运算也可以用在结构体上来计算它的字节大小。这个应该是32字节的（8个float * 每个4字节）。
