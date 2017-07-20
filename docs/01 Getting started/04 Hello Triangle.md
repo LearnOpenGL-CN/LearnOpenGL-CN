@@ -368,7 +368,7 @@ glEnableVertexAttribArray(0);
  
 [...]
  
-// ..:: 绘制代（渲染循环中） :: ..
+// ..:: 绘制代码（渲染循环中） :: ..
 // 4. 绘制物体
 glUseProgram(shaderProgram);
 glBindVertexArray(VAO);
