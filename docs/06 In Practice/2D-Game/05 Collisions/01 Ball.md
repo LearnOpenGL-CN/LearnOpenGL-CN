@@ -1,10 +1,10 @@
 # 球
 
-| 原文   | [Ball](https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Ball) |
-| ---- | ---------------------------------------- |
-| 作者   | JoeydeVries                              |
-| 翻译   | [aillieo](https://github.com/aillieo)    |
-| 校对   | 暂无                                       |
+原文     | [Ball](https://learnopengl.com/#!In-Practice/2D-Game/Collisions/Ball)
+      ---|---
+作者     | JoeyDeVries
+翻译     | [aillieo](https://github.com/aillieo)
+校对     | 暂未校对
 
 此时我们已经有了一个包含有很多砖块和玩家的一个挡板的关卡。与经典的Breakout内容相比还差一个球。游戏的目的是让球撞击所有的砖块，直到所有的可销毁砖块都被销毁，但同时也要满足条件：球不能碰触屏幕的下边缘。
 

@@ -3,8 +3,8 @@
 原文     | [OpenGL](http://learnopengl.com/#!Getting-started/OpenGL)
       ---|---
 作者     | JoeyDeVries
-翻译     | gjy_1992
-校对     | Geequlim
+翻译     | gjy_1992, Meow J
+校对     | 暂未校对
 
 
 在开始这段旅程之前我们先了解一下OpenGL到底是什么。一般它被认为是一个API(<def>Application Programming Interface</def>, 应用程序编程接口)，包含了一系列可以操作图形、图像的函数。然而，OpenGL本身并不是一个API，它仅仅是一个由[Khronos组织](http://www.khronos.org/)制定并维护的规范(Specification)。

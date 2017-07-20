@@ -3,8 +3,8 @@
 原文     | [Textures](http://learnopengl.com/#!Getting-started/Textures)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | Geequlim, [BLumia](https://github.com/blumia/)
+翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim, [BLumia](https://github.com/blumia/)
+校对     | 暂未校对
 
 !!! note "译注"
 
@@ -46,7 +46,7 @@ float texCoords[] = {
 
 纹理坐标的范围通常是从(0, 0)到(1, 1)，那如果我们把纹理坐标设置在范围之外会发生什么？OpenGL默认的行为是重复这个纹理图像（我们基本上忽略浮点纹理坐标的整数部分），但OpenGL提供了更多的选择：
 
-环绕方式(Wrapping)              | 描述
+环绕方式              | 描述
                             ---|---
 <var>GL_REPEAT</var>           | 对纹理的默认行为。重复纹理图像。
 <var>GL_MIRRORED_REPEAT</var>  | 和<var>GL_REPEAT</var>一样，但每次重复图片是镜像放置的。
@@ -64,7 +64,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 ```
 
-第一个参数指定了纹理目标；我们使用的是2D纹理，因此纹理目标是<var>GL_TEXTURE_2D</var>。第二个参数需要我们指定设置的选项与应用的纹理轴。我们打算配置的是`WRAP`选项，并且指定`S`和`T`轴。最后一个参数需要我们传递一个环绕方式，在这个例子中OpenGL会给当前激活的纹理设定纹理环绕方式为<var>GL_MIRRORED_REPEAT</var>。
+第一个参数指定了纹理目标；我们使用的是2D纹理，因此纹理目标是<var>GL_TEXTURE_2D</var>。第二个参数需要我们指定设置的选项与应用的纹理轴。我们打算配置的是`WRAP`选项，并且指定`S`和`T`轴。最后一个参数需要我们传递一个环绕方式(Wrapping)，在这个例子中OpenGL会给当前激活的纹理设定纹理环绕方式为<var>GL_MIRRORED_REPEAT</var>。
 
 如果我们选择<var>GL_CLAMP_TO_BORDER</var>选项，我们还需要指定一个边缘的颜色。这需要使用<fun>glTexParameter</fun>函数的`fv`后缀形式，用<var>GL_TEXTURE_BORDER_COLOR</var>作为它的选项，并且传递一个float数组作为边缘的颜色值：
 

@@ -3,155 +3,140 @@
 原文     | [Mesh](http://learnopengl.com/#!Model-Loading/Mesh)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+翻译     | Meow J
+校对     | 暂未校对
 
-使用Assimp可以把多种不同格式的模型加载到程序中，但是一旦载入，它们就都被储存为Assimp自己的数据结构。我们最终的目的是把这些数据转变为OpenGL可读的数据，才能用OpenGL来渲染物体。我们从前面的教程了解到，一个网格(Mesh)代表一个可绘制实体，现在我们就定义一个自己的网格类。
+通过使用Assimp，我们可以加载不同的模型到程序中，但是载入后它们都被储存为Assimp的数据结构。我们最终仍要将这些数据转换为OpenGL能够理解的格式，这样才能渲染这个物体。我们从上一节中学到，网格(Mesh)代表的是单个的可绘制实体，我们现在先来定义一个我们自己的网格类。
 
-先来复习一点目前学到知识，考虑一个网格最少需要哪些数据。一个网格应该至少需要一组顶点，每个顶点包含一个位置向量，一个法线向量，一个纹理坐标向量。一个网格也应该包含一个索引绘制用的索引，以纹理（diffuse/specular map）形式表现的材质数据。
+首先我们来回顾一下我们目前学到的知识，想想一个网格最少需要什么数据。一个网格应该至少需要一系列的顶点，每个顶点包含一个位置向量、一个法向量和一个纹理坐标向量。一个网格还应该包含用于索引绘制的索引以及纹理形式的材质数据（漫反射/镜面光贴图）。
 
-现在，为了在OpenGL中设置一个满足最低需求的网格类，我们定义一个顶点:
-
+既然我们有了一个网格类的最低需求，我们可以在OpenGL中定义一个顶点了：
 
 ```c++
-struct Vertex
-{
+struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
     glm::vec2 TexCoords;
 };
 ```
 
-我们把每个需要的向量储存到一个叫做`Vertex`的结构体中，它被用来索引每个顶点属性。另外除了`Vertex`结构体外，我们也希望组织纹理数据，所以我们定义一个`Texture`结构体：
-
+我们将所有需要的向量储存到一个叫做<fun>Vertex</fun>的结构体中，我们可以用它来索引每个顶点属性。除了<fun>Vertex</fun>结构体之外，我们还需要将纹理数据整理到一个<fun>Texture</fun>结构体中。
 
 ```c++
-struct Texture
-{
-    GLuint id;
-    String type;
+struct Texture {
+    unsigned int id;
+    string type;
 };
 ```
 
-我们储存纹理的id和它的类型，比如漫反射贴图或者镜面贴图。
+我们储存了纹理的id以及它的类型，比如是漫反射贴图或者是镜面光贴图。
 
-知道了顶点和纹理的实际表达，我们可以开始定义网格类的结构：
-
+知道了顶点和纹理的实现，我们可以开始定义网格类的结构了：
 
 ```c++
-class Mesh
-{
-Public:
-    vector<Vertex> vertices;
-    vector<GLuint> indices;
-    vector<Texture> textures;
-    Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> texture);
-    Void Draw(Shader shader);
- 
-private:
-    GLuint VAO, VBO, EBO;
-    void setupMesh();
-}
+class Mesh {
+    public:
+        /*  网格数据  */
+        vector<Vertex> vertices;
+        vector<unsigned int> indices;
+        vector<Texture> textures;
+        /*  函数  */
+        Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+        void Draw(Shader shader);
+    private:
+        /*  渲染数据  */
+        unsigned int VAO, VBO, EBO;
+        /*  函数  */
+        void setupMesh();
+};  
 ```
 
-如你所见这个类一点都不复杂，构造方法里我们初始化网格所有必须数据。在`setupMesh`函数里初始化缓冲。最后通过`Draw`函数绘制网格。注意，我们把`shader`传递给`Draw`函数。通过把`shader`传递给Mesh，在绘制之前我们设置几个uniform（就像链接采样器到纹理单元）。
+你可以看到这个类并不复杂。在构造器中，我们将所有必须的数据赋予了网格，我们在<fun>setupMesh</fun>函数中初始化缓冲，并最终使用<fun>Draw</fun>函数来绘制网格。注意我们将一个着色器传入了<fun>Draw</fun>函数中，将着色器传入网格类中可以让我们在绘制之前设置一些uniform（像是链接采样器到纹理单元）。
 
-构造函数的内容非常直接。我们简单设置类的公有变量，使用的是构造函数相应的参数。我们在构造函数中也调用`setupMesh`函数：
-
+构造器的内容非常易于理解。我们只需要使用构造器的参数设置类的公有变量就可以了。我们在构造器中还调用了<fun>setupMesh</fun>函数：
 
 ```c++
-Mesh(vector<Vertex> vertices, vector<GLuint> indices, vector<Texture> textures)
+Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
- 
-    this->setupMesh();
+
+    setupMesh();
 }
 ```
 
-这里没什么特别的，现在让我们研究一下`setupMesh`函数。
-
+这里没什么可说的。我们接下来讨论<fun>setupMesh</fun>函数。
  
 ## 初始化
 
-现在我们有一大列的网格数据可用于渲染，这要感谢构造函数。我们确实需要设置合适的缓冲，通过顶点属性指针（vertex attribute pointers）定义顶点着色器layout。现在除了将顶点数据传入结构体以外你应该对其它概念很熟悉：
-
+由于有了构造器，我们现在有一大列的网格数据用于渲染。在此之前我们还必须配置正确的缓冲，并通过顶点属性指针定义顶点着色器的布局。现在你应该对这些概念都很熟悉了，但我们这次会稍微有一点变动，使用结构体中的顶点数据：
 
 ```c++
 void setupMesh()
 {
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-    glGenBuffers(1, &this->EBO);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
   
-    glBindVertexArray(this->VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
- 
-    glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), 
-                 &this->vertices[0], GL_STATIC_DRAW);  
- 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), 
-                 &this->indices[0], GL_STATIC_DRAW);
- 
-    // 设置顶点坐标指针
-    glEnableVertexAttribArray(0); 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-                         (GLvoid*)0);
-    // 设置法线指针
-    glEnableVertexAttribArray(1); 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-                         (GLvoid*)offsetof(Vertex, Normal));
-    // 设置顶点的纹理坐标
-    glEnableVertexAttribArray(2); 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-                         (GLvoid*)offsetof(Vertex, TexCoords));
- 
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), 
+                 &indices[0], GL_STATIC_DRAW);
+
+    // 顶点位置
+    glEnableVertexAttribArray(0);	
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    // 顶点法线
+    glEnableVertexAttribArray(1);	
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    // 顶点纹理坐标
+    glEnableVertexAttribArray(2);	
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+
     glBindVertexArray(0);
-}
+}  
 ```
 
-这里的代码和你设想的没什么特别不同的地方，但是向`Vertex`结构体传入数据需要有一些小技巧。
+代码应该和你所想得没什么不同，但有了<fun>Vertex</fun>结构体的帮助，我们使用了一些小技巧。
 
-C++的结构体有一个重要的属性，那就是在内存中它们是连续的。如果我们用结构体表示一列数据，这个结构体只包含结构体的连续的变量，它就会直接转变为一个`float`（实际上是byte）数组，我们就能用于一个数组缓冲（array buffer）中了。比如，如果我们填充一个`Vertex`结构体，它在内存中的排布等于：
-
+C++结构体有一个很棒的特性，它们的内存布局是连续的(Sequential)。也就是说，如果我们将结构体作为一个数据数组使用，那么它将会以顺序排列结构体的变量，这将会直接转换为我们在数组缓冲中所需要的float（实际上是字节）数组。比如说，如果我们有一个填充后的<fun>Vertex</fun>结构体，那么它的内存布局将会等于：
 
 ```c++
 Vertex vertex;
-vertex.Position = glm::vec3(0.2f, 0.4f, 0.6f);
-vertex.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+vertex.Position  = glm::vec3(0.2f, 0.4f, 0.6f);
+vertex.Normal    = glm::vec3(0.0f, 1.0f, 0.0f);
 vertex.TexCoords = glm::vec2(1.0f, 0.0f);
 // = [0.2f, 0.4f, 0.6f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f];
 ```
 
-感谢这个有用的特性，我们能直接把一个作为缓冲数据的一大列`Vertex`结构体的指针传递过去，它们会翻译成`glBufferData`能用的参数：
-
-
-```c++
-glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), 
-             &this->vertices[0], GL_STATIC_DRAW);
-```
-
-自然地，`sizeof`函数也可以使用于结构体来计算字节类型的大小。它应该是32字节（8float * 4）。
-
-一个预处理指令叫做`offsetof(s,m)`把结构体作为它的第一个参数，第二个参数是这个结构体名字的变量。这是结构体另外的一个重要用途。函数返回这个变量从结构体开始的字节偏移量（offset）。这对于定义`glVertexAttribPointer`函数偏移量参数效果很好：
-
+由于有了这个有用的特性，我们能够直接传入一大列的<fun>Vertex</fun>结构体的指针作为缓冲的数据，它们将会完美地转换为<fun>glBufferData</fun>所能用的参数：
 
 ```c++
-glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 
-                     (GLvoid*)offsetof(Vertex, Normal));
+glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 ```
-偏移量现在使用`offsetof`函数定义了，在这个例子里，设置法线向量的字节偏移量等于法线向量在结构体的字节偏移量，它是`3float`，也就是12字节（一个float占4字节）。注意，我们同样设置步长参数等于`Vertex`结构体的大小。
 
-使用一个像这样的结构体，不仅能提供可读性更高的代码同时也是我们可以轻松的扩展结构体。如果我们想要增加另一个顶点属性，我们把它可以简单的添加到结构体中，由于它的可扩展性，渲染代码不会被破坏。
+自然`sizeof`运算也可以用在结构体上来计算它的字节大小。这个应该是32字节的（8个float * 每个4字节）。
+
+结构体的另外一个很好的用途是它的预处理指令`offsetof(s, m)`，它的第一个参数是一个结构体，第二个参数是这个结构体中变量的名字。这个宏会返回那个变量距结构体头部的字节偏移量(Byte Offset)。这正好可以用在定义<fun>glVertexAttribPointer</fun>函数中的偏移参数：
+
+```c++
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal)); 
+```
+
+偏移量现在是使用<fun>offsetof</fun>来定义了，在这里它会将法向量的字节偏移量设置为结构体中法向量的偏移量，也就是3个float，即12字节。注意，我们同样将步长参数设置为了<fun>Vertex</fun>结构体的大小。
+
+使用这样的一个结构体不仅能够提供可读性更高的代码，也允许我们很容易地拓展这个结构。如果我们希望添加另一个顶点属性，我们只需要将它添加到结构体中就可以了。由于它的灵活性，渲染的代码不会被破坏。
 
 ## 渲染
 
-我们需要为`Mesh`类定义的最后一个函数，是它的Draw函数。在真正渲染前我们希望绑定合适的纹理，然后调用`glDrawElements`。可因为我们从一开始不知道这个网格有多少纹理以及它们应该是什么类型的，所以这件事变得很困难。所以我们该怎样在着色器中设置纹理单元和采样器呢？
+我们需要为<fun>Mesh</fun>类定义最后一个函数，它的<fun>Draw</fun>函数。在真正渲染这个网格之前，我们需要在调用<fun>glDrawElements</fun>函数之前先绑定相应的纹理。然而，这实际上有些困难，我们一开始并不知道这个网格（如果有的话）有多少纹理、纹理是什么类型的。所以我们该如何在着色器中设置纹理单元和采样器呢？
 
-解决这个问题，我们需要假设一个特定的名称惯例：每个漫反射贴图被命名为`texture_diffuseN`,每个镜面贴图应该被命名为`texture_specularN`。N是一个从1到纹理采样器允许使用的最大值之间的数。比如说，在一个网格中我们有3个漫反射贴图和2个镜面贴图，它们的纹理采样器应该在这之后被调用：
-
+为了解决这个问题，我们需要设定一个命名标准：每个漫反射纹理被命名为`texture_diffuseN`，每个镜面光纹理应该被命名为`texture_specularN`，其中`N`的范围是1到纹理采样器最大允许的数字。比如说我们对某一个网格有3个漫反射纹理，2个镜面光纹理，它们的纹理采样器应该之后会被调用：
 
 ```c++
 uniform sampler2D texture_diffuse1;
@@ -161,48 +146,50 @@ uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 ```
 
-使用这样的惯例，我们能定义我们在着色器中需要的纹理采样器的数量。如果一个网格真的有（这么多）纹理，我们就知道它们的名字应该是什么。这个惯例也使我们能够处理一个网格上的任何数量的纹理，通过定义合适的采样器开发者可以自由使用希望使用的数量（虽然定义少的话就会有点浪费绑定和uniform调用了）。
+根据这个标准，我们可以在着色器中定义任意需要数量的纹理采样器，如果一个网格真的包含了（这么多）纹理，我们也能知道它们的名字是什么。根据这个标准，我们也能在一个网格中处理任意数量的纹理，开发者也可以自由选择需要使用的数量，他只需要定义正确的采样器就可以了（虽然定义少的话会有点浪费绑定和uniform调用）。
 
-像这样的问题有很多不同的解决方案，如果你不喜欢这个方案，你可以自己创造一个你自己的方案。
-最后的绘制代码：
+!!! Important
 
+	像这样的问题有很多种不同的解决方案。如果你不喜欢这个解决方案，你可以自己想一个你自己的解决办法。
+
+最终的渲染代码是这样的：
 
 ```c++
 void Draw(Shader shader) 
 {
-    GLuint diffuseNr = 1;
-    GLuint specularNr = 1;
-    for(GLuint i = 0; i < this->textures.size(); i++)
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    for(unsigned int i = 0; i < textures.size(); i++)
     {
-        glActiveTexture(GL_TEXTURE0 + i); // 在绑定纹理前需要激活适当的纹理单元
-        // 检索纹理序列号 (N in diffuse_textureN)
+        glActiveTexture(GL_TEXTURE0 + i); // 在绑定之前激活相应的纹理单元
+        // 获取纹理序号（diffuse_textureN 中的 N）
         stringstream ss;
         string number;
-        string name = this->textures[i].type;
+        string name = textures[i].type;
         if(name == "texture_diffuse")
-            ss << diffuseNr++; // 将GLuin输入到string stream
+            ss << diffuseNr++; // 将 unsigned int 插入到流中
         else if(name == "texture_specular")
-            ss << specularNr++; // 将GLuin输入到string stream
+            ss << specularNr++; // 将 unsigned int 插入到流中
         number = ss.str(); 
- 
-        glUniform1f(glGetUniformLocation(shader.Program, ("material." + name + number).c_str()), i);
-        glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+
+        shader.setFloat(("material." + name + number).c_str(), i);
+        glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
     glActiveTexture(GL_TEXTURE0);
- 
-    // 绘制Mesh
-    glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+
+    // 绘制网格
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 ```
 
-这不是最漂亮的代码，但是这部分归咎于C++转换类型时的丑陋，比如`int`转`string`时。我们首先计算N-元素每个纹理类型，把它链接到纹理类型字符串来获取合适的uniform名。然后查找合适的采样器位置，给它位置值对应当前激活纹理单元，绑定纹理。这也是我们需要在`Draw`方法是用`shader`的原因。我们添加`material.`到作为结果的uniform名，因为我们通常把纹理储存进材质结构体（对于每个实现也许会有不同）。
+这并不是最漂亮的代码，但这部分要归咎于C++[转换](http://www.cplusplus.com/articles/D9j2Nwbp/)int到string类型时太丑了。我们首先计算了每个纹理类型的N-分量，并将其拼接到纹理类型字符串上，来获取对应的uniform名称。接下来我们查找对应的采样器，将它的位置值设置为当前激活的纹理单元，并绑定纹理。这也是我们在<fun>Draw</fun>函数中需要着色器的原因。我们也将`"material."`添加到了最终的uniform名称中，因为我们希望将纹理储存在一个材质结构体中（这在每个实现中可能都不同）。
 
 !!! Important
 
-    注意，当我们把`diffuse`和`specular`传递到字符串流（`stringstream`）的时候，计数器会增加，在C++自增叫做：变量++，它会先返回自身然后加1，而++变量，先加1再返回自身，我们的例子里，我们先传递原来的计数器值到字符串流，然后再加1，下一轮生效。
+	注意我们在将漫反射计数器和镜面光计数器插入`stringstream`时，对它们进行了递增。在C++中，这个递增操作：`variable++`将会返回变量本身，**之后**再递增，而`++variable`则是**先**递增，再返回值。在我们的例子中是首先将原本的计数器值插入`stringstream`，之后再递增它，供下一次循环使用。
 
-你可以从这里得到[Mesh类的源码](http://learnopengl.com/code_viewer.php?code=mesh&type=header)。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/mesh.h)找到<fun>Mesh</fun>类的完整源代码
 
-Mesh类是对我们前面教程里讨论过的很多话题的简洁抽象。在下面的教程里，我们会创建一个用作盛放多个网格物体的容器模型，真正的实现Assimp的加载接口。
+我们刚定义的<fun>Mesh</fun>类是我们之前讨论的很多话题的抽象结果。在[下一节](03 Model.md)中，我们将创建一个模型，作为多个网格对象的容器，并真正地实现Assimp的加载接口。

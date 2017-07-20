@@ -3,8 +3,8 @@
 原文     | [Coordinate Systems](http://learnopengl.com/#!Getting-started/Coordinate-Systems)
       ---|---
 作者     | JoeyDeVries
-翻译     | linkoln
-校对     | Geequlim, Meow J, [BLumia](https://github.com/blumia/)
+翻译     | linkoln, Geequlim, Meow J, [BLumia](https://github.com/blumia/)
+校对     | 暂未校对
 
 在上一个教程中，我们学习了如何有效地利用矩阵的变换来对所有顶点进行变换。OpenGL希望在每次顶点着色器运行后，我们可见的所有顶点都为标准化设备坐标(Normalized Device Coordinate, NDC)。也就是说，每个顶点的**x**，**y**，**z**坐标都应该在**-1.0**到**1.0**之间，超出这个坐标范围的顶点都将不可见。我们通常会自己设定一个坐标的范围，之后再在顶点着色器中将这些坐标变换为标准化设备坐标。然后将这些标准化设备坐标传入光栅器(Rasterizer)，将它们变换为屏幕上的二维坐标或像素。
 
@@ -321,7 +321,7 @@ for(unsigned int i = 0; i < 10; i++)
 
 ![coordinate_systems_multiple_objects](../img/01/08/coordinate_systems_multiple_objects.png)
 
-完美！这就像我们的箱子找到了志同道合的小伙伴一样。如果你在这里卡住了，你可以对照一下[源代码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp) 。
+完美！看起来我们的箱子已经找到志同道合的小伙伴了。如果你在这里卡住了，你可以对照一下[源代码](https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/6.3.coordinate_systems_multiple/coordinate_systems_multiple.cpp) 。
 
 ## 练习
 

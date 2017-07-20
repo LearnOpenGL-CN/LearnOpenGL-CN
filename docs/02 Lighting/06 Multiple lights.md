@@ -3,48 +3,48 @@
 原文     | [Multiple lights](http://learnopengl.com/#!Lighting/Multiple-lights)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Geequlim](http://geequlim.com)
-校对     | [Geequlim](http://geequlim.com)
+翻译     | [Geequlim](http://geequlim.com), Meow J
+校对     | 暂未校对
 
-我们在前面的教程中已经学习了许多关于OpenGL 光照的知识，其中包括冯氏照明模型（Phong shading）、光照材质（Materials）、光照图（Lighting maps）以及各种投光物（Light casters）。本教程将结合上述所学的知识，创建一个包含六个光源的场景。我们将模拟一个类似阳光的平行光（Directional light）和4个定点光（Point lights）以及一个手电筒(Flashlight).
+我们在前面的教程中已经学习了许多关于OpenGL中光照的知识，其中包括冯氏着色(Phong Shading)、材质(Material)、光照贴图(Lighting Map)以及不同种类的投光物(Light Caster)。在这一节中，我们将结合之前学过的所有知识，创建一个包含六个光源的场景。我们将模拟一个类似太阳的定向光(Directional Light)光源，四个分散在场景中的点光源(Point Light)，以及一个手电筒(Flashlight)。
 
-要在场景中使用多光源我们需要封装一些GLSL函数用来计算光照。如果我们对每个光源都去写一遍光照计算的代码，这将是一件令人恶心的事情，并且这些放在main函数中的代码将难以理解，所以我们将一些操作封装为函数。
+为了在场景中使用多个光源，我们希望将光照计算封装到GLSL<def>函数</def>中。这样做的原因是，每一种光源都需要一种不同的计算方法，而一旦我们想对多个光源进行光照计算时，代码很快就会变得非常复杂。如果我们只在<fun>main</fun>函数中进行所有的这些计算，代码很快就会变得难以理解。
 
-GLSL中的函数与C语言的非常相似，它需要一个函数名、一个返回值类型。并且在调用前必须提前声明。接下来我们将为下面的每一种光照来写一个函数。
+GLSL中的函数和C函数很相似，它有一个函数名、一个返回值类型，如果函数不是在main函数之前声明的，我们还必须在代码文件顶部声明一个原型。我们对每个光照类型都创建一个不同的函数：定向光、点光源和聚光。
 
-当我们在场景中使用多个光源时一般使用以下途径：创建一个代表输出颜色的向量。每一个光源都对输出颜色贡献一些颜色。因此，场景中的每个光源将进行独立运算，并且运算结果都对最终的输出颜色有一定影响。下面是使用这种方式进行多光源运算的一般结构：
+当我们在场景中使用多个光源时，通常使用以下方法：我们需要有一个单独的颜色向量代表片段的输出颜色。对于每一个光源，它对片段的贡献颜色将会加到片段的输出颜色向量上。所以场景中的每个光源都会计算它们各自对片段的影响，并结合为一个最终的输出颜色。大体的结构会像是这样：
 
 ```c++
-out vec4 color;
-
+out vec4 FragColor;
+  
 void main()
 {
-  // 定义输出颜色
+  // 定义一个输出颜色值
   vec3 output;
-  // 将平行光的运算结果颜色添加到输出颜色
+  // 将定向光的贡献加到输出中
   output += someFunctionToCalculateDirectionalLight();
-  // 同样，将定点光的运算结果颜色添加到输出颜色
+  // 对所有的点光源也做相同的事情
   for(int i = 0; i < nr_of_point_lights; i++)
   	output += someFunctionToCalculatePointLight();
-  // 添加其他光源的计算结果颜色（如投射光）
+  // 也加上其它的光源（比如聚光）
   output += someFunctionToCalculateSpotLight();
-
-  color = vec4(output, 1.0);
-}  
+  
+  FragColor = vec4(output, 1.0);
+}
 ```
 
-即使对每一种光源的运算实现不同，但此算法的结构一般是与上述出入不大的。我们将定义几个用于计算各个光源的函数，并将这些函数的结算结果（返回颜色）添加到输出颜色向量中。例如，靠近被照射物体的光源计算结果将返回比远离背照射物体的光源更明亮的颜色。
+实际的代码对每一种实现都可能不同，但大体的结构都是差不多的。我们定义了几个函数，用来计算每个光源的影响，并将最终的结果颜色加到输出颜色向量上。例如，如果两个光源都很靠近一个片段，那么它们所结合的贡献将会形成一个比单个光源照亮时更加明亮的片段。
 
-## 平行光
+## 定向光
 
-我们要在片段着色器中定义一个函数用来计算平行光(Directional light)在对应的照射点上的光照颜色，这个函数需要几个参数并返回一个计算平行光照结果的颜色。
+我么需要在片段着色器中定义一个函数来计算定向光对相应片段的贡献：它接受一些参数并计算一个定向光照颜色。
 
-首先我们需要设置一系列用于表示平行光的变量，正如上一节中所讲过的，我们可以将这些变量定义在一个叫做**DirLight**的结构体中，并定义一个这个结构体类型的uniform变量。
+首先，我们需要定义一个定向光源最少所需要的变量。我们可以将这些变量储存在一个叫做<fun>DirLight</fun>的结构体中，并将它定义为一个uniform。需要的变量在[上一节](05 Light casters.md)中都介绍过：
 
 ```c++
 struct DirLight {
     vec3 direction;
-
+  
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -52,84 +52,85 @@ struct DirLight {
 uniform DirLight dirLight;
 ```
 
-之后我们可以将`dirLight`这个uniform变量作为下面这个函数原型的参数。
+接下来我们可以将<var>dirLight</var>传入一个有着一下原型的函数。
 
 ```c++
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);  
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 ```
 
 !!! Important
 
-        和C/C++一样，我们调用一个函数的前提是这个函数在调用前已经被声明过（此例中我们是在main函数中调用）。通常情况下我们都将函数定义在main函数之后，为了能在main函数中调用这些函数，我们就必须在main函数之前声明这些函数的原型，这就和我们写C语言是一样的。
-        
-你已经知道，这个函数需要一个`DirLight`和两个其他的向量作为参数来计算光照。如果你看过之前的教程的话，你会觉得下面的函数定义得一点也不意外：
+	和C/C++一样，如果我们想调用一个函数（这里是在<fun>main</fun>函数中调用），这个函数需要在调用者的行数之前被定义过。在这个例子中我们更喜欢在<fun>main</fun>函数以下定义函数，所以上面要求就不满足了。所以，我们需要在<fun>main</fun>函数之上定义函数的原型，这和C语言中是一样的。
+
+你可以看到，这个函数需要一个<fun>DirLight</fun>结构体和其它两个向量来进行计算。如果你认真完成了上一节的话，这个函数的内容应该理解起来很容易：
 
 ```c++
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
     vec3 lightDir = normalize(-light.direction);
-    // 计算漫反射强度
+    // 漫反射着色
     float diff = max(dot(normal, lightDir), 0.0);
-    // 计算镜面反射强度
+    // 镜面光着色
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    // 合并各个光照分量
+    // 合并结果
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
     return (ambient + diffuse + specular);
-}  
+}
 ```
 
-我们从之前的教程中复制了代码，并用两个向量来作为函数参数来计算出平行光的光照颜色向量，该结果是一个由该平行光的环境反射、漫反射和镜面反射的各个分量组成的一个向量。
+我们基本上只是从上一节中复制了代码，并使用函数参数的两个向量来计算定向光的贡献向量。最终环境光、漫反射和镜面光的贡献将会合并为单个颜色向量返回。
 
 ## 点光源
 
-和计算平行光一样，我们同样需要定义一个函数用于计算点光源(Point Light)。同样的，我们定义一个包含点光源所需属性的结构体：
+和定向光一样，我们也希望定义一个用于计算点光源对相应片段贡献，以及衰减，的函数。同样，我们定义一个包含了点光源所需所有变量的结构体：
 
 ```c++
 struct PointLight {
     vec3 position;
-
+    
     float constant;
     float linear;
-    float quadratic;  
+    float quadratic;
 
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 };  
-#define NR_POINT_LIGHTS 4  
+#define NR_POINT_LIGHTS 4
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 ```
 
-如你所见，我们在GLSL中使用预处理器指令来定义点光源的数目。之后我们使用这个`NR_POINT_LIGHTS`常量来创建一个`PointLight`结构体的数组。和C语言一样，GLSL也是用一对中括号来创建数组的。现在我们有了4个`PointLight`结构体对象了。
+你可以看到，我们在GLSL中使用了预处理指令来定义了我们场景中点光源的数量。接着我们使用了这个<var>NR_POINT_LIGHTS</var>常量来创建了一个<fun>PointLight</fun>结构体的数组。GLSL中的数组和C数组一样，可以使用一对方括号来创建。现在我们有四个待填充数据的<fun>PointLight</fun>结构体。
 
 !!! Important
 
-    我们同样可以简单粗暴地定义一个大号的结构体（而不是为每一种类型的光源定义一个结构体），它包含所有类型光源所需要属性变量。并且将这个结构体应用与所有的光照计算函数，在各个光照结算时忽略不需要的属性变量。然而，就我个人来说更喜欢分开定义，这样可以省下一些内存，因为定义一个大号的光源结构体在计算过程中会有用不到的变量。
+	我们也可以定义**一个**大的结构体（而不是为每种类型的光源定义不同的结构体），包含**所有**不同种光照类型所需的变量，并将这个结构体用到所有的函数中，只需要忽略用不到的变量就行了。然而，我个人觉得当前的方法会更直观一点，不仅能够节省一些代码，而且由于不是所有光照类型都需要所有的变量，这样也能节省一些内存。
+
+点光源函数的原型如下：
 
 ```c++
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);  
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 ```
 
-这个函数将所有用得到的数据作为它的参数并使用一个`vec3`作为它的返回值类表示一个顶点光的结算结果。我们再一次聪明地从之前的教程中复制代码来把它定义成下面的样子：
+这个函数从参数中获取所需的所有数据，并返回一个代表该点光源对片段的颜色贡献的`vec3`。我们再一次聪明地从之前的教程中复制粘贴代码，完成了下面这样的函数：
 
 ```c++
-// 计算定点光在确定位置的光照颜色
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
     vec3 lightDir = normalize(light.position - fragPos);
-    // 计算漫反射强度
+    // 漫反射着色
     float diff = max(dot(normal, lightDir), 0.0);
-    // 计算镜面反射
+    // 镜面光着色
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    // 计算衰减
+    // 衰减
     float distance    = length(light.position - fragPos);
-    float attenuation = 1.0f / (light.constant + light.linear * distance +
-  			     light.quadratic * (distance * distance));
-    // 将各个分量合并
+    float attenuation = 1.0 / (light.constant + light.linear * distance + 
+  			     light.quadratic * (distance * distance));    
+    // 合并结果
     vec3 ambient  = light.ambient  * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse  = light.diffuse  * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
@@ -140,44 +141,44 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 }
 ```
 
-有了这个函数我们就可以在main函数中调用它来代替写很多个计算点光源的代码了。通过循环调用此函数就能实现同样的效果，当然代码更简洁。
+将这些功能抽象到这样一个函数中的优点是，我们能够不用重复的代码而很容易地计算多个点光源的光照了。在<fun>main</fun>函数中，我们只需要创建一个循环，遍历整个点光源数组，对每个点光源调用<fun>CalcPointLight</fun>就可以了。
 
-## 把它们放到一起
+## 合并结果
 
-我们现在定义了用于计算平行光和点光源的函数，现在我们把这些代码放到一起，写入文开始的一般结构中：
+现在我们已经定义了一个计算定向光的函数和一个计算点光源的函数了，我们可以将它们合并放到<fun>main</fun>函数中。
 
 ```c++
 void main()
 {
-    // 一些属性
+    // 属性
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    // 第一步，计算平行光照
+    // 第一阶段：定向光照
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
-    // 第二步，计算顶点光照
+    // 第二阶段：点光源
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-    // 第三部，计算 Spot light
-    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
-
-    color = vec4(result, 1.0);
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+    // 第三阶段：聚光
+    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
+    
+    FragColor = vec4(result, 1.0);
 }
 ```
 
-每一个光源的运算结果都添加到了输出颜色上，输出颜色包含了此场景中的所有光源的影响。如果你想实现手电筒的光照效果，同样的把计算结果添加到输出颜色上。我在这里就把`CalcSpotLight`的实现留作个读者们的练习吧。
+每个光源类型都将它们的贡献加到了最终的输出颜色上，直到所有的光源都处理完了。最终的颜色包含了场景中所有光源的颜色影响所合并的结果。如果你想的话，你也可以实现一个聚光，并将它的效果加到输出颜色中。我们会将<fun>CalcSpotLight</fun>函数留给读者作为练习。
 
-设置平行光结构体的uniform值和之前所讲过的方式没什么两样，但是你可能想知道如何设置场景中`PointLight`结构体的uniforms变量数组。我们之前并未讨论过如何做这件事。
+设置定向光结构体的uniform应该非常熟悉了，但是你可能会在想我们该如何设置点光源的uniform值，因为点光源的uniform现在是一个<fun>PointLight</fun>的数组了。这并不是我们以前讨论过的话题。
 
-庆幸的是，这并不是什么难题。设置uniform变量数组和设置单个uniform变量值是相似的，只需要用一个合适的下标就能够检索到数组中我们想要的uniform变量了。
+很幸运的是，这并不是很复杂，设置一个结构体数组的uniform和设置一个结构体的uniform是很相似的，但是这一次在访问uniform位置的时候，我们需要定义对应的数组下标值：
 
 ```c++
-glUniform1f(glGetUniformLocation(lightingShader.Program, "pointLights[0].constant"), 1.0f);
+lightingShader.setFloat("pointLights[0].constant", 1.0f);
 ```
 
-这样我们检索到`pointLights`数组中的第一个`PointLight`结构体元素，同时也可以获取到该结构体中的各个属性变量。不幸的是这一位置我们还需要手动对这个四个光源的每一个属性都进行设置，这样手动设置这28个uniform变量是相当乏味的工作。你可以尝试去定义个光源类来为你设置这些uniform属性来减少你的工作，但这依旧不能改变去设置每个uniform属性的事实。
+在这里我们索引了<var>pointLights</var>数组中的第一个<fun>PointLight</fun>，并获取了<var>constant</var>变量的位置。但这也意味着不幸的是我们必须对这四个点光源手动设置uniform值，这让点光源本身就产生了28个uniform调用，非常冗长。你也可以尝试将这些抽象出去一点，定义一个点光源类，让它来为你设置uniform值，但最后你仍然要用这种方式设置所有光源的uniform值。
 
-别忘了，我们还需要为每个光源设置它们的位置。这里，我们定义一个`glm::vec3`类的数组来包含这些点光源的坐标：
+别忘了，我们还需要为每个点光源定义一个位置向量，所以我们让它们在场景中分散一点。我们会定义另一个`glm::vec3`数组来包含点光源的位置：
 
 ```c++
 glm::vec3 pointLightPositions[] = {
@@ -185,24 +186,27 @@ glm::vec3 pointLightPositions[] = {
 	glm::vec3( 2.3f, -3.3f, -4.0f),
 	glm::vec3(-4.0f,  2.0f, -12.0f),
 	glm::vec3( 0.0f,  0.0f, -3.0f)
-};  
+};
 ```
 
-同时我们还需要根据这些光源的位置在场景中绘制4个表示光源的立方体，这样的工作我们在之前的教程中已经做过了。
+接下来我们从<var>pointLights</var>数组中索引对应的<fun>PointLight</fun>，将它的<var>position</var>值设置为刚刚定义的位置值数组中的其中一个。同时我们还要保证现在绘制的是四个灯立方体而不是仅仅一个。只要对每个灯物体创建一个不同的模型矩阵就可以了，和我们之前对箱子的处理类似。
 
-如果你在还是用了手电筒的话，将所有的光源结合起来看上去应该和下图差不多：
+如果你还使用了手电筒的话，所有光源组合的效果将看起来和下图差不多：
 
 ![](../img/02/06/multiple_lights_combined.png)
 
-你可以在此处获取本教程的[源代码](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights)，同时可以查看[顶点着色器](http://learnopengl.com/code_viewer.php?code=lighting/lighting_maps&type=vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights&type=fragment)的代码。
+你可以看到，很显然天空中有一个全局照明（像一个太阳），我们有四个光源分散在场景中，以及玩家视角的手电筒。看起来是不是非常不错？
 
-上面的图片的光源都是使用默认的属性的效果，如果你尝试对光源属性做出各种修改尝试的话，会出现很多有意思的画面。很多艺术家和场景编辑器都提供大量的按钮或方式来修改光照以使用各种环境。使用最简单的光照属性的改变我们就足已创建有趣的视觉效果：
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/multiple_lights.cpp)找到最终程序的源代码。
+
+上面图片中的所有光源都是使用上一节中所使用的默认属性，但如果你愿意实验这些数值的话，你能够得到很多有意思的结果。艺术家和关卡设计师通常都在编辑器中不断的调整这些光照参数，保证光照与环境相匹配。在我们刚刚创建的简单光照环境中，你可以简单地调整一下光源的属性，创建很多有意思的视觉效果：
 
 ![](../img/02/06/multiple_lights_atmospheres.png)
 
-相信你现在已经对OpenGL的光照有很好的理解了。有了这些知识我们便可以创建丰富有趣的环境和氛围了。快试试改变所有的属性的值来创建你的光照环境吧！
+我们也改变了清屏的颜色来更好地反应光照。你可以看到，只需要简单地调整一些光照参数，你就能创建完全不同的氛围。
+
+相信你现在已经对OpenGL的光照有很好的理解了。有了目前所学的这些知识，我们已经可以创建出丰富有趣的环境和氛围了。尝试实验一下不同的值，创建出你自己的氛围吧。
 
 ## 练习
 
-* 创建一个表示手电筒光的结构体Spotlight并实现CalcSpotLight(...)函数：[解决方案](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights-exercise1)
-* 你能通过调节不同的光照属性来重新创建一个不同的氛围吗？[解决方案](http://learnopengl.com/code_viewer.php?code=lighting/multiple_lights-exercise2)
+- 你能通过调节光照属性变量，（大概地）重现最后一张图片上不同的氛围吗？[参考解答](https://learnopengl.com/code_viewer.php?code=lighting/multiple_lights-exercise2)
