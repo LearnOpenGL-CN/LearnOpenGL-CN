@@ -366,6 +366,14 @@
 - Single-side Refraction：单面折射
 - Dynamic Environment Mapping：动态环境映射
 
+## 04-07
+
+- Buffer Target：缓冲目标
+- Reserve（内存）：预留
+- Unmapping：解除映射
+- Interleave：交错
+- Uniform Buffer Object：Uniform缓冲对象
+
 ## 06-01
 
 - Debugging：调试
