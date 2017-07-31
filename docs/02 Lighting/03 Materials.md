@@ -167,6 +167,4 @@ lightingShader.setVec3("light.diffuse", diffuseColor);
 
 ## 练习
 
-- 你能像教程一开始那样，定义相应的材质来模拟现实世界的物体吗？注意[材质表格](http://devernay.free.fr/cours/opengl/materials.html)中的环境光值可能与漫反射值不一样，它们没有考虑光照的强度。要想纠正这一问题，你需要将所有的光照强度都设置为`vec3(1.0)`，这样才能得到正确的输出：[参考解答](https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/3.2.materials_exercise1/materials_exercise1.cpp)，我做的是青色塑料(Cyan Plastic)的箱子
-
 - 你能像我们教程一开始那样根据一些材质的属性来模拟一个真实世界的物体吗？注意[材质表](http://devernay.free.fr/cours/opengl/materials.html)中的环境光颜色与漫反射光的颜色可能不一样，因为他们并没有把光照强度考虑进去来模拟，你需要将光照颜色的强度改为`vec(1.0f)`来输出正确的结果：[参考解答](http://learnopengl.com/code_viewer.php?code=lighting/materials-exercise1)，我做了一个青色(Cyan)的塑料箱子
