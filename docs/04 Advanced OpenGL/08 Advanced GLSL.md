@@ -3,131 +3,132 @@
 原文     | [Advanced GLSL](http://learnopengl.com/#!Advanced-OpenGL/Advanced-GLSL)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com), [KenLee](https://hellokenlee.github.io/)
+翻译     | Meow J
+校对     | 暂未校对
 
+这一小节并不会向你展示非常先进非常酷的新特性，也不会对场景的视觉质量有显著的提高。但是，这一节会或多或少涉及GLSL的一些有趣的地方以及一些很棒的技巧，它们可能在今后会帮助到你。简单来说，它们就是在组合使用OpenGL和GLSL创建程序时的一些**最好要知道的东西**，和一些**会让你生活更加轻松的特性**。
 
-这章不会向你展示什么新的功能，也不会对你的场景的视觉效果有较大提升。本文多多少少地深入探讨了一些GLSL有趣的知识，它们可能在将来能帮助你。基本来说有些不可不知的内容和功能在你去使用GLSL创建OpenGL应用的时候能让你的生活更轻松。
-
-我们会讨论一些内建变量(Built-in Variable)、组织着色器输入和输出的新方式以及一个叫做uniform缓冲对象(Uniform Buffer Object)的非常有用的工具。
+我们将会讨论一些有趣的<def>内建变量</def>(Built-in Variable)，管理着色器输入和输出的新方式以及一个叫做<def>Uniform缓冲对象</def>(Uniform Buffer Object)的有用工具。
 
 # GLSL的内建变量
 
-着色器是很小的，如果我们需要从当前着色器以外的别的资源里的数据，那么我们就不得不传给它。我们学过了使用顶点属性、uniform和采样器可以实现这个目标。GLSL有几个以**gl\_**为前缀的变量，使我们有一个额外的手段来获取和写入数据。其中两个我们已经打过交道了：`gl_Position`和`gl_FragCoord`，前一个是顶点着色器的输出向量，后一个是片段着色器的变量。
+着色器都是最简化的，如果需要当前着色器以外地方的数据的话，我们必须要将数据传进来。我们已经学会使用顶点属性、uniform和采样器来完成这一任务了。然而，除此之外，GLSL还定义了另外几个以`gl_`为前缀的变量，它们能提供给我们更多的方式来读取/写入数据。我们已经在前面教程中接触过其中的两个了：顶点着色器的输出向量<var>gl_Position</var>，和片段着色器的<var>gl_FragCoord</var>。
 
-我们会讨论几个有趣的GLSL内建变量，并向你解释为什么它们对我们来说很有好处。注意，我们不会讨论到GLSL中所有的内建变量，因此如果你想看到所有的内建变量还是最好去查看[OpenGL的wiki](http://www.opengl.org/wiki/Built-in_Variable_(GLSL)。
+我们将会讨论几个有趣的GLSL内建输入和输出变量，并会解释它们能够怎样帮助你。注意，我们将不会讨论GLSL中存在的所有内建变量，如果你想知道所有的内建变量的话，请查看OpenGL的[wiki](http://www.opengl.org/wiki/Built-in_Variable_(GLSL))。
 
 ## 顶点着色器变量
 
-我们已经了解`gl_Position`是顶点着色器裁切空间输出的位置向量。如果你想让屏幕上渲染出东西`gl_Position`必须使用。否则我们什么都看不到。
+我们已经见过<var>gl_Position</var>了，它是顶点着色器的裁剪空间输出位置向量。如果你想在屏幕上显示任何东西，在顶点着色器中设置<var>gl_Position</var>是必须的步骤。这已经是它的全部功能了。
 
 ### gl_PointSize
 
-我们可以使用的另一个可用于渲染的基本图形(primitive)是**GL\_POINTS**，使用它每个顶点作为一个基本图形，被渲染为一个点(point)。可以使用`glPointSize`函数来设置这个点的大小，但我们还可以在顶点着色器里修改点的大小。
+我们能够选用的其中一个图元是<var>GL_POINTS</var>，如果使用它的话，每一个顶点都是一个图元，都会被渲染为一个点。我们可以通过OpenGL的<fun>glPointSize</fun>函数来设置渲染出来的点的大小，但我们也可以在顶点着色器中修改这个值。
 
-GLSL有另一个输出变量叫做`gl_PointSize`，他是一个`float`变量，你可以以像素的方式设置点的高度和宽度。它在着色器中描述每个顶点做为点被绘制出来的大小。
+GLSL定义了一个叫做<var>gl_PointSize</var>输出变量，它是一个<fun>float</fun>变量，你可以使用它来设置点的宽高（像素）。在顶点着色器中修改点的大小的话，你就能对每个顶点设置不同的值了。
 
-在着色器中影响点的大小默认是关闭的，但是如果你打算开启它，你需要开启OpenGL的`GL_PROGRAM_POINT_SIZE`：
+在顶点着色器中修改点大小的功能默认是禁用的，如果你需要启用它的话，你需要启用OpenGL的<var>GL_PROGRAM_POINT_SIZE</var>：
 
 ```c++
 glEnable(GL_PROGRAM_POINT_SIZE);
 ```
 
-把点的大小设置为裁切空间的z值，这样点的大小就等于顶点距离观察者的距离，这是一种影响点的大小的方式。当顶点距离观察者更远的时候，它就会变得更大。
+一个简单的例子就是将点的大小设置为裁剪空间位置的z值，也就是顶点距观察者的距离。点的大小会随着观察者距顶点距离变远而增大。
 
 ```c++
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    gl_PointSize = gl_Position.z;
+    gl_Position = projection * view * model * vec4(aPos, 1.0);    
+    gl_PointSize = gl_Position.z;    
 }
 ```
 
-结果是我们绘制的点距离我们越远就越大：
+结果就是，当我们远离这些点的时候，它们会变得更大：
 
 ![](../img/04/08/advanced_glsl_pointsize.png)
 
-想象一下，每个顶点表示出来的点的大小的不同，如果用在像粒子生成之类的技术里会挺有意思的。
+你可以想到，对每个顶点使用不同的点大小，会在粒子生成之类的技术中很有意思。
 
 ### gl_VertexID
 
-`gl_Position`和`gl_PointSize`都是输出变量，因为它们的值是作为顶点着色器的输出被读取的；我们可以向它们写入数据来影响结果。顶点着色器为我们提供了一个有趣的输入变量，我们只能从它那里读取，这个变量叫做`gl_VertexID`。
+<var>gl_Position</var>和<var>gl_PointSize</var>都是**输出变量**，因为它们的值是作为顶点着色器的输出被读取的。我们可以对它们进行写入，来改变结果。顶点着色器还为我们提供了一个有趣的**输入变量**，我们只能对它进行读取，它叫做<var>gl_VertexID</var>。
 
-`gl_VertexID`是个整型变量，它储存着我们绘制的当前顶点的ID。当进行索引渲染（indexed rendering，使用`glDrawElements`渲染）时，这个变量保存着当前绘制的顶点的索引。当用的不是索引绘制（`glDrawArrays`）时，这个变量保存的是从渲染开始起直到当前处理的这个顶点的（当前顶点）编号。
+整型变量<var>gl_VertexID</var>储存了正在绘制顶点的当前ID。当（使用<fun>glDrawElements</fun>）进行索引渲染的时候，这个变量会存储正在绘制顶点的当前索引。当（使用<fun>glDrawArrays</fun>）不使用索引进行绘制的时候，这个变量会储存从渲染调用开始的已处理顶点数量。
 
-尽管目前看似没用，但是我们最好知道我们能获取这样的信息。
+虽然现在它没有什么具体的用途，但知道我们能够访问这个信息总是好的。
 
-## 片段着色器的变量
+## 片段着色器变量
 
-在片段着色器中也有一些有趣的变量。GLSL给我们提供了两个有意思的输入变量，它们是`gl_FragCoord`和`gl_FrontFacing`。
+在片段着色器中，我们也能访问到一些有趣的变量。GLSL提供给我们两个有趣的输入变量：<var>gl_FragCoord</var>和<var>gl_FrontFacing</var>。
 
 ### gl_FragCoord
 
-在讨论深度测试的时候，我们已经看过`gl_FragCoord`好几次了，因为`gl_FragCoord`向量的z元素和特定的fragment的深度值相等。然而，我们也可以使用这个向量的x和y元素来实现一些有趣的效果。
+在讨论深度测试的时候，我们已经见过<var>gl_FragCoord</var>很多次了，因为<var>gl_FragCoord</var>的z分量等于对应片段的深度值。然而，我们也能使用它的x和y分量来实现一些有趣的效果。
 
-`gl_FragCoord`的x和y元素是当前片段的窗口空间坐标（window-space coordinate）。它们的起始处是窗口的左下角。如果我们的窗口是800×600的，那么一个片段的窗口空间坐标x的范围就在0到800之间，y在0到600之间。
+<var>gl_FragCoord</var>的x和y分量是片段的窗口空间(Window-space)坐标，其原点为窗口的左下角。我们已经使用<fun>glViewport</fun>设定了一个800x600的窗口了，所以片段窗口空间坐标的x分量将在0到800之间，y分量在0到600之间。
 
-我们可以使用片段着色器基于片段的窗口坐标计算出一个不同的颜色。`gl_FragCoord`变量的一个常用的方式是与一个不同的片段计算出来的视频输出进行对比，通常在技术演示中常见。比如我们可以把屏幕分为两个部分，窗口的左侧渲染一个输出，窗口的右边渲染另一个输出。下面是一个基于片段的窗口坐标的位置的不同输出不同的颜色的片段着色器：
-
+通过利用片段着色器，我们可以根据片段的窗口坐标，计算出不同的颜色。<var>gl_FragCoord</var>的一个常见用处是用于对比不同片段计算的视觉输出效果，这在技术演示中可以经常看到。比如说，我们能够将屏幕分成两部分，在窗口的左侧渲染一种输出，在窗口的右侧渲染另一种输出。下面这个例子片段着色器会根据窗口坐标输出不同的颜色：
 
 ```c++
 void main()
-{
+{             
     if(gl_FragCoord.x < 400)
-        color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     else
-        color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+        FragColor = vec4(0.0, 1.0, 0.0, 1.0);        
 }
 ```
 
-因为窗口的宽是800，当一个像素的x坐标小于400，那么它一定在窗口的左边，这样我们就让物体有个不同的颜色。
+因为窗口的宽度是800。当一个像素的x坐标小于400时，它一定在窗口的左侧，所以我们给它一个不同的颜色。
 
 ![](../img/04/08/advanced_glsl_fragcoord.png)
 
-我们现在可以计算出两个完全不同的片段着色器结果，每个显示在窗口的一端。这对于测试不同的光照技术很有好处。
+我们现在会计算出两个完全不同的片段着色器结果，并将它们显示在窗口的两侧。举例来说，你可以将它用于测试不同的光照技巧。
 
 ### gl_FrontFacing
 
-片段着色器另一个有意思的输入变量是`gl_FrontFacing`变量。在面剔除教程中，我们提到过OpenGL可以根据顶点绘制顺序弄清楚一个面是正面还是背面。如果我们不适用面剔除，那么`gl_FrontFacing`变量能告诉我们当前片段是某个正面的一部分还是背面的一部分。然后我们可以决定做一些事情，比如为正面计算出不同的颜色。
+片段着色器另外一个很有意思的输入变量是<var>gl_FrontFacing</var>。在[面剔除](04 Face culling.md)教程中，我们提到OpenGL能够根据顶点的环绕顺序来决定一个面是正向还是背向面。如果我们不（启用<var>GL_FACE_CULL</var>来）使用面剔除，那么<var>gl_FrontFacing</var>将会告诉我们当前片段是属于正向面的一部分还是背向面的一部分。举例来说，我们能够对正向面计算出不同的颜色。
 
-`gl_FrontFacing`变量是一个布尔值，如果当前片段是正面的一部分那么就是true，否则就是false。这样我们可以创建一个立方体，里面和外面使用不同的纹理：
+<var>gl_FrontFacing</var>变量是一个<fun>bool</fun>，如果当前片段是正向面的一部分那么就是`true`，否则就是`false`。比如说，我们可以这样子创建一个立方体，在内部和外部使用不同的纹理：
 
 ```c++
 #version 330 core
-out vec4 color;
+out vec4 FragColor;
+  
 in vec2 TexCoords;
 
 uniform sampler2D frontTexture;
 uniform sampler2D backTexture;
 
 void main()
-{
+{             
     if(gl_FrontFacing)
-        color = texture(frontTexture, TexCoords);
+        FragColor = texture(frontTexture, TexCoords);
     else
-        color = texture(backTexture, TexCoords);
+        FragColor = texture(backTexture, TexCoords);
 }
 ```
 
-如果我们从箱子的一角往里看，就能看到里面用的是另一个纹理。
+如果我们往箱子里面看，就能看到使用的是不同的纹理。
 
 ![](../img/04/08/advanced_glsl_frontfacing.png)
 
-注意，如果你开启了面剔除，你就看不到箱子里面有任何东西了，所以此时使用`gl_FrontFacing`毫无意义。
+注意，如果你开启了面剔除，你就看不到箱子内部的面了，所以现在再使用<var>gl_FrontFacing</var>就没有意义了。
 
 ### gl_FragDepth
 
-输入变量`gl_FragCoord`让我们可以读得当前片段的窗口空间坐标和深度值，但是它是只读的。我们不能影响到这个片段的窗口屏幕坐标，但是可以设置这个像素的深度值。GLSL给我们提供了一个叫做`gl_FragDepth`的变量，我们可以用它在着色器中遂舍之像素的深度值。
+输入变量<var>gl_FragCoord</var>能让我们读取当前片段的窗口空间坐标，并获取它的深度值，但是它是一个<def>只读</def>(Read-only)变量。我们不能修改片段的窗口空间坐标，但实际上修改片段的深度值还是可能的。GLSL提供给我们一个叫做<var>gl_FragDepth</var>的输出变量，我们可以使用它来在着色器内设置片段的深度值。
 
-为了在着色器中设置深度值，我们简单的写一个0.0到1.0之间的float数，赋值给这个输出变量：
+要想设置深度值，我们直接写入一个0.0到1.0之间的<fun>float</fun>值到输出变量就可以了：
 
 ```c++
-gl_FragDepth = 0.0f; //现在片段的深度值被设为0
+gl_FragDepth = 0.0; // 这个片段现在的深度值为 0.0
 ```
 
-如果着色器中没有像`gl_FragDepth`变量写入，它就会自动采用`gl_FragCoord.z`的值。
+如果着色器没有写入值到<var>gl_FragDepth</var>，它会自动取用`gl_FragCoord.z`的值。
 
-我们自己设置深度值有一个显著缺点，因为只要我们在片段着色器中对`gl_FragDepth`写入什么，OpenGL就会关闭所有的前置深度测试。它被关闭的原因是，在我们运行片段着色器之前OpenGL搞不清像素的深度值，因为片段着色器可能会完全改变这个深度值。
+然而，由我们自己设置深度值有一个很大的缺点，只要我们在片段着色器中对<var>gl_FragDepth</var>进行写入，OpenGL就会（像[深度测试](01 Depth testing.md)小节中讨论的那样）禁用所有的<def>提前深度测试</def>(Early Depth Testing)。它被禁用的原因是，OpenGL无法在片段着色器运行**之前**得知片段将拥有的深度值，因为片段着色器可能会完全修改这个深度值。
+
+在写入<var>gl_FragDepth</var>时，你就需要考虑到它所带来的性能影响。然而，从OpenGL 4.2起，我们仍可以对两者进行一定的调和，在片段着色器的顶部使用<def>深度条件</def>(Depth Condition)重新声明<var>gl_FragDepth</var>变量：
 
 因此，你需要考虑到`gl_FragDepth`写入所带来的性能的下降。然而从OpenGL4.2起，我们仍然可以对二者进行一定的调和，这需要在片段着色器的顶部使用深度条件（depth condition）来重新声明`gl_FragDepth`：
 
@@ -135,45 +136,43 @@ gl_FragDepth = 0.0f; //现在片段的深度值被设为0
 layout (depth_<condition>) out float gl_FragDepth;
 ```
 
-condition可以使用下面的值：
+`condition`可以为下面的值：
 
-Condition	| 描述
+ 条件       | 描述
          ---|---
-any	        | 默认值. 前置深度测试是关闭的，你失去了很多性能表现
-greater	    |深度值只能比gl_FragCoord.z大
-less	    |深度值只能设置得比gl_FragCoord.z小
-unchanged	|如果写入gl_FragDepth, 你就会写gl_FragCoord.z
+`any`	    | 默认值。提前深度测试是禁用的，你会损失很多性能
+`greater`   | 你只能让深度值比`gl_FragCoord.z`更大
+`less`	    | 你只能让深度值比`gl_FragCoord.z`更小
+`unchanged`	| 如果你要写入`gl_FragDepth`，你将只能写入`gl_FragCoord.z`的值
 
-如果把深度条件定义为greater或less，OpenGL会假定你只写入比当前的像素深度值的深度值大或小的。
+通过将深度条件设置为`greater`或者`less`，OpenGL就能假设你只会写入比当前片段深度值更大或者更小的值了。这样子的话，当深度值比片段的深度值要小的时候，OpenGL仍是能够进行提前深度测试的。
 
-下面是一个在片段着色器里增加深度值的例子，不过仍可开启前置深度测试：
+下面这个例子中，我们对片段的深度值进行了递增，但仍然也保留了一些提前深度测试：
 
 ```c++
-#version 330 core
+#version 420 core // 注意GLSL的版本！
+out vec4 FragColor;
 layout (depth_greater) out float gl_FragDepth;
-out vec4 color;
 
 void main()
-{
-    color = vec4(1.0f);
-    gl_FragDepth = gl_FragCoord.z + 0.1f;
-}
+{             
+    FragColor = vec4(1.0);
+    gl_FragDepth = gl_FragCoord.z + 0.1;
+}  
 ```
 
-一定要记住这个功能只在OpenGL4.2以上版本才有。
-
-
+注意这个特性只在OpenGL 4.2版本或以上才提供。
 
 # 接口块
 
-到目前位置，每次我们打算从顶点向片段着色器发送数据，我们都会声明一个相互匹配的输出/输入变量。从一个着色器向另一个着色器发送数据，一次将它们声明好是最简单的方式，但是随着应用变得越来越大，你也许会打算发送的不仅仅是变量，最好还可以包括数组和结构体。
+到目前为止，每当我们希望从顶点着色器向片段着色器发送数据时，我们都声明了几个对应的输入/输出变量。将它们一个一个声明是着色器间发送数据最简单的方式了，但当程序变得更大时，你希望发送的可能就不只是几个变量了，它还可能包括数组和结构体。
 
-为了帮助我们组织这些变量，GLSL为我们提供了一些叫做接口块(Interface Blocks)的东西，好让我们能够组织这些变量。声明接口块和声明struct有点像，不同之处是它现在基于块（block），使用in和out关键字来声明，最后它将成为一个输入或输出块（block）。
+为了帮助我们管理这些变量，GLSL为我们提供了一个叫做<def>接口块</def>(Interface Block)的东西，来方便我们组合这些变量。接口块的声明和<fun>struct</fun>的声明有点相像，不同的是，现在根据它是一个输入还是输出块(Block)，使用<fun>in</fun>或<fun>out</fun>关键字来定义的。
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec2 texCoords;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoords;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -186,18 +185,18 @@ out VS_OUT
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    vs_out.TexCoords = texCoords;
-}
+    gl_Position = projection * view * model * vec4(aPos, 1.0);    
+    vs_out.TexCoords = aTexCoords;
+}  
 ```
 
-这次我们声明一个叫做vs_out的接口块，它把我们需要发送给下个阶段着色器的所有输出变量组合起来。虽然这是一个微不足道的例子，但是你可以想象一下，它的确能够帮助我们组织着色器的输入和输出。当我们希望把着色器的输入和输出组织成数组的时候它就变得很有用，我们会在下节几何着色器(geometry)中见到。
+这次我们声明了一个叫做<var>vs_out</var>的接口块，它打包了我们希望发送到下一个着色器中的所有输出变量。这只是一个很简单的例子，但你可以想象一下，它能够帮助你管理着色器的输入和输出。当我们希望将着色器的输入或输出打包为数组时，它也会非常有用，我们将在[下一节](09 Geometry Shader.md)讨论几何着色器(Geometry Shader)时见到。
 
-然后，我们还需要在下一个着色器——片段着色器中声明一个输入interface block。块名（block name）应该是一样的，但是实例名可以是任意的。
+之后，我们还需要在下一个着色器，即片段着色器，中定义一个输入接口块。<def>块名</def>(Block Name)应该是和着色器中一样的（<fun>VS_OUT</fun>），但<var>实例名</var>(Instance Name)（顶点着色器中用的是<var>vs_out</var>）可以是随意的，但要避免使用误导性的名称，比如对实际上包含输入变量的接口块命名为<var>vs_out</var>。
 
 ```c++
 #version 330 core
-out vec4 color;
+out vec4 FragColor;
 
 in VS_OUT
 {
@@ -207,24 +206,24 @@ in VS_OUT
 uniform sampler2D texture;
 
 void main()
-{
-    color = texture(texture, fs_in.TexCoords);
+{             
+    FragColor = texture(texture, fs_in.TexCoords);   
 }
 ```
 
-如果两个interface block名一致，它们对应的输入和输出就会匹配起来。这是另一个可以帮助我们组织代码的有用功能，特别是在跨着色阶段的情况，比如几何着色器。
+只要两个接口块的名字一样，它们对应的输入和输出将会匹配起来。这是帮助你管理代码的又一个有用特性，它在几何着色器这样穿插特定着色器阶段的场景下会很有用。
 
 # Uniform缓冲对象
 
-我们使用OpenGL很长时间了，也学到了一些很酷的技巧，但是产生了一些烦恼。比如说，当时用一个以上的着色器的时候，我们必须一次次设置uniform变量，尽管对于每个着色器来说它们都是一样的，所以为什么还麻烦地多次设置它们呢？
+我们已经使用OpenGL很长时间了，学会了一些很酷的技巧，但也遇到了一些很麻烦的地方。比如说，当使用多余一个的着色器时，尽管大部分的uniform变量都是相同的，我们还是需要不断地设置它们，所以为什么要这么麻烦地重复设置它们呢？
 
-OpenGL为我们提供了一个叫做uniform缓冲对象(Uniform Buffer Object)的工具，使我们能够声明一系列的全局uniform变量， 它们会在几个着色器程序中保持一致。当时用uniform缓冲的对象时相关的uniform只能设置一次。我们仍需为每个着色器手工设置唯一的uniform。创建和配置一个uniform缓冲对象需要费点功夫。
+OpenGL为我们提供了一个叫做<def>Uniform缓冲对象</def>(Uniform Buffer Object)的工具，它允许我们定义一系列在多个着色器中相同的**全局**Uniform变量。当使用Uniform缓冲对象的时候，我们只需要设置相关的uniform**一次**。当然，我们仍需要手动设置每个着色器中不同的uniform。并且创建和配置Uniform缓冲对象会有一点繁琐。
 
-因为uniform缓冲对象是一个缓冲，因此我们可以使用`glGenBuffers`创建一个，然后绑定到`GL_UNIFORM_BUFFER`缓冲目标上，然后把所有相关uniform数据存入缓冲。有一些原则，像uniform缓冲对象如何储存数据，我们会在稍后讨论。首先我们我们在一个简单的顶点着色器中，用uniform块(uniform block)储存投影和视图矩阵：
+因为Uniform缓冲对象仍是一个缓冲，我们可以使用<fun>glGenBuffers</fun>来创建它，将它绑定到<var>GL_UNIFORM_BUFFER</var>缓冲目标，并将所有相关的uniform数据存入缓冲。在Uniform缓冲对象中储存数据是有一些规则的，我们将会在之后讨论它。首先，我们将使用一个简单的顶点着色器，将<var>projection</var>和<var>view</var>矩阵存储到所谓的<def>Uniform块</def>(Uniform Block)中：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
+layout (location = 0) in vec3 aPos;
 
 layout (std140) uniform Matrices
 {
@@ -236,146 +235,143 @@ uniform mat4 model;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 ```
 
-前面，大多数例子里我们在每次渲染迭代，都为projection和view矩阵设置uniform。这个例子里使用了uniform缓冲对象，这非常有用，因为这些矩阵我们设置一次就行了。
+在我们大多数的例子中，我们都会在每个渲染迭代中，对每个着色器设置<var>projection</var>和<var>view</var> Uniform矩阵。这是利用Uniform缓冲对象的一个非常完美的例子，因为现在我们只需要存储这些矩阵一次就可以了。
 
-在这里我们声明了一个叫做Matrices的uniform块，它储存两个4×4矩阵。在uniform块中的变量可以直接获取，而不用使用block名作为前缀。接着我们在缓冲中储存这些矩阵的值，每个声明了这个uniform块的着色器都能够获取矩阵。
+这里，我们声明了一个叫做<var>Matrices</var>的Uniform块，它储存了两个4x4矩阵。Uniform块中的变量可以直接访问，不需要加块名作为前缀。接下来，我们在OpenGL代码中将这些矩阵值存入缓冲中，每个声明了这个Uniform块的着色器都能够访问这些矩阵。
 
-现在你可能会奇怪layout(std140)是什么意思。它的意思是说当前定义的uniform块为它的内容使用特定的内存布局，这个声明实际上是设置uniform块布局(uniform block layout)。
-
-
+你现在可能会在想`layout (std140)`这个语句是什么意思。它的意思是说，当前定义的Uniform块对它的内容使用一个特定的内存布局。这个语句设置了<def>Uniform块布局</def>(Uniform Block Layout)。
 
 ## Uniform块布局
 
-一个uniform块的内容被储存到一个缓冲对象中，实际上就是在一块内存中。因为这块内存也不清楚它保存着什么类型的数据，我们就必须告诉OpenGL哪一块内存对应着色器中哪一个uniform变量。
+Uniform块的内容是储存在一个缓冲对象中的，它实际上只是一块预留内存。因为这块内存并不会保存它具体保存的是什么类型的数据，我们还需要告诉OpenGL内存的哪一部分对应着着色器中的哪一个uniform变量。
 
-假想下面的uniform块在一个着色器中：
+假设着色器中有以下的这个Uniform块：
 
 ```c++
 layout (std140) uniform ExampleBlock
 {
     float value;
-    vec3 vector;
-    mat4 matrix;
+    vec3  vector;
+    mat4  matrix;
     float values[3];
-    bool boolean;
-    int integer;
+    bool  boolean;
+    int   integer;
 };
 ```
 
-我们所希望知道的是每个变量的大小（以字节为单位）和偏移量（从block的起始处），所以我们可以以各自的顺序把它们放进一个缓冲里。每个元素的大小在OpenGL中都很清楚，直接与C++数据类型呼应，向量和矩阵是一个float序列（数组）。OpenGL没有澄清的是变量之间的间距。这让硬件能以它认为合适的位置方式变量。比如有些硬件可以在float旁边放置一个vec3。不是所有硬件都能这样做，在vec3旁边附加一个float之前，给vec3加一个边距使之成为4个（空间连续的）float数组。功能很好，但对于我们来说用起来不方便。
+我们需要知道的是每个变量的大小（字节）和（从块起始位置的）偏移量，来让我们能够按顺序将它们放进缓冲中。每个元素的大小都是在OpenGL中有清楚地声明的，而且直接对应C++数据类型，其中向量和矩阵都是大的float数组。OpenGL没有声明的是这些变量间的<def>间距</def>(Spacing)。这允许硬件能够在它认为合适的位置放置变量。比如说，一些硬件可能会将一个<fun>vec3</fun>放置在<fun>float</fun>边上。不是所有的硬件都能这样处理，可能会在附加这个<fun>float</fun>之前，先将<fun>vec3</fun>填充(Pad)为一个4个float的数组。这个特性本身很棒，但是会对我们造成麻烦。
 
-GLSL 默认使用的uniform内存布局叫做共享布局(shared layout)，叫共享是因为一旦偏移量被硬件定义，它们就会持续地被多个程序所共享。使用共享布局，GLSL可以为了优化而重新放置uniform变量，只要变量的顺序保持完整。因为我们不知道每个uniform变量的偏移量是多少，所以我们也就不知道如何精确地填充uniform缓冲。我们可以使用像`glGetUniformIndices`这样的函数来查询这个信息，但是这超出了本节教程的范围。
+默认情况下，GLSL会使用一个叫做<def>共享</def>(Shared)布局的Uniform内存布局，共享是因为一旦硬件定义了偏移量，它们在多个程序中是**共享**并一致的。使用共享布局时，GLSL是可以为了优化而对uniform变量的位置进行变动的，只要变量的顺序保持不变。因为我们无法知道每个uniform变量的偏移量，我们也就不知道如何准确地填充我们的Uniform缓冲了。我们能够使用像是<fun>glGetUniformIndices</fun>这样的函数来查询这个信息，但这超出本节的范围了。
 
-由于共享布局给我们做了一些空间优化。通常在实践中并不适用分享布局，而是使用std140布局。std140通过一系列的规则的规范声明了它们各自的偏移量，std140布局为每个变量类型显式地声明了内存的布局。由于被显式的提及，我们就可以手工算出每个变量的偏移量。
+虽然共享布局给了我们很多节省空间的优化，但是我们需要查询每个uniform变量的偏移量，这会产生非常多的工作量。通常的做法是，不使用共享布局，而是使用<def>std140</def>布局。std140布局声明了每个变量的偏移量都是由一系列规则所决定的，这**显式地**声明了每个变量类型的内存布局。由于这是显式提及的，我们可以手动计算出每个变量的偏移量。
 
-每个变量都有一个基线对齐(base alignment)，它等于在一个uniform块中这个变量所占的空间（包含边距），这个基线对齐是使用std140布局原则计算出来的。然后，我们为每个变量计算出它的对齐偏移(aligned offset)，这是一个变量从块（block）开始处的字节偏移量。变量对齐的字节偏移一定等于它的基线对齐的倍数。
+每个变量都有一个<def>基准对齐量</def>(Base Alignment)，它等于一个变量在Uniform块中所占据的空间（包括填充量(Padding)），这个基准对齐量是使用std140布局的规则计算出来的。接下来，对每个变量，我们再计算它的<def>对齐偏移量</def>(Aligned Offset)，它是一个变量从块起始位置的字节偏移量。一个变量的对齐字节偏移量**必须**等于基准对齐量的倍数。
 
-准确的布局规则可以[在OpenGL的uniform缓冲规范](http://www.opengl.org/registry/specs/ARB/uniform_buffer_object.txt)中得到，但我们会列出最常见的规范。GLSL中每个变量类型比如int、float和bool被定义为4字节，每4字节被表示为N。
+布局规则的原文可以在OpenGL的Uniform缓冲规范[这里](http://www.opengl.org/registry/specs/ARB/uniform_buffer_object.txt)找到，但我们将会在下面列出最常见的规则。GLSL中的每个变量，比如说<fun>int</fun>、<fun>float</fun>和<fun>bool</fun>，都被定义为4字节量。每4个字节将会用一个`N`来表示。
 
-类型	    | 布局规范
+类型	    | 布局规则
          ---|---
-像int和bool这样的标量 |	每个标量的基线为N
-向量      |	每个向量的基线是2N或4N大小。这意味着vec3的基线为4N
-标量与向量数组	| 每个元素的基线与vec4的相同
-矩阵  | 被看做是存储着大量向量的数组，每个元素的基数与vec4相同
-结构体 | 根据以上规则计算其各个元素，并且间距必须是vec4基线的倍数
+标量，比如<fun>int</fun>和<fun>bool</fun> |	每个标量的基准对齐量为N。
+向量      |	2N或者4N。这意味着<fun>vec3</fun>的基准对齐量为4N。
+标量或向量的数组	| 每个元素的基准对齐量与<fun>vec4</fun>的相同。
+矩阵  | 储存为列向量的数组，每个向量的基准对齐量与<fun>vec4</fun>的相同。
+结构体 | 等于所有元素根据规则计算后的大小，但会填充到<fun>vec4</fun>大小的倍数。
 
-像OpenGL大多数规范一样，举个例子就很容易理解。再次利用之前介绍的uniform块`ExampleBlock`，我们用std140布局，计算它的每个成员的aligned offset（对齐偏移）：
+和OpenGL大多数的规范一样，使用例子就能更容易地理解。我们会使用之前引入的那个叫做<var>ExampleBlock</var>的Uniform块，并使用std140布局计算出每个成员的对齐偏移量：
 
 ```c++
 layout (std140) uniform ExampleBlock
 {
-                     // base alignment ----------  // aligned offset
-    float value;     // 4                          // 0
-    vec3 vector;     // 16                         // 16 (必须是16的倍数，因此 4->16)
-    mat4 matrix;     // 16                         // 32  (第 0 行)
-                     // 16                         // 48  (第 1 行)
-                     // 16                         // 64  (第 2 行)
-                     // 16                         // 80  (第 3 行)
-    float values[3]; // 16 (数组中的标量与vec4相同)//96 (values[0])
-                     // 16                        // 112 (values[1])
-                     // 16                        // 128 (values[2])
-    bool boolean;    // 4                         // 144
-    int integer;     // 4                         // 148
-};
+                     // 基准对齐量       // 对齐偏移量
+    float value;     // 4               // 0 
+    vec3 vector;     // 16              // 16  (必须是16的倍数，所以 4->16)
+    mat4 matrix;     // 16              // 32  (列 0)
+                     // 16              // 48  (列 1)
+                     // 16              // 64  (列 2)
+                     // 16              // 80  (列 3)
+    float values[3]; // 16              // 96  (values[0])
+                     // 16              // 112 (values[1])
+                     // 16              // 128 (values[2])
+    bool boolean;    // 4               // 144
+    int integer;     // 4               // 148
+}; 
 ```
 
-尝试自己计算出偏移量，把它们和表格对比，你可以把这件事当作一个练习。使用计算出来的偏移量，根据std140布局规则，我们可以用`glBufferSubData`这样的函数，使用变量数据填充缓冲。虽然不是很高效，但std140布局可以保证在每个程序中声明的这个uniform块的布局保持一致。
+作为练习，尝试去自己计算一下偏移量，并和表格进行对比。使用计算后的偏移量值，根据std140布局的规则，我们就能使用像是<fun>glBufferSubData</fun>的函数将变量数据按照偏移量填充进缓冲中了。虽然std140布局不是最高效的布局，但它保证了内存布局在每个声明了这个Uniform块的程序中是一致的。
 
-通过在uniform块的定义前面添加`layout (std140)`声明，我们告诉OpenGL这个uniform块使用了std140布局。我们还有其它的另外两种布局可以选择，但它们都需要我们在填充缓冲之前查询每个的偏移量。前面我们已经见过的**共享**布局(Shared Layout)，还有一种则是**紧凑**布局(Packed Layout)。当我们使用紧凑布局的时候，不能保证这个布局在所有程序间能够保持一致（即并非共享），因为它允许编译器从uniform块中优化出去uniform变量，而具体优化出去的是哪个则根据着色器的不同会有所变化。
+通过在Uniform块定义之前添加`layout (std140)`语句，我们告诉OpenGL这个Uniform块使用的是std140布局。除此之外还可以选择两个布局，但它们都需要我们在填充缓冲之前先查询每个偏移量。我们已经见过`shared`布局了，剩下的一个布局是`packed`。当使用紧凑(Packed)布局时，是不能保证这个布局在每个程序中保持不变的（即非共享），因为它允许编译器去将uniform变量从Uniform块中优化掉，这在每个着色器中都可能是不同的。
 
-## 使用uniform缓冲
+## 使用Uniform缓冲
 
-我们讨论了uniform块在着色器中的定义和如何定义它们的内存布局，但是我们还没有讨论如何使用它们。
+我们已经讨论了如何在着色器中定义Uniform块，并设定它们的内存布局了，但我们还没有讨论该如何使用它们。
 
-首先我们需要创建一个uniform缓冲对象，这要使用`glGenBuffers`来完成。当我们拥有了一个缓冲对象，我们就把它绑定到`GL_UNIFORM_BUFFER`目标上，调用`glBufferData`来给它分配足够的空间。
+首先，我们需要调用<fun>glGenBuffers</fun>，创建一个Uniform缓冲对象。一旦我们有了一个缓冲对象，我们需要将它绑定到<var>GL_UNIFORM_BUFFER</var>目标，并调用<fun>glBufferData</fun>，分配足够的内存。
 
 ```c++
-GLuint uboExampleBlock;
+unsigned int uboExampleBlock;
 glGenBuffers(1, &uboExampleBlock);
 glBindBuffer(GL_UNIFORM_BUFFER, uboExampleBlock);
-glBufferData(GL_UNIFORM_BUFFER, 150, NULL, GL_STATIC_DRAW); // 分配150个字节的内存空间
+glBufferData(GL_UNIFORM_BUFFER, 152, NULL, GL_STATIC_DRAW); // 分配152字节的内存
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
-现在任何时候当我们打算往缓冲中更新或插入数据，我们就绑定到`uboExampleBlock`上，并使用`glBufferSubData`来更新它的内存。我们只需要更新这个uniform缓冲一次，所有的使用这个缓冲着色器就都会使用它更新的数据了。但是，OpenGL是如何知道哪个uniform缓冲对应哪个uniform块呢？
+现在，每当我们需要对缓冲更新或者插入数据，我们都会绑定到<var>uboExampleBlock</var>，并使用<fun>glBufferSubData</fun>来更新它的内存。我们只需要更新这个Uniform缓冲一次，所有使用这个缓冲的着色器就都使用的是更新后的数据了。但是，如何才能让OpenGL知道哪个Uniform缓冲对应的是哪个Uniform块呢？
 
-在OpenGL环境（context）中，定义了若干绑定点（binding points），在哪儿我们可以把一个uniform缓冲链接上去。当我们创建了一个uniform缓冲，我们把它链接到一个这个绑定点上，我们也把着色器中uniform块链接到同一个绑定点上，这样就把它们链接到一起了。下面的图标表示了这点：
+在OpenGL上下文中，定义了一些<def>绑定点</def>(Binding Point)，我们可以将一个Uniform缓冲链接至它。在创建Uniform缓冲之后，我们将它绑定到其中一个绑定点上，并将着色器中的Uniform块绑定到相同的绑定点，把它们连接到一起。下面的这个图示展示了这个：
 
 ![](../img/04/08/advanced_glsl_binding_points.png)
 
-你可以看到，我们可以将多个uniform缓冲绑定到不同绑定点上。因为着色器A和着色器B都有一个链接到同一个绑定点0的uniform块，它们的uniform块分享同样的uniform数据—`uboMatrices`有一个前提条件是两个着色器必须都定义了Matrices这个uniform块。
+你可以看到，我们可以绑定多个Uniform缓冲到不同的绑定点上。因为着色器A和着色器B都有一个链接到绑定点0的Uniform块，它们的Uniform块将会共享相同的uniform数据，<var>uboMatrices</var>，前提条件是两个着色器都定义了相同的<var>Matrices</var> Uniform块。
 
-我们调用`glUniformBlockBinding`函数来把uniform块设置到一个特定的绑定点上。函数的第一个参数是一个程序对象，接着是一个uniform块索引（uniform block index）和打算链接的绑定点。uniform块索引是一个着色器中定义的uniform块的索引位置，可以调用`glGetUniformBlockIndex`来获取这个值，这个函数接收一个程序对象和uniform块的名字。我们可以从图表设置Lights这个uniform块链接到绑定点2：
-
-```c++
-GLuint lights_index = glGetUniformBlockIndex(shaderA.Program, "Lights");
-glUniformBlockBinding(shaderA.Program, lights_index, 2);
-```
-
-注意，我们必须在每个着色器中重复做这件事。
-
-从OpenGL4.2起，也可以在着色器中通过添加另一个布局标识符来储存一个uniform块的绑定点，就不用我们调用`glGetUniformBlockIndex`和`glUniformBlockBinding`了。下面的代表显式设置了Lights这个uniform块的绑定点：
-
+为了将Uniform块绑定到一个特定的绑定点中，我们需要调用<fun>glUniformBlockBinding</fun>函数，它的第一个参数是一个程序对象，之后是一个Uniform块索引和链接到的绑定点。<def>Uniform块索引</def>(Uniform Block Index)是着色器中已定义Uniform块的位置值索引。这可以通过调用<fun>glGetUniformBlockIndex</fun>来获取，它接受一个程序对象和Uniform块的名称。我们可以用以下方式将图示中的<var>Lights</var> Uniform块链接到绑定点2：
 
 ```c++
-layout(std140, binding = 2) uniform Lights { ... };
+unsigned int lights_index = glGetUniformBlockIndex(shaderA.ID, "Lights");   
+glUniformBlockBinding(shaderA.ID, lights_index, 2);
 ```
 
-然后我们还需要把uniform缓冲对象绑定到同样的绑定点上，这个可以使用`glBindBufferBase`或`glBindBufferRange`来完成。
+注意我们需要对**每个**着色器重复这一步骤。
+
+!!! important
+
+	从OpenGL 4.2版本起，你也可以添加一个布局标识符，显式地将Uniform块的绑定点储存在着色器中，这样就不用再调用<fun>glGetUniformBlockIndex</fun>和<fun>glUniformBlockBinding</fun>了。下面的代码显式地设置了<var>Lights</var> Uniform块的绑定点。
+
+		layout(std140, binding = 2) uniform Lights { ... };
+
+接下来，我们还需要绑定Uniform缓冲对象到相同的绑定点上，这可以使用<fun>glBindBufferBase</fun>或<fun>glBindBufferRange</fun>来完成。
 
 ```c++
-glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboExampleBlock);
-// 或者
-glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboExampleBlock, 0, 150);
+glBindBufferBase(GL_UNIFORM_BUFFER, 2, uboExampleBlock); 
+// 或
+glBindBufferRange(GL_UNIFORM_BUFFER, 2, uboExampleBlock, 0, 152);
 ```
 
-函数`glBindBufferBase`接收一个目标、一个绑定点索引和一个uniform缓冲对象作为它的参数。这个函数把`uboExampleBlock`链接到绑定点2上面，自此绑定点所链接的两端都链接在一起了。你还可以使用`glBindBufferRange`函数，这个函数还需要一个偏移量和大小作为参数，这样你就可以只把一定范围的uniform缓冲绑定到一个绑定点上了。使用`glBindBufferRage`函数，你能够将多个不同的uniform块链接到同一个uniform缓冲对象上。
+<fun>glBindbufferBase</fun>需要一个目标，一个绑定点索引和一个Uniform缓冲对象作为它的参数。这个函数将<var>uboExampleBlock</var>链接到绑定点2上，自此，绑定点的两端都链接上了。你也可以使用<fun>glBindBufferRange</fun>函数，它需要一个附加的偏移量和大小参数，这样子你可以绑定Uniform缓冲的特定一部分到绑定点中。通过使用<fun>glBindBufferRange</fun>函数，你可以让多个不同的Uniform块绑定到同一个Uniform缓冲对象上。
 
-现在所有事情都做好了，我们可以开始向uniform缓冲添加数据了。我们可以使用`glBufferSubData`将所有数据添加为一个单独的字节数组或者更新缓冲的部分内容，只要我们愿意。为了更新uniform变量boolean，我们可以这样更新uniform缓冲对象：
+现在，所有的东西都配置完毕了，我们可以开始向Uniform缓冲中添加数据了。只要我们需要，就可以使用<fun>glBufferSubData</fun>函数，用一个字节数组添加所有的数据，或者更新缓冲的一部分。要想更新uniform变量<var>boolean</var>，我们可以用以下方式更新Uniform缓冲对象：
 
 ```c++
 glBindBuffer(GL_UNIFORM_BUFFER, uboExampleBlock);
-GLint b = true; // GLSL中的布尔值是4个字节，因此我们将它创建为一个4字节的整数
-glBufferSubData(GL_UNIFORM_BUFFER, 142, 4, &b);
+int b = true; // GLSL中的bool是4字节的，所以我们将它存为一个integer
+glBufferSubData(GL_UNIFORM_BUFFER, 144, 4, &b); 
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
-同样的处理也能够应用到uniform块中其他uniform变量上。
+同样的步骤也能应用到Uniform块中其它的uniform变量上，但需要使用不同的范围参数。
 
 ## 一个简单的例子
 
-我们来师范一个真实的使用uniform缓冲对象的例子。如果我们回头看看前面所有演示的代码，我们一直使用了3个矩阵：投影、视图和模型矩阵。所有这些矩阵中，只有模型矩阵是频繁变化的。如果我们有多个着色器使用了这些矩阵，我们可能最好还是使用uniform缓冲对象。
+所以，我们来展示一个真正使用Uniform缓冲对象的例子。如果我们回头看看之前所有的代码例子，我们不断地在使用3个矩阵：投影、观察和模型矩阵。在所有的这些矩阵中，只有模型矩阵会频繁变动。如果我们有多个着色器使用了这同一组矩阵，那么使用Uniform缓冲对象可能会更好。
 
-我们将把投影和视图矩阵储存到一个uniform块中，它被取名为Matrices。我们不打算储存模型矩阵，因为模型矩阵会频繁在着色器间更改，所以使用uniform缓冲对象真的不会带来什么好处。
+我们会将投影和模型矩阵存储到一个叫做<var>Matrices</var>的Uniform块中。我们不会将模型矩阵存在这里，因为模型矩阵在不同的着色器中会不断改变，所以使用Uniform缓冲对象并不会带来什么好处。
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
+layout (location = 0) in vec3 aPos;
 
 layout (std140) uniform Matrices
 {
@@ -386,81 +382,79 @@ uniform mat4 model;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 ```
 
-这儿没什么特别的，除了我们现在使用了一个带有std140布局的uniform块。我们在例程中将显示4个立方体，每个立方体都使用一个不同的着色器程序。4个着色器程序使用同样的顶点着色器，但是它们将使用各自的片段着色器，每个片段着色器输出一个单色。
+这里没什么特别的，除了我们现在使用的是一个std140布局的Uniform块。我们将在例子程序中，显示4个立方体，每个立方体都是使用不同的着色器程序渲染的。这4个着色器程序将使用相同的顶点着色器，但使用的是不同的片段着色器，每个着色器会输出不同的颜色。
 
-首先，我们把顶点着色器的uniform块设置为绑定点0。注意，我们必须为每个着色器做这件事。
+首先，我们将顶点着色器的Uniform块设置为绑定点0。注意我们需要对每个着色器都设置一遍。
 
 ```c++
-GLuint uniformBlockIndexRed = glGetUniformBlockIndex(shaderRed.Program, "Matrices");
-GLuint uniformBlockIndexGreen = glGetUniformBlockIndex(shaderGreen.Program, "Matrices");
-GLuint uniformBlockIndexBlue = glGetUniformBlockIndex(shaderBlue.Program, "Matrices");
-GLuint uniformBlockIndexYellow = glGetUniformBlockIndex(shaderYellow.Program, "Matrices");  
-
-glUniformBlockBinding(shaderRed.Program, uniformBlockIndexRed, 0);
-glUniformBlockBinding(shaderGreen.Program, uniformBlockIndexGreen, 0);
-glUniformBlockBinding(shaderBlue.Program, uniformBlockIndexBlue, 0);
-glUniformBlockBinding(shaderYellow.Program, uniformBlockIndexYellow, 0);
+unsigned int uniformBlockIndexRed    = glGetUniformBlockIndex(shaderRed.ID, "Matrices");
+unsigned int uniformBlockIndexGreen  = glGetUniformBlockIndex(shaderGreen.ID, "Matrices");
+unsigned int uniformBlockIndexBlue   = glGetUniformBlockIndex(shaderBlue.ID, "Matrices");
+unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(shaderYellow.ID, "Matrices");  
+  
+glUniformBlockBinding(shaderRed.ID,    uniformBlockIndexRed, 0);
+glUniformBlockBinding(shaderGreen.ID,  uniformBlockIndexGreen, 0);
+glUniformBlockBinding(shaderBlue.ID,   uniformBlockIndexBlue, 0);
+glUniformBlockBinding(shaderYellow.ID, uniformBlockIndexYellow, 0);
 ```
 
-然后，我们创建真正的uniform缓冲对象，并把缓冲绑定到绑定点0：
+接下来，我们创建Uniform缓冲对象本身，并将其绑定到绑定点0：
 
 ```c++
-GLuint uboMatrices
+unsigned int uboMatrices
 glGenBuffers(1, &uboMatrices);
-
+  
 glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
+  
 glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
 ```
 
-我们先为缓冲分配足够的内存，它等于glm::mat4的2倍。GLM的矩阵类型的大小直接对应于GLSL的mat4。然后我们把一个特定范围的缓冲链接到绑定点0，这个例子中应该是整个缓冲。
+首先我们为缓冲分配了足够的内存，它等于<fun>glm::mat4</fun>大小的两倍。GLM矩阵类型的大小直接对应于GLSL中的<fun>mat4</fun>。接下来，我们将缓冲中的特定范围（在这里是整个缓冲）链接到绑定点0。
 
-现在所有要做的事只剩下填充缓冲了。如果我们把视野（ field of view）值保持为恒定的投影矩阵（这样就不会有摄像机缩放），我们只要在程序中定义它一次就行了，这也意味着我们只需向缓冲中把它插入一次。因为我们已经在缓冲对象中分配了足够的内存，我们可以在我们进入游戏循环之前使用`glBufferSubData`来储存投影矩阵：
+剩余的就是填充这个缓冲了。如果我们将投影矩阵的**视野**(Field of View)值保持不变（所以摄像机就没有缩放了），我们只需要将其在程序中定义一次——这也意味着我们只需要将它插入到缓冲中一次。因为我们已经为缓冲对象分配了足够的内存，我们可以使用<fun>glBufferSubData</fun>在进入渲染循环之前存储投影矩阵：
 
 ```c++
-glm::mat4 projection = glm::perspective(45.0f, (float)width/(float)height, 0.1f, 100.0f);
+glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
 glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
 glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
-这里我们用投影矩阵储存了uniform缓冲的前半部分。在我们在每次渲染迭代绘制物体前，我们用视图矩阵更新缓冲的第二个部分：
+这里我们将投影矩阵储存在Uniform缓冲的前半部分。在每次渲染迭代中绘制物体之前，我们会将观察矩阵更新到缓冲的后半部分：
 
 ```c++
-glm::mat4 view = camera.GetViewMatrix();
+glm::mat4 view = camera.GetViewMatrix();	       
 glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-glBufferSubData(
-  GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
 glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
-这就是uniform缓冲对象。每个包含着`Matrices`这个uniform块的顶点着色器都将对应`uboMatrices`所储存的数据。所以如果我们现在使用4个不同的着色器绘制4个立方体，它们的投影和视图矩阵都是一样的：
+Uniform缓冲对象的部分就结束了。每个包含了<var>Matrices</var>这个Uniform块的顶点着色器将会包含储存在<var>uboMatrices</var>中的数据。所以，如果我们现在要用4个不同的着色器绘制4个立方体，它们的投影和观察矩阵都会是一样的。
 
 ```c++
 glBindVertexArray(cubeVAO);
-shaderRed.Use();
+shaderRed.use();
 glm::mat4 model;
-model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f)); // 移动到左上方
-glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-glDrawArrays(GL_TRIANGLES, 0, 36);
+model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));	// 移动到左上角
+shaderRed.setMat4("model", model);
+glDrawArrays(GL_TRIANGLES, 0, 36);        
 // ... 绘制绿色立方体
 // ... 绘制蓝色立方体
-// ... 绘制黄色立方体
-glBindVertexArray(0);
+// ... 绘制黄色立方体 
 ```
 
-我们只需要在去设置一个`model`的uniform即可。在一个像这样的场景中使用uniform缓冲对象在每个着色器中可以减少uniform的调用。最后效果看起来像这样：
+唯一需要设置的uniform只剩<var>model</var> uniform了。在像这样的场景中使用Uniform缓冲对象会让我们在每个着色器中都剩下一些uniform调用。最终的结果会是这样的：
 
 ![](../img/04/08/advanced_glsl_uniform_buffer_objects.png)
 
-通过改变模型矩阵，每个立方体都移动到窗口的一边，由于片段着色器不同，物体的颜色也不同。这是一个相对简单的场景，我们可以使用uniform缓冲对象，但是任何大型渲染程序有成百上千的活动着色程序，彼时uniform缓冲对象就会闪闪发光了。
+因为修改了模型矩阵，每个立方体都移动到了窗口的一边，并且由于使用了不同的片段着色器，它们的颜色也不同。这只是一个很简单的情景，我们可能会需要使用Uniform缓冲对象，但任何大型的渲染程序都可能同时激活有上百个着色器程序，这时候Uniform缓冲对象的优势就会很大地体现出来了。
 
-你可以[在这里获得例程的完整源码](http://www.learnopengl.com/code_viewer.php?code=advanced/advanced_glsl_uniform_buffer_objects)。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/8.advanced_glsl_ubo/advanced_glsl_ubo.cpp)找到uniform例子程序的完整源代码。
 
-uniform缓冲对象比单独的uniform有很多好处。第一，一次设置多个uniform比一次设置一个速度快。第二，如果你打算改变一个横跨多个着色器的uniform，在uniform缓冲中只需更改一次。最后一个好处可能不是很明显，使用uniform缓冲对象你可以在着色器中使用更多的uniform。OpenGL有一个对可使用uniform数据的数量的限制，可以用`GL_MAX_VERTEX_UNIFORM_COMPONENTS`来获取。当使用uniform缓冲对象中，这个限制的阈限会更高。所以无论何时，你达到了uniform的最大使用数量（比如做骨骼动画的时候），你可以使用uniform缓冲对象。
+Uniform缓冲对象比起独立的uniform有很多好处。第一，一次设置很多uniform会比一个一个设置多个uniform要快很多。第二，比起在多个着色器中修改同样的uniform，在Uniform缓冲中修改一次会更容易一些。最后一个好处可能不会立即显现，如果使用Uniform缓冲对象的话，你可以在着色器中使用更多的uniform。OpenGL限制了它能够处理的uniform数量，这可以通过<var>GL_MAX_VERTEX_UNIFORM_COMPONENTS</var>来查询。当使用Uniform缓冲对象时，最大的数量会更高。所以，当你达到了uniform的最大数量时（比如再做骨骼动画(Skeletal Animation)的时候），你总是可以选择使用Uniform缓冲对象。

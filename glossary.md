@@ -366,6 +366,36 @@
 - Single-side Refraction：单面折射
 - Dynamic Environment Mapping：动态环境映射
 
+## 04-07
+
+- Buffer Target：缓冲目标
+- Reserve（内存）：预留
+- Unmapping：解除映射
+- Interleave：交错
+- Uniform Buffer Object：Uniform缓冲对象
+
+## 04-08
+
+- Built-in Variable：内建变量
+- Particle Generation：粒子生成
+- Window Space：窗口空间
+- Read-only：只读
+- Depth Condition：深度条件
+- Interface Block：接口块
+- Geometry Shader：几何着色器
+- Uniform Block：Uniform块
+- Uniform Block Layout：Uniform块布局
+- Spacing：间距
+- Shared Layout：共享布局
+- Pad：填充
+- Padding：填充量
+- Base Alignment：基准对齐量
+- Aligned Offset：对齐偏移量
+- Packed Layout：紧凑布局
+- Binding Point：绑定点
+- Uniform Block Index：Uniform块索引
+- Skeletal Animation：骨骼动画
+
 ## 06-01
 
 - Debugging：调试
