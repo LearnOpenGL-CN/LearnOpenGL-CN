@@ -302,7 +302,7 @@ color = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);
 纹理单元的主要目的是让我们在着色器中可以使用多于一个的纹理。通过把纹理单元赋值给采样器，我们可以一次绑定多个纹理，只要我们首先激活对应的纹理单元。就像<fun>glBindTexture</fun>一样，我们可以使用<fun>glActiveTexture</fun>激活纹理单元，传入我们需要使用的纹理单元：
 
 ```c++
-glActiveTexture(GL_TEXTURE0); //在绑定纹理之前先激活纹理单元
+glActiveTexture(GL_TEXTURE, 0); //在绑定纹理之前先激活纹理单元
 glBindTexture(GL_TEXTURE_2D, texture);
 ```
 
