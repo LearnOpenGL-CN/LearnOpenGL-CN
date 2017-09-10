@@ -396,6 +396,16 @@
 - Uniform Block Index：Uniform块索引
 - Skeletal Animation：骨骼动画
 
+## 04-09
+
+- Qualifier：修饰符
+- Emitted：发射出的
+- Emit：发射
+- Voxel：体素
+- Explode：爆破
+- Implode：向内爆炸
+- Fur：毛发
+
 ## 06-01
 
 - Debugging：调试
