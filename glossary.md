@@ -406,6 +406,15 @@
 - Implode：向内爆炸
 - Fur：毛发
 
+## 04-10
+
+- CPU to GPU Bus：CPU到GPU总线
+- Instance：实例
+- Instancing：实例化
+- Instance Count：实例数量
+- Instanced Array：实例化数组
+- Attribute Divisor：属性除数
+
 ## 06-01
 
 - Debugging：调试
