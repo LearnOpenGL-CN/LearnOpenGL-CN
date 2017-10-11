@@ -398,7 +398,7 @@ vector<Texture> specularMaps = this->loadMaterialTextures(
 
 ```c++
 vec3 T = normalize(vec3(model * vec4(tangent, 0.0)));
-vec3 N = normalize(vec3(model * vec4(tangent, 0.0)));
+vec3 N = normalize(vec3(model * vec4(normal, 0.0)));
 // re-orthogonalize T with respect to N
 T = normalize(T - dot(T, N) * N);
 // then retrieve perpendicular vector B with the cross product of T and N
