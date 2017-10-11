@@ -39,7 +39,7 @@ int main()
 当我们特别谈论到顶点着色器的时候，每个输入变量也叫<def>顶点属性</def>(Vertex Attribute)。我们能声明的顶点属性是有上限的，它一般由硬件来决定。OpenGL确保至少有16个包含4分量的顶点属性可用，但是有些硬件或许允许更多的顶点属性，你可以查询<var>GL_MAX_VERTEX_ATTRIBS</var>来获取具体的上限：
 
 ```c++
-unsigned int nrAttributes;
+int nrAttributes;
 glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 ```
@@ -405,15 +405,15 @@ if(!success)
 [...]
   
 // 着色器程序
-this->Program = glCreateProgram();
-glAttachShader(this->Program, vertex);
-glAttachShader(this->Program, fragment);
-glLinkProgram(this->Program);
+ID = glCreateProgram();
+glAttachShader(ID, vertex);
+glAttachShader(ID, fragment);
+glLinkProgram(ID);
 // 打印连接错误（如果有的话）
-glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
+glGetProgramiv(ID, GL_LINK_STATUS, &success);
 if(!success)
 {
-    glGetProgramInfoLog(this->Program, 512, NULL, infoLog);
+    glGetProgramInfoLog(ID, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 }
   
@@ -425,9 +425,9 @@ glDeleteShader(fragment);
 <fun>use</fun>函数非常简单：
 
 ```c++
-void Use()
-{
-    glUseProgram(this->Program);
+void use() 
+{ 
+    glUseProgram(ID);
 }
 ```
 
@@ -435,7 +435,7 @@ uniform的setter函数也很类似：
 
 ```c++
 void setBool(const std::string &name, bool value) const
-{         
+{
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value); 
 }
 void setInt(const std::string &name, int value) const
@@ -445,7 +445,7 @@ void setInt(const std::string &name, int value) const
 void setFloat(const std::string &name, float value) const
 { 
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
-}
+} 
 ```
 
 现在我们就写完了一个完整的[着色器类](https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h)。使用这个着色器类很简单；只要创建一个着色器对象，从那一点开始我们就可以开始使用了：
