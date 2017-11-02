@@ -130,8 +130,6 @@ gl_FragDepth = 0.0; // 这个片段现在的深度值为 0.0
 
 在写入<var>gl_FragDepth</var>时，你就需要考虑到它所带来的性能影响。然而，从OpenGL 4.2起，我们仍可以对两者进行一定的调和，在片段着色器的顶部使用<def>深度条件</def>(Depth Condition)重新声明<var>gl_FragDepth</var>变量：
 
-因此，你需要考虑到`gl_FragDepth`写入所带来的性能的下降。然而从OpenGL4.2起，我们仍然可以对二者进行一定的调和，这需要在片段着色器的顶部使用深度条件（depth condition）来重新声明`gl_FragDepth`：
-
 ```c++
 layout (depth_<condition>) out float gl_FragDepth;
 ```
