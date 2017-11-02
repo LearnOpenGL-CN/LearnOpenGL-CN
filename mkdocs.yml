@@ -103,6 +103,4 @@ extra_css:
 
 docs_dir: 'docs'
 
-theme:
-    name: 'yeti'
-    custom_dir: 'yeti'
+theme_dir: 'yeti'

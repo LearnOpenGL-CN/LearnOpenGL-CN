@@ -4,7 +4,7 @@ python:
   - 3.4
 
 install:
-  - pip install mkdocs
+  - pip install mkdocs == 0.16.3
   - python setup.py install
 
 script:
