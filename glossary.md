@@ -96,7 +96,7 @@
 - Global：全局
 - Query：查询
 - Overload：重载
-- Rasterizer：光栅
+- Rasterizer：光栅，光栅器
 - Fragment Interpolation：片段插值
 - Interpolate：插值
 - Preprocessor Directives：预处理指令
@@ -414,6 +414,21 @@
 - Instance Count：实例数量
 - Instanced Array：实例化数组
 - Attribute Divisor：属性除数
+
+## 04-11
+
+- Jagged Edge：锯齿边缘
+- Aliasing：走样
+- Anti-aliasing：抗锯齿
+- Super Sample Anti-aliasing, SSAA：超采样抗锯齿
+- Downsample：下采样
+- Multisample Anti-aliasing, MSAA：多重采样抗锯齿
+- Sample Point：采样点
+- Subsample：子采样点
+- Multisample Buffer：多重采样缓冲
+- Hint (GLFW)：提示
+- Resolve：还原
+- Blit：位块传送
 
 ## 06-01
 
