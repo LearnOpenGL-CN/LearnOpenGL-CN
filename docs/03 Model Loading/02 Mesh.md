@@ -163,14 +163,12 @@ void Draw(Shader shader)
     {
         glActiveTexture(GL_TEXTURE0 + i); // 在绑定之前激活相应的纹理单元
         // 获取纹理序号（diffuse_textureN 中的 N）
-        stringstream ss;
         string number;
         string name = textures[i].type;
         if(name == "texture_diffuse")
-            ss << diffuseNr++; // 将 unsigned int 插入到流中
+            number = std::to_string(diffuseNr++);
         else if(name == "texture_specular")
-            ss << specularNr++; // 将 unsigned int 插入到流中
-        number = ss.str(); 
+            number = std::to_string(specularNr++);
 
         shader.setFloat(("material." + name + number).c_str(), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
@@ -184,7 +182,7 @@ void Draw(Shader shader)
 }
 ```
 
-这并不是最漂亮的代码，但这部分要归咎于C++[转换](http://www.cplusplus.com/articles/D9j2Nwbp/)int到string类型时太丑了。我们首先计算了每个纹理类型的N-分量，并将其拼接到纹理类型字符串上，来获取对应的uniform名称。接下来我们查找对应的采样器，将它的位置值设置为当前激活的纹理单元，并绑定纹理。这也是我们在<fun>Draw</fun>函数中需要着色器的原因。我们也将`"material."`添加到了最终的uniform名称中，因为我们希望将纹理储存在一个材质结构体中（这在每个实现中可能都不同）。
+我们首先计算了每个纹理类型的N-分量，并将其拼接到纹理类型字符串上，来获取对应的uniform名称。接下来我们查找对应的采样器，将它的位置值设置为当前激活的纹理单元，并绑定纹理。这也是我们在<fun>Draw</fun>函数中需要着色器的原因。我们也将`"material."`添加到了最终的uniform名称中，因为我们希望将纹理储存在一个材质结构体中（这在每个实现中可能都不同）。
 
 !!! Important
 

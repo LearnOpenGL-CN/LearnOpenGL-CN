@@ -298,7 +298,7 @@ vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string
         bool skip = false;
         for(unsigned int j = 0; j < textures_loaded.size(); j++)
         {
-            if(std::strcmp(textures_loaded[j].path.C_Str(), str.C_Str()) == 0)
+            if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
             {
                 textures.push_back(textures_loaded[j]);
                 skip = true; 
@@ -310,7 +310,7 @@ vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string
             Texture texture;
             texture.id = TextureFromFile(str.C_Str(), directory);
             texture.type = typeName;
-            texture.path = str;
+            texture.path = str.C_Str();
             textures.push_back(texture);
             textures_loaded.push_back(texture); // 添加到已加载的纹理中
         }
