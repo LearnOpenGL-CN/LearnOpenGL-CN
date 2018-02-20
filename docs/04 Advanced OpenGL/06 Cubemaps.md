@@ -151,8 +151,8 @@ vector<std::string> faces;
     "left.jpg",
     "top.jpg",
     "bottom.jpg",
-    "back.jpg",
-    "front.jpg"
+    "front.jpg",
+    "back.jpg"
 };
 unsigned int cubemapTexture = loadCubemap(faces);
 ```
