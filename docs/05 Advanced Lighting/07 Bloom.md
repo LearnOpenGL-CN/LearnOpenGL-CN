@@ -179,7 +179,7 @@ void main()
 GLuint pingpongFBO[2];
 GLuint pingpongBuffer[2];
 glGenFramebuffers(2, pingpongFBO);
-glGenTextures(2, pingpongColorbuffers);
+glGenTextures(2, pingpongBuffer);
 for (GLuint i = 0; i < 2; i++)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
