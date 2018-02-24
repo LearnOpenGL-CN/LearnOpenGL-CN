@@ -135,3 +135,9 @@ img.patreon {
 	max-height: 13px;
 	margin-bottom: 2px;
 }
+
+img.paypal {
+	border: none;
+	display: inline-block;
+	max-height: 13px;
+}

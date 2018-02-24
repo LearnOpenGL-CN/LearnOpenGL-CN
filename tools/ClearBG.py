@@ -15,6 +15,7 @@
 """
 
 from PIL import Image
+from os.path import splitext
 
 file_name = input("Filename: ")
 r, g, b, a = map(int, input("Color(R G B A): ").split())
@@ -32,4 +33,4 @@ for x in range(0, img.size[0]):
         if pixel[x, y] == (r, g, b, 255):
             img.putpixel((x, y), (0, 0, 0, 0))
 
-img.save('noBG.png')
+img.save(splitext(file_name)[0] + '_noBG.png')

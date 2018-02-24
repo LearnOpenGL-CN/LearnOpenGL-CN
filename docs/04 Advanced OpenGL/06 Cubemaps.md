@@ -3,65 +3,62 @@
 原文     | [Cubemaps](http://learnopengl.com/#!Advanced-OpenGL/Cubemaps)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/)
-校对     | [Geequlim](http://geequlim.com)
+翻译     | Meow J
+校对     | 暂未校对
 
-我们之前一直使用的是2D纹理，还有更多的纹理类型我们没有探索过，本教程中我们讨论的纹理类型是将多个纹理组合起来映射到一个单一纹理，它就是**立方体贴图(Cube Map)**。
+我们已经使用2D纹理很长时间了，但除此之外仍有更多的纹理类型等着我们探索。在本节中，我们将讨论的是将多个纹理组合起来映射到一张纹理上的一种纹理类型：<def>立方体贴图</def>(Cube Map)。
 
-基本上说立方体贴图它包含6个2D纹理，这每个2D纹理是一个立方体（cube）的一个面，也就是说它是一个有贴图的立方体。你可能会奇怪这样的立方体有什么用？为什么费事地把6个独立纹理结合为一个单独的纹理，只使用6个各自独立的不行吗？这是因为立方体贴图有自己特有的属性，可以使用方向向量对它们索引和采样。想象一下，我们有一个1×1×1的单位立方体，有个以原点为起点的方向向量在它的中心。
-
-从立方体贴图上使用橘黄色向量采样一个纹理值看起来和下图有点像：
+简单来说，立方体贴图就是一个包含了6个2D纹理的纹理，每个2D纹理都组成了立方体的一个面：一个有纹理的立方体。你可能会奇怪，这样一个立方体有什么用途呢？为什么要把6张纹理合并到一张纹理中，而不是直接使用6个单独的纹理呢？立方体贴图有一个非常有用的特性，它可以通过一个方向向量来进行索引/采样。假设我们有一个1x1x1的单位立方体，方向向量的原点位于它的中心。使用一个橘黄色的方向向量来从立方体贴图上采样一个纹理值会像是这样：
 
 ![](../img/04/06/cubemaps_sampling.png)
 
 !!! Important
 
-        方向向量的大小无关紧要。一旦提供了方向，OpenGL就会获取方向向量触碰到立方体表面上的相应的纹理像素（texel），这样就返回了正确的纹理采样值。
+	方向向量的大小并不重要，只要提供了方向，OpenGL就会获取方向向量（最终）所击中的纹素，并返回对应的采样纹理值。
 
+如果我们假设将这样的立方体贴图应用到一个立方体上，采样立方体贴图所使用的方向向量将和立方体（插值的）顶点位置非常相像。这样子，只要立方体的中心位于原点，我们就能使用立方体的实际位置向量来对立方体贴图进行采样了。接下来，我们可以将所有顶点的纹理坐标当做是立方体的顶点位置。最终得到的结果就是可以访问立方体贴图上正确<def>面</def>(Face)纹理的一个纹理坐标。
 
-方向向量触碰到立方体表面的一点也就是立方体贴图的纹理位置，这意味着只要立方体的中心位于原点上，我们就可以使用立方体的位置向量来对立方体贴图进行采样。然后我们就可以获取所有顶点的纹理坐标，就和立方体上的顶点位置一样。所获得的结果是一个纹理坐标，通过这个纹理坐标就能获取到立方体贴图上正确的纹理。
+## 创建立方体贴图
 
-## 创建一个立方体贴图
-
-立方体贴图和其他纹理一样，所以要创建一个立方体贴图，在进行任何纹理操作之前，需要生成一个纹理，激活相应纹理单元然后绑定到合适的纹理目标上。这次要绑定到 `GL_TEXTURE_CUBE_MAP`纹理类型：
+立方体贴图是和其它纹理一样的，所以如果想创建一个立方体贴图的话，我们需要生成一个纹理，并将其绑定到纹理目标上，之后再做其它的纹理操作。这次要绑定到<var>GL_TEXTURE_CUBE_MAP</var>：
 
 ```c++
-GLuint textureID;
+unsigned int textureID;
 glGenTextures(1, &textureID);
 glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 ```
 
-由于立方体贴图包含6个纹理，立方体的每个面一个纹理，我们必须调用`glTexImage2D`函数6次，函数的参数和前面教程讲的相似。然而这次我们必须把纹理目标（target）参数设置为立方体贴图特定的面，这是告诉OpenGL我们创建的纹理是对应立方体哪个面的。因此我们便需要为立方体贴图的每个面调用一次 `glTexImage2D`。
+因为立方体贴图包含有6个纹理，每个面一个，我们需要调用<fun>glTexImage2D</fun>函数6次，参数和之前教程中很类似。但这一次我们将纹理目标(**target**)参数设置为立方体贴图的一个特定的面，告诉OpenGL我们在对立方体贴图的哪一个面创建纹理。这就意味着我们需要对立方体贴图的每一个面都调用一次<fun>glTexImage2D</fun>。
 
-由于立方体贴图有6个面，OpenGL就提供了6个不同的纹理目标，来应对立方体贴图的各个面。
+由于我们有6个面，OpenGL给我们提供了6个特殊的纹理目标，专门对应立方体贴图的一个面。
 
-纹理目标（Texture target）	   | 方位
-                            ---|---
-GL_TEXTURE_CUBE_MAP_POSITIVE_X |	右
-GL_TEXTURE_CUBE_MAP_NEGATIVE_X |	左
-GL_TEXTURE_CUBE_MAP_POSITIVE_Y |	上
-GL_TEXTURE_CUBE_MAP_NEGATIVE_Y |	下
-GL_TEXTURE_CUBE_MAP_POSITIVE_Z |	后
-GL_TEXTURE_CUBE_MAP_NEGATIVE_Z |	前
+纹理目标	   | 方位
+        ---|---
+`GL_TEXTURE_CUBE_MAP_POSITIVE_X` |	右
+`GL_TEXTURE_CUBE_MAP_NEGATIVE_X` |	左
+`GL_TEXTURE_CUBE_MAP_POSITIVE_Y` |	上
+`GL_TEXTURE_CUBE_MAP_NEGATIVE_Y` |	下
+`GL_TEXTURE_CUBE_MAP_POSITIVE_Z` |	后
+`GL_TEXTURE_CUBE_MAP_NEGATIVE_Z` |	前
 
-和很多OpenGL其他枚举一样，对应的int值都是连续增加的，所以我们有一个纹理位置的数组或vector，就能以 `GL_TEXTURE_CUBE_MAP_POSITIVE_X`为起始来对它们进行遍历，每次迭代枚举值加 `1`，这样循环所有的纹理目标效率较高：
+和OpenGL的很多枚举(Enum)一样，它们背后的<fun>int</fun>值是线性递增的，所以如果我们有一个纹理位置的数组或者vector，我们就可以从<var>GL_TEXTURE_CUBE_MAP_POSITIVE_X</var>开始遍历它们，在每个迭代中对枚举值加1，遍历了整个纹理目标：
 
 ```c++
-int width,height;
-unsigned char* image;  
-for(GLuint i = 0; i < textures_faces.size(); i++)
+int width, height, nrChannels;
+unsigned char *data;  
+for(unsigned int i = 0; i < textures_faces.size(); i++)
 {
-    image = SOIL_load_image(textures_faces[i], &width, &height, 0, SOIL_LOAD_RGB);
+    data = stbi_load(textures_faces[i].c_str(), &width, &height, &nrChannels, 0);
     glTexImage2D(
-        GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-        0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
+        GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+        0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
     );
 }
 ```
 
-这儿我们有个vector叫`textures_faces`，它包含立方体贴图所各个纹理的文件路径，并且以上表所列的顺序排列。它将为每个当前绑定的cubemp的每个面生成一个纹理。
+这里我们有一个叫做<var>textures_faces</var>的<fun>vector</fun>，它包含了立方体贴图所需的所有纹理路径，并以表中的顺序排列。这将为当前绑定的立方体贴图中的每个面生成一个纹理。
 
-由于立方体贴图和其他纹理没什么不同，我们也要定义它的环绕方式和过滤方式：
+因为立方体贴图和其它纹理没什么不同，我们也需要设定它的环绕和过滤方式：
 
 ```c++
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -71,105 +68,109 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 ```
 
-别被 `GL_TEXTURE_WRAP_R`吓到，它只是简单的设置了纹理的R坐标，R坐标对应于纹理的第三个维度（就像位置的z一样）。我们把放置方式设置为 `GL_CLAMP_TO_EDGE` ，由于纹理坐标在两个面之间，所以可能并不能触及哪个面（由于硬件限制），因此使用 `GL_CLAMP_TO_EDGE` 后OpenGL会返回它们的边界的值，尽管我们可能在两个两个面中间进行的采样。
+不要被<var>GL_TEXTURE_WRAP_R</var>吓到，它仅仅是为纹理的**R**坐标设置了环绕方式，它对应的是纹理的第三个维度（和位置的**z**一样）。我们将环绕方式设置为<var>GL_CLAMP_TO_EDGE</var>，这是因为正好处于两个面之间的纹理坐标可能不能击中一个面（由于一些硬件限制），所以通过使用<var>GL_CLAMP_TO_EDGE</var>，OpenGL将在我们对两个面之间采样的时候，永远返回它们的边界值。
 
-在绘制物体之前，将使用立方体贴图，而在渲染前我们要激活相应的纹理单元并绑定到立方体贴图上，这和普通的2D纹理没什么区别。
+在绘制使用立方体贴图的物体之前，我们要先激活对应的纹理单元，并绑定立方体贴图，这和普通的2D纹理没什么区别。
 
-在片段着色器中，我们也必须使用一个不同的采样器——**samplerCube**，用它来从`texture`函数中采样，但是这次使用的是一个`vec3`方向向量，取代`vec2`。下面是一个片段着色器使用了立方体贴图的例子：
+在片段着色器中，我们使用了一个不同类型的采样器，`samplerCube`，我们将使用<fun>texture</fun>函数使用它进行采样，但这次我们将使用一个`vec3`的方向向量而不是`vec2`。使用立方体贴图的片段着色器会像是这样的：
 
 ```c++
-in vec3 textureDir; // 用一个三维方向向量来表示立方体贴图纹理的坐标
-
-uniform samplerCube cubemap;  // 立方体贴图纹理采样器
+in vec3 textureDir; // 代表3D纹理坐标的方向向量
+uniform samplerCube cubemap; // 立方体贴图的纹理采样器
 
 void main()
-{
-    color = texture(cubemap, textureDir);
+{             
+    FragColor = texture(cubemap, textureDir);
 }
 ```
 
-看起来不错，但是何必这么做呢？因为恰巧使用立方体贴图可以简单的实现很多有意思的技术。其中之一便是著名的**天空盒(Skybox)**。
-
-
+看起来很棒，但为什么要用它呢？恰巧有一些很有意思的技术，使用立方体贴图来实现的话会简单多了。其中一个技术就是创建一个<def>天空盒</def>(Skybox)。
 
 # 天空盒
 
-天空盒(Skybox)是一个包裹整个场景的立方体，它由6个图像构成一个环绕的环境，给玩家一种他所在的场景比实际的要大得多的幻觉。比如有些在视频游戏中使用的天空盒的图像是群山、白云或者满天繁星。比如下面的夜空繁星的图像就来自《上古卷轴》：
+天空盒是一个包含了整个场景的（大）立方体，它包含周围环境的6个图像，让玩家以为他处在一个比实际大得多的环境当中。游戏中使用天空盒的例子有群山、白云或星空。下面这张截图中展示的是星空的天空盒，它来自于『上古卷轴3』：
 
 ![](../img/04/06/cubemaps_morrowind.jpg)
 
-你现在可能已经猜到立方体贴图完全满足天空盒的要求：我们有一个立方体，它有6个面，每个面需要一个贴图。上图中使用了几个夜空的图片给予玩家一种置身广袤宇宙的感觉，可实际上，他还是在一个小盒子之中。
+你可能现在已经猜到了，立方体贴图能完美满足天空盒的需求：我们有一个6面的立方体，每个面都需要一个纹理。在上面的图片中，他们使用了夜空的几张图片，让玩家产生其位于广袤宇宙中的错觉，但实际上他只是在一个小小的盒子当中。
 
-网上有很多这样的天空盒的资源。[这个网站](http://www.custommapmakers.org/skyboxes.php)就提供了很多。这些天空盒图像通常有下面的样式：
+你可以在网上找到很多像这样的天空盒资源。比如说这个[网站](http://www.custommapmakers.org/skyboxes.php)就提供了很多天空盒。天空盒图像通常有以下的形式：
 
 ![](../img/04/06/cubemaps_skybox.png)
 
-如果你把这6个面折叠到一个立方体中，你机会获得模拟了一个巨大的风景的立方体。有些资源所提供的天空盒比如这个例子6个图是连在一起的，你必须手工它们切割出来，不过大多数情况它们都是6个单独的纹理图像。
+如果你将这六个面折成一个立方体，你就会得到一个完全贴图的立方体，模拟一个巨大的场景。一些资源可能会提供了这样格式的天空盒，你必须手动提取六个面的图像，但在大部分情况下它们都是6张单独的纹理图像。
 
-这个细致（高精度）的天空盒就是我们将在场景中使用的那个，你可以[在这里下载](../img/04/06/skybox.rar)。
+之后我们将在场景中使用这个（高质量的）天空盒，它可以在[这里](../data/skybox.rar)下载到。
 
 ## 加载天空盒
 
-由于天空盒实际上就是一个立方体贴图，加载天空盒和之前我们加载立方体贴图的没什么大的不同。为了加载天空盒我们将使用下面的函数，它接收一个包含6个纹理文件路径的vector：
+因为天空盒本身就是一个立方体贴图，加载天空盒和之前加载立方体贴图时并没有什么不同。为了加载天空盒，我们将使用下面的函数，它接受一个包含6个纹理路径的<fun>vector</fun>：
 
 ```c++
-GLuint loadCubemap(vector<const GLchar*> faces)
+unsigned int loadCubemap(vector<std::string> faces)
 {
-    GLuint textureID;
+    unsigned int textureID;
     glGenTextures(1, &textureID);
-    glActiveTexture(GL_TEXTURE0);
-
-    int width,height;
-    unsigned char* image;
-
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-    for(GLuint i = 0; i < faces.size(); i++)
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
     {
-        image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
-        glTexImage2D(
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-            GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image
-        );
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
     }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     return textureID;
 }
 ```
 
-这个函数没什么特别之处。这就是我们前面已经见过的立方体贴图代码，只不过放进了一个可管理的函数中。
+函数本身应该很熟悉了。它基本就是上一部分中立方体贴图的代码，只不过合并到了一个便于管理的函数中。
 
-然后，在我们调用这个函数之前，我们将把合适的纹理路径加载到一个vector之中，顺序还是按照立方体贴图枚举的特定顺序：
+之后，在调用这个函数之前，我们需要将合适的纹理路径按照立方体贴图枚举指定的顺序加载到一个vector中。
 
 ```c++
-vector<const GLchar*> faces;
-faces.push_back("right.jpg");
-faces.push_back("left.jpg");
-faces.push_back("top.jpg");
-faces.push_back("bottom.jpg");
-faces.push_back("back.jpg");
-faces.push_back("front.jpg");
-GLuint cubemapTexture = loadCubemap(faces);
+vector<std::string> faces;
+{
+    "right.jpg",
+    "left.jpg",
+    "top.jpg",
+    "bottom.jpg",
+    "front.jpg",
+    "back.jpg"
+};
+unsigned int cubemapTexture = loadCubemap(faces);
 ```
 
-现在我们已经用`cubemapTexture`作为id把天空盒加载为立方体贴图。我们现在可以把它绑定到一个立方体来替换不完美的`clear color`，在前面的所有教程中这个东西做背景已经很久了。
-
-
+现在我们就将这个天空盒加载为一个立方体贴图了，它的id是<var>cubemapTexture</var>。我们可以将它绑定到一个立方体中，替换掉用了很长时间的难看的纯色背景。
 
 ## 显示天空盒
 
-因为天空盒绘制在了一个立方体上，我们还需要另一个VAO、VBO以及一组全新的顶点，和任何其他物体一样。你可以[从这里获得顶点数据](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_data)。
+由于天空盒是绘制在一个立方体上的，和其它物体一样，我们需要另一个VAO、VBO以及新的一组顶点。你可以在[这里](https://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_data)找到它的顶点数据。
 
-立方体贴图用于给3D立方体帖上纹理，可以用立方体的位置作为纹理坐标进行采样。当一个立方体的中心位于原点(0，0，0)的时候，它的每一个位置向量也就是以原点为起点的方向向量。这个方向向量就是我们要得到的立方体某个位置的相应纹理值。出于这个理由，我们只需要提供位置向量，而无需纹理坐标。为了渲染天空盒，我们需要一组新着色器，它们不会太复杂。因为我们只有一个顶点属性，顶点着色器非常简单：
+用于贴图3D立方体的立方体贴图可以使用立方体的位置作为纹理坐标来采样。当立方体处于原点(0, 0, 0)时，它的每一个位置向量都是从原点出发的方向向量。这个方向向量正是获取立方体上特定位置的纹理值所需要的。正是因为这个，我们只需要提供位置向量而不用纹理坐标了。
+
+要渲染天空盒的话，我们需要一组新的着色器，它们都不是很复杂。因为我们只有一个顶点属性，顶点着色器非常简单：
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
+layout (location = 0) in vec3 aPos;
+
 out vec3 TexCoords;
 
 uniform mat4 projection;
@@ -177,117 +178,121 @@ uniform mat4 view;
 
 void main()
 {
-    gl_Position =   projection * view * vec4(position, 1.0);  
-    TexCoords = position;
+    TexCoords = aPos;
+    gl_Position = projection * view * vec4(aPos, 1.0);
 }
 ```
 
-注意，顶点着色器有意思的地方在于我们把输入的位置向量作为输出给片段着色器的纹理坐标。片段着色器就会把它们作为输入去采样samplerCube：
+注意，顶点着色器中很有意思的部分是，我们将输入的位置向量作为输出给片段着色器的纹理坐标。片段着色器会将它作为输入来采样`samplerCube`：
 
 ```c++
 #version 330 core
+out vec4 FragColor;
+
 in vec3 TexCoords;
-out vec4 color;
 
 uniform samplerCube skybox;
 
 void main()
-{
-    color = texture(skybox, TexCoords);
+{    
+    FragColor = texture(skybox, TexCoords);
 }
 ```
 
-片段着色器比较明了，我们把顶点属性中的位置向量作为纹理的方向向量，使用它们从立方体贴图采样纹理值。渲染天空盒现在很简单，我们有了一个立方体贴图纹理，我们简单绑定立方体贴图纹理，天空盒就自动地用天空盒的立方体贴图填充了。为了绘制天空盒，我们将把它作为场景中第一个绘制的物体并且关闭深度写入。这样天空盒才能成为所有其他物体的背景来绘制出来。
+片段着色器非常直观。我们将顶点属性的位置向量作为纹理的方向向量，并使用它从立方体贴图中采样纹理值。
+
+有了立方体贴图纹理，渲染天空盒现在就非常简单了，我们只需要绑定立方体贴图纹理，<var>skybox</var>采样器就会自动填充上天空盒立方体贴图了。绘制天空盒时，我们需要将它变为场景中的第一个渲染的物体，并且禁用深度写入。这样子天空盒就会永远被绘制在其它物体的背后了。
 
 ```c++
-
 glDepthMask(GL_FALSE);
-skyboxShader.Use();
-// ... Set view and projection matrix
+skyboxShader.use();
+// ... 设置观察和投影矩阵
 glBindVertexArray(skyboxVAO);
 glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 glDrawArrays(GL_TRIANGLES, 0, 36);
-glBindVertexArray(0);
 glDepthMask(GL_TRUE);
-// ... Draw rest of the scene
+// ... 绘制剩下的场景
 ```
 
-如果你运行程序就会陷入困境，我们希望天空盒以玩家为中心，这样无论玩家移动了多远，天空盒都不会变近，这样就产生一种四周的环境真的非常大的印象。当前的视图矩阵对所有天空盒的位置进行了转转缩放和平移变换，所以玩家移动，立方体贴图也会跟着移动！我们打算移除视图矩阵的平移部分，这样移动就影响不到天空盒的位置向量了。在基础光照教程里我们提到过我们可以只用4X4矩阵的3×3部分去除平移。我们可以简单地将矩阵转为33矩阵再转回来，就能达到目标
+如果你运行一下的话你就会发现出现了一些问题。我们希望天空盒是以玩家为中心的，这样不论玩家移动了多远，天空盒都不会变近，让玩家产生周围环境非常大的印象。然而，当前的观察矩阵会旋转、缩放和位移来变换天空盒的所有位置，所以当玩家移动的时候，立方体贴图也会移动！我们希望移除观察矩阵中的位移部分，让移动不会影响天空盒的位置向量。
+
+你可能还记得在[基础光照](../02 Lighting/02 Basic Lighting.md)小节中，我们通过取4x4矩阵左上角的3x3矩阵来移除变换矩阵的位移部分。我们可以将观察矩阵转换为3x3矩阵（移除位移），再将其转换回4x4矩阵，来达到类似的效果。
 
 ```c++
 glm::mat4 view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
 ```
 
-这会移除所有平移，但保留所有旋转，因此用户仍然能够向四面八方看。由于有了天空盒，场景即可变得巨大了。如果你添加些物体然后自由在其中游荡一会儿你会发现场景的真实度有了极大提升。最后的效果看起来像这样：
+这将移除任何的位移，但保留旋转变换，让玩家仍然能够环顾场景。
+
+有了天空盒，最终的效果就是一个看起来巨大的场景了。如果你在箱子周围转一转，你就能立刻感受到距离感，极大地提升了场景的真实度。最终的结果看起来是这样的：
 
 ![](../img/04/06/cubemaps_skybox_result.png)
 
-[这里有全部源码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox)，你可以对比一下你写的。
-
-尝试用不同的天空盒实验，看看它们对场景有多大影响。
+试一试不同的天空盒，看看它们是怎样对场景的观感产生巨大影响的。
 
 ## 优化
 
-现在我们在渲染场景中的其他物体之前渲染了天空盒。这么做没错，但是不怎么高效。如果我们先渲染了天空盒，那么我们就是在为每一个屏幕上的像素运行片段着色器，即使天空盒只有部分在显示着；fragment可以使用前置深度测试（early depth testing）简单地被丢弃，这样就节省了我们宝贵的带宽。
+目前我们是首先渲染天空盒，之后再渲染场景中的其它物体。这样子能够工作，但不是非常高效。如果我们先渲染天空盒，我们就会对屏幕上的每一个像素运行一遍片段着色器，即便只有一小部分的天空盒最终是可见的。可以使用<def>提前深度测试</def>(Early Depth Testing)轻松丢弃掉的片段能够节省我们很多宝贵的带宽。
 
-所以最后渲染天空盒就能够给我们带来轻微的性能提升。采用这种方式，深度缓冲被全部物体的深度值完全填充，所以我们只需要渲染通过前置深度测试的那部分天空的片段就行了，而且能显著减少片段着色器的调用。问题是天空盒是个1×1×1的立方体，极有可能会渲染失败，因为极有可能通不过深度测试。简单地不用深度测试渲染它也不是解决方案，这是因为天空盒会在之后覆盖所有的场景中其他物体。我们需要耍个花招让深度缓冲相信天空盒的深度缓冲有着最大深度值1.0，如此只要有个物体存在深度测试就会失败，看似物体就在它前面了。
+所以，我们将会最后渲染天空盒，以获得轻微的性能提升。这样子的话，深度缓冲就会填充满所有物体的深度值了，我们只需要在提前深度测试通过的地方渲染天空盒的片段就可以了，很大程度上减少了片段着色器的调用。问题是，天空盒只是一个1x1x1的立方体，它很可能会不通过大部分的深度测试，导致渲染失败。不用深度测试来进行渲染不是解决方案，因为天空盒将会复写场景中的其它物体。我们需要欺骗深度缓冲，让它认为天空盒有着最大的深度值1.0，只要它前面有一个物体，深度测试就会失败。
 
-在坐标系教程中我们说过，透视除法（perspective division）是在顶点着色器运行之后执行的，把`gl_Position`的xyz坐标除以w元素。我们从深度测试教程了解到除法结果的z元素等于顶点的深度值。利用这个信息，我们可以把输出位置的z元素设置为它的w元素，这样就会导致z元素等于1.0了，因为，当透视除法应用后，它的z元素转换为w/w = 1.0：
+在[坐标系统](../01 Getting started/08 Coordinate Systems.md)小节中我们说过，**透视除法**是在顶点着色器运行之后执行的，将<var>gl_Position</var>的`xyz`坐标除以w分量。我们又从[深度测试](01 Depth testing.md)小节中知道，相除结果的z分量等于顶点的深度值。使用这些信息，我们可以将输出位置的z分量等于它的w分量，让z分量永远等于1.0，这样子的话，当透视除法执行之后，z分量会变为`w / w = 1.0`。
 
 ```c++
 void main()
 {
-    vec4 pos = projection * view * vec4(position, 1.0);
+    TexCoords = aPos;
+    vec4 pos = projection * view * vec4(aPos, 1.0);
     gl_Position = pos.xyww;
-    TexCoords = position;
 }
 ```
 
-最终，标准化设备坐标就总会有个与1.0相等的z值了，1.0就是深度值的最大值。只有在没有任何物体可见的情况下天空盒才会被渲染（只有通过深度测试才渲染，否则假如有任何物体存在，就不会被渲染，只去渲染物体）。
+最终的**标准化设备坐标**将永远会有一个等于1.0的z值：最大的深度值。结果就是天空盒只会在没有可见物体的地方渲染了（只有这样才能通过深度测试，其它所有的东西都在天空盒前面）。
 
-我们必须改变一下深度方程，把它设置为`GL_LEQUAL`，原来默认的是`GL_LESS`。深度缓冲会为天空盒用1.0这个值填充深度缓冲，所以我们需要保证天空盒是使用小于等于深度缓冲来通过深度测试的，而不是小于。
+我们还要改变一下深度函数，将它从默认的<var>GL_LESS</var>改为<var>GL_LEQUAL</var>。深度缓冲将会填充上天空盒的1.0值，所以我们需要保证天空盒在值小于或等于深度缓冲而不是小于时通过深度测试。
 
-你可以在这里找到优化过的版本的[源码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_skybox_optimized)。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/6.1.cubemaps_skybox/cubemaps_skybox.cpp)找到优化后的源代码。
 
 # 环境映射
 
-我们现在有了一个把整个环境映射到为一个单独纹理的对象，我们利用这个信息能做的不仅是天空盒。使用带有场景环境的立方体贴图，我们还可以让物体有一个反射或折射属性。像这样使用了环境立方体贴图的技术叫做**环境贴图技术**，其中最重要的两个是**反射(reflection)**和**折射(refraction)**。
+我们现在将整个环境映射到了一个纹理对象上了，能利用这个信息的不仅仅只有天空盒。通过使用环境的立方体贴图，我们可以给物体反射和折射的属性。这样使用环境立方体贴图的技术叫做<def>环境映射</def>(Environment Mapping)，其中最流行的两个是<def>反射</def>(Reflection)和<def>折射</def>(Refraction)。
 
 ## 反射
 
-凡是是一个物体（或物体的某部分）反射(Reflect)他周围的环境的属性，比如物体的颜色多少有些等于它周围的环境，这要基于观察者的角度。例如一个镜子是一个反射物体：它会基于观察者的角度泛着它周围的环境。
+反射这个属性表现为物体（或物体的一部分）<def>反射</def>它周围环境，即根据观察者的视角，物体的颜色或多或少等于它的环境。镜子就是一个反射性物体：它会根据观察者的视角反射它周围的环境。
 
-反射的基本思路不难。下图展示了我们如何计算反射向量，然后使用这个向量去从一个立方体贴图中采样：
+反射的原理并不难。下面这张图展示了我们如何计算反射向量，并如何使用这个向量来从立方体贴图中采样：
 
 ![](../img/04/06/cubemaps_reflection_theory.png)
 
-我们基于观察方向向量I和物体的法线向量N计算出反射向量R。我们可以使用GLSL的内建函数reflect来计算这个反射向量。最后向量R作为一个方向向量对立方体贴图进行索引/采样，返回一个环境的颜色值。最后的效果看起来就像物体反射了天空盒。
+我们根据观察方向向量\(\color{gray}{\bar{I}}\)和物体的法向量\(\color{red}{\bar{N}}\)，来计算反射向量\(\color{green}{\bar{R}}\)。我们可以使用GLSL内建的<fun>reflect</fun>函数来计算这个反射向量。最终的\(\color{green}{\bar{R}}\)向量将会作为索引/采样立方体贴图的方向向量，返回环境的颜色值。最终的结果是物体看起来反射了天空盒。
 
-因为我们在场景中已经设置了一个天空盒，创建反射就不难了。我们改变一下箱子使用的那个片段着色器，给箱子一个反射属性：
+因为我们已经在场景中配置好天空盒了，创建反射效果并不会很难。我们将会改变箱子的片段着色器，让箱子有反射性：
 
 ```c++
 #version 330 core
+out vec4 FragColor;
+
 in vec3 Normal;
 in vec3 Position;
-out vec4 color;
 
 uniform vec3 cameraPos;
 uniform samplerCube skybox;
 
 void main()
-{
+{             
     vec3 I = normalize(Position - cameraPos);
     vec3 R = reflect(I, normalize(Normal));
-    color = texture(skybox, R);
+    FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }
 ```
 
-我们先来计算观察/摄像机方向向量I，然后使用它来计算反射向量R，接着我们用R从天空盒立方体贴图采样。要注意的是，我们有了片段的插值Normal和Position变量，所以我们需要修正顶点着色器适应它。
+我们先计算了观察/摄像机方向向量`I`，并使用它来计算反射向量`R`，之后我们将使用`R`来从天空盒立方体贴图中采样。注意，我们现在又有了片段的插值<var>Normal</var>和<var>Position</var>变量，所以我们需要更新一下顶点着色器。
 
 ```c++
 #version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 normal;
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
 
 out vec3 Normal;
 out vec3 Position;
@@ -298,97 +303,90 @@ uniform mat4 projection;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    Normal = mat3(transpose(inverse(model))) * normal;
-    Position = vec3(model * vec4(position, 1.0f));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+    Position = vec3(model * vec4(aPos, 1.0));
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 ```
 
-我们用了法线向量，所以我们打算使用一个**法线矩阵(normal matrix)**变换它们。`Position`输出的向量是一个世界空间位置向量。顶点着色器输出的`Position`用来在片段着色器计算观察方向向量。
+我们现在使用了一个法向量，所以我们将再次使用法线矩阵(Normal Matrix)来变换它们。<var>Position</var>输出向量是一个世界空间的位置向量。顶点着色器的这个<var>Position</var>输出将用来在片段着色器内计算观察方向向量。
 
-因为我们使用法线，你还得更新顶点数据，更新属性指针。还要确保设置`cameraPos`的uniform。
+因为我们使用了法线，你还需要更新一下[顶点数据](https://learnopengl.com/code_viewer.php?code=lighting/basic_lighting_vertex_data)，并更新属性指针。还要记得去设置<var>cameraPos</var>这个uniform。
 
-然后在渲染箱子前我们还得绑定立方体贴图纹理：
+接下来，我们在渲染箱子之前先绑定立方体贴图纹理：
 
 ```c++
 glBindVertexArray(cubeVAO);
-glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);
+glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTexture);  		
 glDrawArrays(GL_TRIANGLES, 0, 36);
-glBindVertexArray(0);
 ```
 
-编译运行你的代码，你等得到一个镜子一样的箱子。箱子完美地反射了周围的天空盒：
+编译并运行代码，你将会得到一个像是镜子一样的箱子。周围的天空盒被完美地反射在箱子上。
 
 ![](../img/04/06/cubemaps_reflection.png)
 
-你可以[从这里找到全部源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps_reflection)。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/4.advanced_opengl/6.2.cubemaps_environment_mapping/cubemaps_environment_mapping.cpp)找到完整的源代码。
 
-当反射应用于整个物体之上的时候，物体看上去就像有一个像钢和铬这种高反射材质。如果我们加载[模型教程](../03 Model Loading/03 Model.md)中的纳米铠甲模型，我们就会获得一个铬金属制铠甲：
+当反射应用到一整个物体上（像是箱子）时，这个物体看起来就像是钢或者铬这样的高反射性材质。如果我们加载[模型加载](../03 Model Loading/03 Model.md)小节中的纳米装模型，我们会得到一种整个套装都是使用铬做成的效果：
 
 ![](../img/04/06/cubemaps_reflection_nanosuit.png)
 
-看起来挺惊艳，但是现实中大多数模型都不是完全反射的。我们可以引进反射贴图（reflection map）来使模型有另一层细节。和diffuse、specular贴图一样，我们可以从反射贴图上采样来决定fragment的反射率。使用反射贴图我们还可以决定模型的哪个部分有反射能力，以及强度是多少。本节的练习中，要由你来在我们早期创建的模型加载器引入反射贴图，这回极大的提升纳米服模型的细节。
+这看起来非常棒，但在现实中大部分的模型都不具有完全反射性。我们可以引入<def>反射贴图</def>(Reflection Map)，来给模型更多的细节。与漫反射和镜面光贴图一样，反射贴图也是可以采样的纹理图像，它决定这片段的反射性。通过使用反射贴图，我们可以知道模型的哪些部分该以什么强度显示反射。在本节的练习中，将由你来为我们之前创建的模型加载器中引入反射贴图，显著提升纳米装模型的细节。
 
 ## 折射
 
-环境映射的另一个形式叫做折射(Refraction)，它和反射差不多。折射是光线通过特定材质对光线方向的改变。我们通常看到像水一样的表面，光线并不是直接通过的，而是让光线弯曲了一点。它看起来像你把半只手伸进水里的效果。
+环境映射的另一种形式是<def>折射</def>，它和反射很相似。折射是光线由于传播介质的改变而产生的方向变化。在常见的类水表面上所产生的现象就是折射，光线不是直直地传播，而是弯曲了一点。将你的半只胳膊伸进水里，观察出来的就是这种效果。
 
-折射遵守[斯涅尔定律](http://en.wikipedia.org/wiki/Snell%27s_law)，使用环境贴图看起来就像这样：
+折射是通过[斯涅尔定律](https://en.wikipedia.org/wiki/Snell%27s_law)(Snell's Law)来描述的，使用环境贴图的话看起来像是这样：
 
 ![](../img/04/06/cubemaps_refraction_theory.png)
 
-我们有个观察向量I，一个法线向量N，这次折射向量是R。就像你所看到的那样，观察向量的方向有轻微弯曲。弯曲的向量R随后用来从立方体贴图上采样。
+同样，我们有一个观察向量\(\color{gray}{\bar{I}}\)，一个法向量\(\color{red}{\bar{N}}\)，而这次是折射向量\(\color{green}{\bar{R}}\)。可以看到，观察向量的方向轻微弯曲了。弯折后的向量\(\color{green}{\bar{R}}\)将会用来从立方体贴图中采样。
 
-折射可以通过GLSL的内建函数refract来实现，除此之外还需要一个法线向量，一个观察方向和一个两种材质之间的折射指数。
+折射可以使用GLSL的内建<fun>refract</fun>函数来轻松实现，它需要一个法向量、一个观察方向和两个材质之间的<def>折射率</def>(Refractive Index)。
 
-折射指数决定了一个材质上光线扭曲的数量，每个材质都有自己的折射指数。下表是常见的折射指数：
+折射率决定了材质中光线弯曲的程度，每个材质都有自己的折射率。一些最常见的折射率可以在下表中找到：
 
-材质  |	折射指数
+材质  |	折射率
 ---|---
 空气 |	1.00
 水	 | 1.33
 冰	 | 1.309
 玻璃 |	1.52
-宝石 |	2.42
+钻石 |	2.42
 
-我们使用这些折射指数来计算光线通过两个材质的比率。在我们的例子中，光线/视线从空气进入玻璃（如果我们假设箱子是玻璃做的）所以比率是1.001.52 = 0.658。
+我们使用这些折射率来计算光传播的两种材质间的比值。在我们的例子中，光线/视线从**空气**进入**玻璃**（如果我们假设箱子是玻璃制的），所以比值为\(\frac{1.00}{1.52} = 0.658\)。
 
-我们已经绑定了立方体贴图，提供了定点数据，设置了摄像机位置的uniform。现在只需要改变片段着色器：
+我们已经绑定了立方体贴图，提供了顶点数据和法线，并设置了摄像机位置的uniform。唯一要修改的就是片段着色器：
 
 ```c++
 void main()
-{
+{             
     float ratio = 1.00 / 1.52;
     vec3 I = normalize(Position - cameraPos);
     vec3 R = refract(I, normalize(Normal), ratio);
-    color = texture(skybox, R);
+    FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }
 ```
 
-通过改变折射指数你可以创建出完全不同的视觉效果。编译运行应用，结果也不是太有趣，因为我们只是用了一个普通箱子，这不能显示出折射的效果，看起来像个放大镜。使用同一个着色器，纳米服模型却可以展示出我们期待的效果：玻璃制物体。
+通过改变折射率，你可以创建完全不同的视觉效果。编译程序并运行，但结果并不是很有趣，因为我们只使用了一个简单的箱子，它不太能显示折射的效果，现在看起来只是有点像一个放大镜。对纳米装使用相同的着色器却能够展现出了我们期待的效果：一个类玻璃的物体。
 
 ![](../img/04/06/cubemaps_refraction.png)
 
-你可以向想象一下，如果将光线、反射、折射和顶点的移动合理的结合起来就能创造出漂亮的水的图像。一定要注意，出于物理精确的考虑当光线离开物体的时候还要再次进行折射；现在我们简单的使用了单边（一次）折射，大多数目的都可以得到满足。
+你可以想象出有了光照、反射、折射和顶点移动的正确组合，你可以创建出非常漂亮的水。注意，如果要想获得物理上精确的结果，我们还需要在光线离开物体的时候再次折射，现在我们使用的只是单面折射(Single-side Refraction)，但它对大部分场合都是没问题的。
 
 ## 动态环境贴图
 
-现在，我们已经使用了静态图像组合的天空盒，看起来不错，但是没有考虑到物体可能移动的实际场景。我们到现在还没注意到这点，是因为我们目前还只使用了一个物体。如果我们有个镜子一样的物体，它周围有多个物体，只有天空盒在镜子中可见，和场景中只有这一个物体一样。
+现在我们使用的都是静态图像的组合来作为天空盒，看起来很不错，但它没有在场景中包括可移动的物体。我们一直都没有注意到这一点，因为我们只使用了一个物体。如果我们有一个镜子一样的物体，周围还有多个物体，镜子中可见的只有天空盒，看起来就像它是场景中唯一一个物体一样。
 
-使用帧缓冲可以为提到的物体的所有6个不同角度创建一个场景的纹理，把它们每次渲染迭代储存为一个立方体贴图。之后我们可以使用这个（动态生成的）立方体贴图来创建真实的反射和折射表面，这样就能包含所有其他物体了。这种方法叫做动态环境映射(Dynamic Environment Mapping),因为我们动态地创建了一个物体的以其四周为参考的立方体贴图，并把它用作环境贴图。
+通过使用帧缓冲，我们能够为物体的6个不同角度创建出场景的纹理，并在每个渲染迭代中将它们储存到一个立方体贴图中。之后我们就可以使用这个（动态生成的）立方体贴图来创建出更真实的，包含其它物体的，反射和折射表面了。这就叫做<def>动态环境映射</def>(Dynamic Environment Mapping)，因为我们动态创建了物体周围的立方体贴图，并将其用作环境贴图。
 
-它看起效果很好，但是有一个劣势：使用环境贴图我们必须为每个物体渲染场景6次，这需要非常大的开销。现代应用尝试尽量使用天空盒子，凡可能预编译立方体贴图就创建少量动态环境贴图。动态环境映射是个非常棒的技术，要想在不降低执行效率的情况下实现它就需要很多巧妙的技巧。
-
-
+虽然它看起来很棒，但它有一个很大的缺点：我们需要为使用环境贴图的物体渲染场景6次，这是对程序是非常大的性能开销。现代的程序通常会尽可能使用天空盒，并在可能的时候使用预编译的立方体贴图，只要它们能产生一点动态环境贴图的效果。虽然动态环境贴图是一个很棒的技术，但是要想在不降低性能的情况下让它工作还是需要非常多的技巧的。
 
 ## 练习
 
-- 尝试在之前模型加载小节的模型加载器中引进反射贴图，你可以在[这里](../img/04/06/nanosuit_reflection.zip)找到升级过的纳米装模型，反射贴图也包含在里面。这其中有几点需要注意：
-	- Assimp并不支持反射贴图，我们可以使用环境贴图的方式将反射贴图从`aiTextureType_AMBIENT`类型中来加载反射贴图的材质。
-	- 我匆忙地使用反射贴图来作为镜面反射的贴图，而反射贴图并没有很好的映射在模型上:)。
-	- 由于加载模型已经占用了3个纹理单元，因此你要绑定天空盒到第4个纹理单元上，这样才能在同一个着色器内从天空盒纹理中取样。
-- 你可以在此获取解决方案的[源代码](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1)，这其中还包括升级过的[Model](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-model)和[Mesh](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-mesh)类，还有用来绘制反射贴图的[顶点着色器](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-vertex)和[片段着色器](http://learnopengl.com/code_viewer.php?code=advanced/cubemaps-exercise1-fragment)。
-
-如果你一切都做对了，那你应该看到和下图类似的效果：
-
-![](../img/04/06/cubemaps_reflection_map.png)
+- 尝试在我们之前在[模型加载](../03 Model Loading/01 Assimp.md)小节中创建的模型加载器中引入反射贴图。你可以在[这里](../data/nanosuit_reflection.zip)找到升级后有反射贴图的纳米装模型。仍有几点要注意的：
+	- Assimp在大多数格式中都不太喜欢反射贴图，所以我们需要欺骗一下它，将反射贴图储存为**漫反射贴图**。你可以在加载材质的时候将反射贴图的纹理类型设置为<var>aiTextureType_AMBIENT</var>。
+	- 我偷懒直接使用镜面光纹理图像来创建了反射贴图，所以反射贴图在模型的某些地方不能准确地映射:)。
+	- 由于模型加载器本身就已经在着色器中占用了3个纹理单元了，你需要将天空盒绑定到第4个纹理单元上，因为我们要从同一个着色器中对天空盒采样。
+- 如果你都做对了，它会看起来像[这样](../img/04/06/cubemaps_reflection_map.png)。

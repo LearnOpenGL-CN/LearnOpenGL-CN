@@ -15,7 +15,7 @@ pages:
       - 复习: '01 Getting started/10 Review.md'
     - 光照:
       - 颜色: '02 Lighting/01 Colors.md'
-      - 光照基础: '02 Lighting/02 Basic Lighting.md'
+      - 基础光照: '02 Lighting/02 Basic Lighting.md'
       - 材质: '02 Lighting/03 Materials.md'
       - 光照贴图: '02 Lighting/04 Lighting maps.md'
       - 投光物: '02 Lighting/05 Light casters.md'
@@ -50,6 +50,9 @@ pages:
       - 泛光: '05 Advanced Lighting/07 Bloom.md'
       - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
       - SSAO: '05 Advanced Lighting/09 SSAO.md'
+    - 特效:
+      - 雾: '08 Effects/01 Fog.md'
+      - 卡通着色: '08 Effects/02 Toon shading.md'
     - PBR:
       - 理论: '07 PBR/01 Theory.md'
       - 光照: '07 PBR/02 Lighting.md'
@@ -72,12 +75,14 @@ pages:
         - 后期处理: '06 In Practice/2D-Game/07 Postprocessing.md'
         - 道具: '06 In Practice/2D-Game/08 Powerups.md'
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
-        - 渲染文字: '06 In Practice/2D-Game/10 Render Text.md'
+        - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
+    - 历史存档: 'legacy.md'
+  - 代码仓库: 'code_repo.md'
 
 site_name: 'LearnOpenGL CN'
 
-site_description: 'http://learnopengl.com 系列教程的中文翻译'
+site_description: 'http://learnopengl.com 系列教程的简体中文翻译'
 
 site_url: https://learnopengl-cn.github.io/
 
@@ -90,7 +95,7 @@ markdown_extensions:
   - mdx_math
 
 extra_javascript:
-  - 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML'
+  - 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML'
 
 extra_css:
   - css/style.css

@@ -2,15 +2,16 @@
 
 [![Build Status](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN.svg?branch=new-theme)](https://travis-ci.org/LearnOpenGL-CN/LearnOpenGL-CN)
 
-learnopengl.com系列教程的中文翻译，目前正在翻译中。
+learnopengl.com系列教程的中文翻译，目前正在校对及翻译中。
 
-**英文原版**：[learnopengl.com](http://learnopengl.com/)
+**英文原版**：[learnopengl.com](https://learnopengl.com/)
 
-**当前翻译进度**：52/63
+**目前状态**：
 
-**校对进度**：13/48
-
-**目前状态**：请认领一下In Practice下的章节
+- 原文大部分代码都有改变（使用的新的库），需要从头开始重新校对（Meow J正在处理中，最重要的配置部分已经更新完毕）
+- 2-4节之后都没有按照新版的格式来排版，而且错误极多，也没有统一译名，需要进行整体的修改（Meow J正在处理中，可能比较漫长）
+- 从头校对整体修改之后的文章（志愿者希望）
+- PBL 章节和 In Practice 章节下还有几篇教程没有翻译（志愿者希望）
 
 ## 阅读地址
 
@@ -50,7 +51,13 @@ learnopengl.com系列教程的中文翻译，目前正在翻译中。
 05 Advanced Lighting/03 Shadows/02 Point Shadows.md
 ```
 
+**翻译之前请先阅读[样式指南](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/new-theme/styleguide.md)**
+
 之后请联系我们，将您加入LearnOpenGL-CN组织，然后提交并Push您的翻译。或者您也可以Fork这个工程在本地编辑之后发送Pull Request。
+
+## 样式指南
+
+在文档的写作过程中，请遵守我们的[样式指南](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/new-theme/styleguide.md)方便之后的校对以及修改工作。
 
 ## 构建
 
@@ -78,10 +85,6 @@ $ mkdocs serve
 ## 建议
 
 如果您发现教程有任何错误的话，欢迎Fork这个工程并发送Pull Request到 `new-theme` 分支。如果您不想修改的话，可以点击页面上方的 `Issues` 按钮提交一个Issue，我们看到后会及时更正。如果是对教程的内容有问题，请先查看原文，如果不是翻译错误的话，请直接在原网站评论区向作者（JoeyDeVries）反馈。
-
-## 样式指南
-
-在文档的写作过程中，请遵守我们的[样式指南](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN/blob/new-theme/styleguide.md)方便之后的校对以及修改工作。
 
 ## 联系方式
 
