@@ -194,7 +194,7 @@ float G   = GeometrySmith(N, V, L, roughness);
 
 ```glsl
 vec3 nominator    = NDF * G * F;
-float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
+float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
 vec3 specular     = nominator / denominator;  
 ```
 
@@ -304,7 +304,7 @@ void main()
         kD *= 1.0 - metallic;	  
         
         vec3 nominator    = NDF * G * F;
-        float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
         vec3 specular     = nominator / denominator;
             
         // add to outgoing radiance Lo
