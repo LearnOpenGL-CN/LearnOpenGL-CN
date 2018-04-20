@@ -375,7 +375,11 @@ $$
 
 <img alt="GLM Logo" src="../../img/01/07/glm.png" class="right" />
 
-GLM是Open**GL** **M**athematics的缩写，它是一个**只有头文件的**库，也就是说我们只需包含对应的头文件就行了，不用链接和编译。GLM可以在它们的[网站](http://glm.g-truc.net/0.9.5/index.html)上下载。把头文件的根目录复制到你的**includes**文件夹，然后你就可以使用这个库了。
+GLM是Open**GL** **M**athematics的缩写，它是一个**只有头文件的**库，也就是说我们只需包含对应的头文件就行了，不用链接和编译。GLM可以在它们的[网站](https://glm.g-truc.net/0.9.8/index.html)上下载。把头文件的根目录复制到你的**includes**文件夹，然后你就可以使用这个库了。
+
+!!! attention
+
+	GLM库从0.9.9版本起，默认会将矩阵类型初始化为一个零矩阵（所有元素均为0），而不是单位矩阵（对角元素为1，其它元素为0）。如果你使用的是0.9.9或0.9.9以上的版本，你需要将所有的矩阵初始化改为 `glm::mat4 mat = glm::mat4(1.0f)`。如果你想与本教程的代码保持一致，请使用低于0.9.9版本的GLM，或者改用上述代码初始化所有的矩阵。
 
 我们需要的GLM的大多数功能都可以从下面这3个头文件中找到：
 
@@ -389,6 +393,10 @@ GLM是Open**GL** **M**athematics的缩写，它是一个**只有头文件的**�
 
 ```c++
 glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+// 译注：下面就是矩阵初始化的一个例子，如果使用的是0.9.9及以上版本
+// 下面这行代码就需要改为:
+// glm::mat4 trans = glm::mat4(1.0f)
+// 之后将不再进行提示
 glm::mat4 trans;
 trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
 vec = trans * vec;
