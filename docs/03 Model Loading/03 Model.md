@@ -3,7 +3,7 @@
 原文     | [Model](http://learnopengl.com/#!Model-Loading/Model)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂未校对
 
 现在是时候接触Assimp并创建实际的加载和转换代码了。这个教程的目标是创建另一个类来完整地表示一个模型，或者说是包含多个网格，甚至是多个物体的模型。一个包含木制阳台、塔楼、甚至游泳池的房子可能仍会被加载为一个模型。我们会使用Assimp来加载模型，并将它转换(Translate)至多个在[上一节](02 Mesh.md)中创建的<var>Mesh</var>对象。

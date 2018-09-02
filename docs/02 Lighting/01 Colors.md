@@ -3,7 +3,7 @@
 原文     | [Colors](http://learnopengl.com/#!Lighting/Colors)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Geequlim](http://geequlim.com/), Meow J
+翻译     | [Geequlim](http://geequlim.com/), Krasjet
 校对     | 暂未校对
 
 在前面的教程中我们已经简要提到过该如何在OpenGL中使用颜色(Color)，但是我们至今所接触到的都是很浅层的知识。本节我们将会更深入地讨论什么是颜色，并且还会为接下来的光照(Lighting)教程创建一个场景。

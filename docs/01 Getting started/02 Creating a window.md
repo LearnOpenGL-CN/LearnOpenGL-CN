@@ -3,7 +3,7 @@
 原文     | [Creating a window](http://learnopengl.com/#!Getting-started/Creating-a-window)
       ---|---
 作者     | JoeyDeVries
-翻译     | gjy_1992, Meow J
+翻译     | gjy_1992, Krasjet
 校对     | 暂未校对
 
 !!! note "译注"

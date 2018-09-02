@@ -3,7 +3,7 @@
 原文     | [Transformations](http://learnopengl.com/#!Getting-started/Transformations)
       ---|---
 作者     | JoeyDeVries
-翻译     | Django, Meow J, [BLumia](https://github.com/blumia/)
+翻译     | Django, Krasjet, [BLumia](https://github.com/blumia/)
 校对     | 暂未校对
 
 尽管我们现在已经知道了如何创建一个物体、着色、加入纹理，给它们一些细节的表现，但因为它们都还是静态的物体，仍是不够有趣。我们可以尝试着在每一帧改变物体的顶点并且重配置缓冲区从而使它们移动，但这太繁琐了，而且会消耗很多的处理时间。我们现在有一个更好的解决方案，使用（多个）<def>矩阵</def>(Matrix)对象可以更好的<def>变换</def>(Transform)一个物体。当然，这并不是说我们会去讨论武术和数字虚拟世界（译注：Matrix同样也是电影「黑客帝国」的英文名，电影中人类生活在数字虚拟世界，主角会武术）。

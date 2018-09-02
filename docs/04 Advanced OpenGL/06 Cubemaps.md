@@ -3,7 +3,7 @@
 原文     | [Cubemaps](http://learnopengl.com/#!Advanced-OpenGL/Cubemaps)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂未校对
 
 我们已经使用2D纹理很长时间了，但除此之外仍有更多的纹理类型等着我们探索。在本节中，我们将讨论的是将多个纹理组合起来映射到一张纹理上的一种纹理类型：<def>立方体贴图</def>(Cube Map)。

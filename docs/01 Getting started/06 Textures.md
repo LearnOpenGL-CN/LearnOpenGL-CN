@@ -3,7 +3,7 @@
 原文     | [Textures](http://learnopengl.com/#!Getting-started/Textures)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim, [BLumia](https://github.com/blumia/)
+翻译     | [Django](http://bullteacher.com/), Krasjet, Geequlim, [BLumia](https://github.com/blumia/)
 校对     | 暂未校对
 
 !!! note "译注"

@@ -3,7 +3,7 @@
 原文     | [HDR](http://learnopengl.com/#!Advanced-Lighting/HDR)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂无
 
 !!! note

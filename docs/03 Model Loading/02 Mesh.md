@@ -3,7 +3,7 @@
 原文     | [Mesh](http://learnopengl.com/#!Model-Loading/Mesh)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂未校对
 
 通过使用Assimp，我们可以加载不同的模型到程序中，但是载入后它们都被储存为Assimp的数据结构。我们最终仍要将这些数据转换为OpenGL能够理解的格式，这样才能渲染这个物体。我们从上一节中学到，网格(Mesh)代表的是单个的可绘制实体，我们现在先来定义一个我们自己的网格类。

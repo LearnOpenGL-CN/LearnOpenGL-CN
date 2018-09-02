@@ -3,7 +3,7 @@
 原文     | [OpenGL](http://learnopengl.com/#!Getting-started/OpenGL)
       ---|---
 作者     | JoeyDeVries
-翻译     | gjy_1992, Meow J
+翻译     | gjy_1992, Krasjet
 校对     | 暂未校对
 
 

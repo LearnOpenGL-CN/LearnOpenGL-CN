@@ -3,7 +3,7 @@
 原文     | [Review](https://learnopengl.com/#!Getting-started/Review)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | Geequlim
 
 恭喜您完成了本章的学习，至此为止你应该能够创建一个窗口，创建并且编译着色器，通过缓冲对象或者uniform发送顶点数据，绘制物体，使用纹理，理解向量和矩阵，并且可以综合上述知识创建一个3D场景并可以通过摄像机来移动。

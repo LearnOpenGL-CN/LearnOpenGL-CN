@@ -3,8 +3,8 @@
 原文     | [Review](http://learnopengl.com/#!Lighting/Review)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
-校对     | [Geequlim](http://geequlim.com), Meow J
+翻译     | Krasjet
+校对     | [Geequlim](http://geequlim.com), Krasjet
 
 恭喜您已经学习到了这个地方！辛苦啦！不知道你有没有注意到，总的来说我们在学习光照教程的时候关于OpenGL本身并没有什么新东西，除了想访问uniform数组这样细枝末节的知识。目前为止的所有教程都是关于使用一些技巧或者公式来操作着色器，达到真实的光照效果。这再一次想你展示了着色器的威力。着色器是非常灵活的，你也亲眼见证了我们仅仅使用一些3D向量和可配置的变量就能够创造出惊人的图像这一点。
 

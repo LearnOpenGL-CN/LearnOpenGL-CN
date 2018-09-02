@@ -3,7 +3,7 @@
 原文     | [Multiple lights](http://learnopengl.com/#!Lighting/Multiple-lights)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Geequlim](http://geequlim.com), Meow J
+翻译     | [Geequlim](http://geequlim.com), Krasjet
 校对     | 暂未校对
 
 我们在前面的教程中已经学习了许多关于OpenGL中光照的知识，其中包括冯氏着色(Phong Shading)、材质(Material)、光照贴图(Lighting Map)以及不同种类的投光物(Light Caster)。在这一节中，我们将结合之前学过的所有知识，创建一个包含六个光源的场景。我们将模拟一个类似太阳的定向光(Directional Light)光源，四个分散在场景中的点光源(Point Light)，以及一个手电筒(Flashlight)。

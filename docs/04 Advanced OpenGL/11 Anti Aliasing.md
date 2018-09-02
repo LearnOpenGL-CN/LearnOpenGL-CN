@@ -3,7 +3,7 @@
 原文     | [Anti Aliasing](http://learnopengl.com/#!Advanced-OpenGL/Anti-Aliasing)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J, [Django](http://bullteacher.com/)
+翻译     | Krasjet, [Django](http://bullteacher.com/)
 校对     | 暂未校对
 
 在学习渲染的旅途中，你可能会时不时遇到模型边缘有锯齿的情况。这些<def>锯齿边缘</def>(Jagged Edges)的产生和光栅器将顶点数据转化为片段的方式有关。在下面的例子中，你可以看到，我们只是绘制了一个简单的立方体，你就能注意到它存在锯齿边缘了：

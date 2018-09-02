@@ -3,7 +3,7 @@
 原文     | [Depth testing](http://learnopengl.com/#!Advanced-OpenGL/Depth-testing)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂未校对
 
 在[坐标系统](../01 Getting started/08 Coordinate Systems.md)小节中，我们渲染了一个3D箱子，并且运用了<def>深度缓冲</def>(Depth Buffer)来防止被阻挡的面渲染到其它面的前面。在这一节中，我们将会更加深入地讨论这些储存在深度缓冲（或z缓冲(z-buffer)）中的<def>深度值</def>(Depth Value)，以及它们是如何确定一个片段是处于其它片段后方的。

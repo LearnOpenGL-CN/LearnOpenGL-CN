@@ -3,7 +3,7 @@
 原文     | [SSAO](http://learnopengl.com/#!Advanced-Lighting/SSAO)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 未校对
 
 !!! note

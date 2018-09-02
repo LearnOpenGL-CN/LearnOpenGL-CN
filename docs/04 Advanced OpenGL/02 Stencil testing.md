@@ -3,7 +3,7 @@
 原文     | [Stencil testing](http://learnopengl.com/#!Advanced-OpenGL/Stencil-testing)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | 暂未校对
 
 当片段着色器处理完一个片段之后，<def>模板测试</def>(Stencil Test)会开始执行，和深度测试一样，它也可能会丢弃片段。接下来，被保留的片段会进入深度测试，它可能会丢弃更多的片段。模板测试是根据又一个缓冲来进行的，它叫做<def>模板缓冲</def>(Stencil Buffer)，我们可以在渲染的时候更新它来获得一些很有意思的效果。

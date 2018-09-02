@@ -3,7 +3,7 @@
 原文     | [Camera](http://learnopengl.com/#!Getting-started/Camera)
       ---|---
 作者     | JoeyDeVries
-翻译     | [Django](http://bullteacher.com/), Meow J, Geequlim, [BLumia](https://github.com/blumia/)
+翻译     | [Django](http://bullteacher.com/), Krasjet, Geequlim, [BLumia](https://github.com/blumia/)
 校对     | 暂未校对
 
 前面的教程中我们讨论了观察矩阵以及如何使用观察矩阵移动场景（我们向后移动了一点）。OpenGL本身没有**摄像机**(Camera)的概念，但我们可以通过把场景中的所有物体往相反方向移动的方式来模拟出摄像机，产生一种**我们**在移动的感觉，而不是场景在移动。

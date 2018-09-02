@@ -3,7 +3,7 @@
 原文     | [Blending](http://learnopengl.com/#!Advanced-OpenGL/Blending)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J, [Django](http://bullteacher.com/)
+翻译     | Krasjet, [Django](http://bullteacher.com/)
 校对     | 暂无校对
 
 OpenGL中，<def>混合</def>(Blending)通常是实现物体<def>透明度</def>(Transparency)的一种技术。透明就是说一个物体（或者其中的一部分）不是纯色(Solid Color)的，它的颜色是物体本身的颜色和它背后其它物体的颜色的不同强度结合。一个有色玻璃窗是一个透明的物体，玻璃有它自己的颜色，但它最终的颜色还包含了玻璃之后所有物体的颜色。这也是混合这一名字的出处，我们<def>混合</def>(Blend)（不同物体的）多种颜色为一种颜色。所以透明度能让我们看穿物体。

@@ -4,7 +4,7 @@
    ---|---
 作者   | JoeyDeVires
 翻译   | [ZMANT](https://github.com/Itanq)
-校对   |  Meow J
+校对   |  Krasjet
 
 !!! note
 

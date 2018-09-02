@@ -430,6 +430,11 @@
 - Resolve：还原
 - Blit：位块传送
 
+## 05-01
+
+- Blinn-Phong Model：Blinn-Phong模型
+- Halfway Vector：半程向量
+
 ## 06-01
 
 - Debugging：调试

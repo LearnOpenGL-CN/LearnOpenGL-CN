@@ -3,7 +3,7 @@
 原文     | [Assimp](http://learnopengl.com/#!Model-Loading/Assimp)
       ---|---
 作者     | JoeyDeVries
-翻译     | Cocoonshu, Meow J, [Geequlim](http://geequlim.com)
+翻译     | Cocoonshu, Krasjet, [Geequlim](http://geequlim.com)
 校对     | 暂未校对
 
 到目前为止的所有场景中，我们一直都在滥用我们的箱子朋友，但时间久了甚至是我们最好的朋友也会感到无聊。在日常的图形程序中，通常都会使用非常复杂且好玩的模型，它们比静态的箱子要好看多了。然而，和箱子对象不同，我们不太能够对像是房子、汽车或者人形角色这样的复杂形状手工定义所有的顶点、法线和纹理坐标。我们想要的是将这些模型(Model)**导入**(Import)到程序当中。模型通常都由3D艺术家在[Blender](http://www.blender.org/)、[3DS Max](http://www.autodesk.nl/products/3ds-max/overview)或者[Maya](http://www.autodesk.com/products/autodesk-maya/overview)这样的工具中精心制作。

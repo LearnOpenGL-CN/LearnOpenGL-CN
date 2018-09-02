@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [J.moons](https://github.com/JiangMuWen)
-校对     | Meow J（初校）
+校对     | Krasjet（初校）
 
 !!! note
 

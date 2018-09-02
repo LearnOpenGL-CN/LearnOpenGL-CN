@@ -3,7 +3,7 @@
 原文     | [Deferred Shading](http://learnopengl.com/#!Advanced-Lighting/Deferred-Shading)
       ---|---
 作者     | JoeyDeVries
-翻译     | Meow J
+翻译     | Krasjet
 校对     | [KenLee](https://hellokenlee.github.io/)
 
 !!! note
