@@ -34,7 +34,7 @@
 获取半程向量的方法很简单，只需要将光线的方向向量和观察向量加到一起，并将结果正规化(Normalize)就可以了：
 
 $$
-\(\bar{H} = \frac{\bar{L} + \bar{V}}{||\bar{L} + \bar{V}||}\)
+\bar{H} = \frac{\bar{L} + \bar{V}}{||\bar{L} + \bar{V}||}
 $$
 
 翻译成GLSL代码如下：
