@@ -12,5 +12,20 @@ IBL<def>基于图像的光照(Image Based </def>(image based lighting)是一组�
 为了将IBL引入我们的PBR系统，让我们再次快速研究一下反射方程：
 
 $$
-L_o(p,\omega_o) = \int\limits_{\Omega} f_r(p,\omega_i,\omega_o) L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+L_o(p,\omega_o) = \int\limits_{\Omega} (k_d\frac{c}{\pi} + k_s\frac{DFG}{4(\omega_o \cdot n)(\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
 $$
+
+如前所述，我们的主要目标是解决半球Ω上所有入射光方向的积分。解决前一个教程中的积分很容易，因为事先我们已经知道了导致积分的确切的几个光方向\(\omega_i\)。然而，这次来自周围环境的每个入射光方向\(\omega_i\)可能具有一些辐射，使得解决积分变得不那么简单。这为解决积分提供了两个主要要求：
+
+- 给定任何方向向量\(\omega_i\)，我们需要一些方法来检索场景的辐射。
+- 解决积分需要快速和实时。
+
+现在，第一个要求相对容易。我们已经暗示了它，但是表示环境或场景辐照度的一种方式是（处理过的）环境立方体贴图。给定这样的立方体贴图，我们可以将立方体贴图的每个纹素可视化为单个发射光源。通过使用任何方向向量对该立方体图进行采样，我们从该方向检索场景的辐射。
+
+在给定任何方向向量\(\omega_i\)的情况下获得场景的光度就像下面这样简单：
+
+```c++
+vec3 radiance = texture(_cubemapEnvironment, w_i).rgb; 
+```
+
+
