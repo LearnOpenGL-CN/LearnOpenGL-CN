@@ -70,17 +70,25 @@ $$
 
 ## PBR and HDR
 
+我们在[光照](../07 PBR/02 Lighting.md)教程中简要介绍了它：在PBR管线中将场景光照的高动态范围(HDR)考虑在内是非常重要的。由于PBR的大多输入基于真实物理属性和测量，因此将入射光值与其物理当量紧密匹配是有意义的。无论我们是对每种光源的辐射通量(radiant flux)进行教学性推测还是使用它们的[直接物理当量](https://en.wikipedia.org/wiki/Lumen_(unit))，简单灯泡和太阳之间的差异都是有意义的。如果不在[HDR](../05 Advanced Lighting/06 HDR.md)渲染环境中工作，则无法正确指定每个光源的相对强度。
 
+因此，PBR和HDR密切相关，但这一切与基于图像的照明(IBL)有什么关系？ 我们在之前的教程中已经提到，在HDR中处理PBR相对容易。 然而，鉴于为了基于图像的照明(IBL)我们将环境的间接光强度基于环境立方体贴图的颜色值，我们需要某种方式将光的高动态范围(HDR)存储到环境贴图中。
+
+迄今为止的环境贴图我们一直使用的是低动态范围（LDR）的立方体贴图（例如用作[天空盒](../04 Advanced OpenGL/06 Cubemaps.md))。 我们直接使用从各个面的图像获得的颜色值，范围介于0.0和1.0之间，并按这样处理它们。 虽然这可能适用于视觉输出，但当它们作为物理输入参数时，它就无法工作了。
 
 ### 辐射(radiance)HDR文件格式
 
+输入辐射文件格式。 辐射文件格式（扩展名为.hdr）存储一个完整的立方体贴图，其中所有6个面都作为浮点数据，允许任何人指定0.0到1.0范围之外的颜色值，以使灯具有正确的颜色强度。文件格式还使用一个巧妙的技巧来存储每个浮点值，不使用32位值通道,而是使用8位通道,用颜色的alpha通道作为指数（这确实会导致精度损失）。这非常有效，但需要解析程序将每种颜色重新转换为它们的浮点值。
 
-
+有很多辐射HDR环境地图可以从[sIBL archive](http://www.hdrlabs.com/sibl/archive.html)这样的来源免费获得，您可以在下面看到一个示例：
 
 ![](../img/07/03/01/ibl_hdr_radiance.png)
 
+这可能与您期望的完全不同，因为图像显示失真，并且未显示我们之前看到的环境贴图的6个单独立方体贴图面中的任何一个。此环境贴图是从球体投影到平面上，以便我们可以更轻松地将环境存储到称为全景贴图(equirectangular map)的单一图像中。这点需要说明一下，因为大多数视觉分辨率存储在水平视图方向，而较少保留在底部和顶部方向。在大多数情况下，这是一个不错的折衷方案，因为几乎任何渲染器都可以在水平观察方向上找到大多数有用的光照和环境。
 
 ### HDR and stb_image.h
+
+加载辐射HDR图像(radiance HDR images)直接需要一些[文件格式](http://radsite.lbl.gov/radiance/refer/Notes/picture_format.html)的知识，这不是太困难，但仍然很繁琐。 幸运的是，流行的一个头文化库[stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h)支持将辐射HDR图像(radiance HDR images)直接加载为浮点值数组，完全符合我们的需要。 通过将stb_image添加到项目中，加载HDR图像现在非常简单如下：
 
 ```c++
 #include "stb_image.h"
@@ -109,6 +117,7 @@ else
 }  
 ```
 
+stb_image.h自动将HDR值映射到浮点值列表：默认情况下，每个通道32位，每种颜色3个通道。 这就是我们需要的将全景(equirectangular)HDR环境贴图存储到2D浮点纹理中。
 
 ### 从全景图(Equirectangular)到立方体贴图
 
@@ -408,3 +417,57 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 ## PBR和间接辐照度照明(indirect irradiance lighting)
 
+
+
+```c++
+uniform samplerCube irradianceMap;
+```
+
+
+
+```c++
+// vec3 ambient = vec3(0.03);
+vec3 ambient = texture(irradianceMap, N).rgb;
+```
+
+
+```c++
+vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+vec3 kD = 1.0 - kS;
+vec3 irradiance = texture(irradianceMap, N).rgb;
+vec3 diffuse    = irradiance * albedo;
+vec3 ambient    = (kD * diffuse) * ao; 
+```
+
+
+![](../img/07/03/01/lighting_fresnel_no_roughness.png)
+
+
+
+
+```c++
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+```
+
+
+```c++
+vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
+vec3 kD = 1.0 - kS;
+vec3 irradiance = texture(irradianceMap, N).rgb;
+vec3 diffuse    = irradiance * albedo;
+vec3 ambient    = (kD * diffuse) * ao; 
+```
+
+
+
+![](../img/07/03/01/ibl_irradiance_result.png)
+
+
+
+
+## 延伸阅读
+- [Coding Labs: Physically based rendering](http://www.codinglabs.net/article_physically_based_rendering.aspx):介绍PBR和怎样及为何生成发光贴图(irradiance map)。
+- [The Mathematics of Shading](http://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/mathematics-of-shading):ScratchAPixel网站对本教程中描述的几个数学知识的简要介绍，特别是关于极坐标和积分。
