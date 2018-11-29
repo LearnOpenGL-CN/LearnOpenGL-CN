@@ -119,11 +119,12 @@ else
 
 stb_image.h自动将HDR值映射到浮点值列表：默认情况下，每个通道32位，每种颜色3个通道。 这就是我们需要的将全景(equirectangular)HDR环境贴图存储到2D浮点纹理中。
 
-### 从全景图(Equirectangular)到立方体贴图
+### 从全景(Equirectangular)到立方体贴图
 
+可以直接使用全景贴图(equirectangular map)进行环境查找，但是这些操作可能相对昂贵，在这种情况下，直接用立方体贴图采样的性能更高。 因此，在本教程中，我们首先将全景图像(equirectangular image)转换为立方体贴图以进行进一步处理。 请注意，在此过程中，我们还将展示如何对全景贴图(equirectangular map)进行采样，就像它是一个3D环境贴图一样，在这种情况下，您可以自由选择您喜欢的任何解决方案。
 
+要将一个全景图像(equirectangular image)转换为立方体贴图，我们需要渲染一个（单位）立方体，从内部投影全景贴图(equirectangular map)到立方体的所有面上，并将立方体面的6个图像作为立方体贴图面。 此立方体的顶点着色器只是按原样渲染立方体，并将其本地位置作为3D采样向量传递给片段着色器：
 
-e
 ```c++
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -140,6 +141,7 @@ void main()
 }
 ```
 
+对于片段着色器，我们为立方体的每个部分着色，就像我们将全景贴图(equirectangular map)整齐地折叠到立方体的每一侧一样。 为了实现这一点，我们将立方体的当前位置进行插值作为片段的采样方向，然后使用此方向向量和一些三角法变换,把全景贴图(equirectangular map)当做立方体贴图进行采样。 我们直接将结果存储到立方体面的片段中，这应该是我们需要做的全部：
 
 ```c++
 #version 330 core
@@ -166,9 +168,11 @@ void main()
 }
 ```
 
+如果用给定的HDR全景贴图(HDR equirectangular map)在场景的中心渲染立方体，您将得到如下所示的内容：
 
 ![](../img/07/03/01/ibl_equirectangular_projection.png)
 
+这表明我们有效地将全景图像(equirectangular image)映射到立方体形状，但还不足以帮助我们将源HDR图像转换为立方体贴图纹理。 为了实现这一点，我们必须渲染相同的立方体6次，查看立方体的每个单独的面,使用[帧缓冲](../04 Advanced OpenGL/05 Framebuffers.md)对象记录其可视结果：
 
 ```c++
 unsigned int captureFBO, captureRBO;
@@ -181,6 +185,7 @@ glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);  
 ```
 
+当然，我们还要生成相应的立方体贴图，为其6个面预先分配内存：
 
 ```c++
 unsigned int envCubemap;
@@ -199,6 +204,9 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 ```
 
+那么剩下要做的就是将全景(equirectangular)2D纹理捕捉到立方体贴图的面上。
+
+我不会详细说明在前面的帧缓冲和点阴影教程中已经讨论过的代码细节，但它有效地归结为面向立方体每一面设置6个不同的视图矩阵，给定一个视角90度的投影矩阵。但可以有效地归结为设置6个不同的视图矩阵,面向立方体的6个面，给定一个视角90度的投影矩阵来捕捉整个面，并渲染一个立方体6次将结果存储在浮点帧缓冲中：
 
 ```c++
 glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -233,6 +241,9 @@ for (unsigned int i = 0; i < 6; ++i)
 glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 ```
 
+我们采用帧缓冲的颜色附件并为立方体贴图的每个面切换其纹理目标，直接将场景渲染到立方体贴图的一个面上。 一旦这个例程完成（我们只需做一次），立方体贴图**envCubemap**该是原始HDR图像的立方体环境贴图版本了。
+
+让我们通过编写一个非常简单的天空盒着色器来测试立方体贴图，以显示我们周围的立方体贴图：
 
 ```c++
 #version 330 core
@@ -254,9 +265,13 @@ void main()
 }
 ```
 
+注意这里的**xyww**技巧确保渲染的立方体片段的深度值总是最终为1.0，即最大深度值，如[立方体贴图](../04 Advanced OpenGL/06 Cubemaps.md)教程中所述。 请注意，我们需要将深度比较功能更改为**GL_LEQUAL**：
+
 ```c++
 glDepthFunc(GL_LEQUAL);  
 ```
+
+片段着色器而后使用立方体的当前片段位置直接对立方体环境贴图进行采样：
 
 ```c++
 #version 330 core
@@ -277,14 +292,17 @@ void main()
 }
 ```
 
+我们使用立方体位置的插值顶点对环境贴图进行采样，这些位置直接对应于要采样的正确方向向量。 鉴于相机的平移组件被忽略，在立方体上渲染此着色器应该将此环境贴图作为非移动背景。 另外，请注意，当我们将环境贴图的HDR值直接输出到默认的LDR帧缓冲区时，我们需要正确地对颜色值进行色调映射。 此外，默认情况下，几乎所有HDR地图都处于线性色彩空间中，因此我们需要在写入默认帧缓冲区之前应用[Gamma校正](../05 Advanced Lighting/02 Gamma Correction.md)。
+
+现在，在先前渲染的球体上渲染采样环境贴图应该如下所示：
 
 ![](../img/07/03/01/ibl_hdr_environment_mapped.png)
 
-
+好吧......我们花了很多时间设置到这里，但是我们成功地设法读取了HDR环境贴图，将其从全景(equirectangular)映射为立方体贴图，并将HDR立方体贴图渲染到场景中作为天空盒。 此外，我们设置了一个小型系统来渲染立方体贴图的所有6个面，我们在<def>卷积</def>环境贴图时将需要再次使用。 您可以在[此处](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.1.ibl_irradiance_conversion/ibl_irradiance_conversion.cpp)找到整个转化过程的源代码。
 
 ## 立方体贴图卷积
 
-
+如本教程开头所述，我们的主要目标是以立方体环境贴图的形式给定场景辐照度(irradiance)求解所有漫反射间接光照的积分。 我们知道通过在方向wi上采样HDR环境地图，我们可以在特定方向上获得场景L（p，wi）的辐射。 为了求解积分，我们必须从半球Ω内的所有可能方向对每个片段采样场景的辐射。
 
 
 $$
