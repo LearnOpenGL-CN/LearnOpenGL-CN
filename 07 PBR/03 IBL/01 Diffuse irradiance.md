@@ -82,14 +82,191 @@ $$
 
 ### HDR and stb_image.h
 
+```c++
+#include "stb_image.h"
+[...]
 
+stbi_set_flip_vertically_on_load(true);
+int width, height, nrComponents;
+float *data = stbi_loadf("newport_loft.hdr", &width, &height, &nrComponents, 0);
+unsigned int hdrTexture;
+if (data)
+{
+    glGenTextures(1, &hdrTexture);
+    glBindTexture(GL_TEXTURE_2D, hdrTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data); 
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_image_free(data);
+}
+else
+{
+    std::cout << "Failed to load HDR image." << std::endl;
+}  
+```
 
 
 ### 从全景图(Equirectangular)到立方体贴图
 
 
+
+
+```c++
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+out vec3 localPos;
+
+uniform mat4 projection;
+uniform mat4 view;
+
+void main()
+{
+    localPos = aPos;  
+    gl_Position =  projection * view * vec4(localPos, 1.0);
+}
+```
+
+
+```c++
+#version 330 core
+out vec4 FragColor;
+in vec3 localPos;
+
+uniform sampler2D equirectangularMap;
+
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 SampleSphericalMap(vec3 v)
+{
+    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
+    uv *= invAtan;
+    uv += 0.5;
+    return uv;
+}
+
+void main()
+{		
+    vec2 uv = SampleSphericalMap(normalize(localPos)); // make sure to normalize localPos
+    vec3 color = texture(equirectangularMap, uv).rgb;
+    
+    FragColor = vec4(color, 1.0);
+}
+```
+
+
 ![](../img/07/03/01/ibl_equirectangular_projection.png)
 
+
+```c++
+unsigned int captureFBO, captureRBO;
+glGenFramebuffers(1, &captureFBO);
+glGenRenderbuffers(1, &captureRBO);
+
+glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);  
+```
+
+
+```c++
+unsigned int envCubemap;
+glGenTextures(1, &envCubemap);
+glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+for (unsigned int i = 0; i < 6; ++i)
+{
+    // note that we store each face with 16 bit floating point values
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 
+                 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+}
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+```
+
+
+```c++
+glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+glm::mat4 captureViews[] = 
+{
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+};
+
+// convert HDR equirectangular environment map to cubemap equivalent
+equirectangularToCubemapShader.use();
+equirectangularToCubemapShader.setInt("equirectangularMap", 0);
+equirectangularToCubemapShader.setMat4("projection", captureProjection);
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_2D, hdrTexture);
+
+glViewport(0, 0, 512, 512); // don't forget to configure the viewport to the capture dimensions.
+glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+for (unsigned int i = 0; i < 6; ++i)
+{
+    equirectangularToCubemapShader.setMat4("view", captureViews[i]);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                           GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    renderCube(); // renders a 1x1 cube
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+```
+
+
+```c++
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+uniform mat4 projection;
+uniform mat4 view;
+
+out vec3 localPos;
+
+void main()
+{
+    localPos = aPos;
+
+    mat4 rotView = mat4(mat3(view)); // remove translation from the view matrix
+    vec4 clipPos = projection * rotView * vec4(localPos, 1.0);
+
+    gl_Position = clipPos.xyww;
+}
+```
+
+```c++
+glDepthFunc(GL_LEQUAL);  
+```
+
+```c++
+#version 330 core
+out vec4 FragColor;
+
+in vec3 localPos;
+  
+uniform samplerCube environmentMap;
+  
+void main()
+{
+    vec3 envColor = texture(environmentMap, localPos).rgb;
+    
+    envColor = envColor / (envColor + vec3(1.0));
+    envColor = pow(envColor, vec3(1.0/2.2)); 
+  
+    FragColor = vec4(envColor, 1.0);
+}
+```
 
 
 ![](../img/07/03/01/ibl_hdr_environment_mapped.png)
@@ -106,6 +283,128 @@ L_o(p,\omega_o) = k_d\frac{c}{\pi} \int\limits_{\Omega} (\omega_i \cdot n)})L_i(
 $$
 
 
+```c++
+vec3 irradiance = texture(irradianceMap, N);
+```
+
+
 ![](../img/07/03/01/ibl_hemisphere_sample_normal.png)
 
+
+```c++
+#version 330 core
+out vec4 FragColor;
+in vec3 localPos;
+
+uniform samplerCube environmentMap;
+
+const float PI = 3.14159265359;
+
+void main()
+{		
+    // the sample direction equals the hemisphere's orientation 
+    vec3 normal = normalize(localPos);
+  
+    vec3 irradiance = vec3(0.0);
+  
+    [...] // convolution code
+  
+    FragColor = vec4(irradiance, 1.0);
+}
+```
+
+
 ![](../img/07/03/01/ibl_spherical_integrate.png)
+
+
+$$
+L_o(p,\phi_o, \theta_o) = k_d\frac{c}{\pi} \int_{\phi = 0}^{2\pi} \int_{\theta = 0}^{\frac{1}{2}\pi} L_i(p,\phi_i, \theta_i) \cos(\theta) \sin(\theta)  d\phi d\theta
+$$
+
+
+$$
+L_o(p,\phi_o, \theta_o) = k_d\frac{c}{\pi} \frac{1}{n1 n2} \sum_{\phi = 0}^{n1} \sum_{\theta = 0}^{n2} L_i(p,\phi_i, \theta_i) \cos(\theta) \sin(\theta)  d\phi d\theta
+$$
+
+
+```c++
+vec3 irradiance = vec3(0.0);  
+
+vec3 up    = vec3(0.0, 1.0, 0.0);
+vec3 right = cross(up, normal);
+up         = cross(normal, right);
+
+float sampleDelta = 0.025;
+float nrSamples = 0.0; 
+for(float phi = 0.0; phi < 2.0 * PI; phi += sampleDelta)
+{
+    for(float theta = 0.0; theta < 0.5 * PI; theta += sampleDelta)
+    {
+        // spherical to cartesian (in tangent space)
+        vec3 tangentSample = vec3(sin(theta) * cos(phi),  sin(theta) * sin(phi), cos(theta));
+        // tangent space to world
+        vec3 sampleVec = tangentSample.x * right + tangentSample.y * up + tangentSample.z * N; 
+
+        irradiance += texture(environmentMap, sampleVec).rgb * cos(theta) * sin(theta);
+        nrSamples++;
+    }
+}
+irradiance = PI * irradiance * (1.0 / float(nrSamples));
+```
+
+
+```c++
+unsigned int irradianceMap;
+glGenTextures(1, &irradianceMap);
+glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+for (unsigned int i = 0; i < 6; ++i)
+{
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, 
+                 GL_RGB, GL_FLOAT, nullptr);
+}
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+```
+
+```c++
+glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+```
+
+
+
+```c++
+irradianceShader.use();
+irradianceShader.setInt("environmentMap", 0);
+irradianceShader.setMat4("projection", captureProjection);
+glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+
+glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+for (unsigned int i = 0; i < 6; ++i)
+{
+    irradianceShader.setMat4("view", captureViews[i]);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                           GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    renderCube();
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+```
+
+
+
+
+
+![](../img/07/03/01/ibl_irradiance_map_background.png)
+
+
+
+## PBR和间接辐照度照明(indirect irradiance lighting)
+
