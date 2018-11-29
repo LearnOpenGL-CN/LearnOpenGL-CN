@@ -37,7 +37,7 @@ $$
 仔细研究反射方程，我们发现**BRDF**的漫反射\(k_D\)和镜面\(k_S\)项是相互独立的，我们可以将积分分成两部分：
 
 $$
-L_o(p,\omega_o) = \int\limits_{\Omega} k_d\frac{c}{\pi} (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i + \int\limits_{\Omega} k_s\frac{DFG}{4(\omega_o \cdot n (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+L_o(p,\omega_o) = \int\limits_{\Omega} (k_d\frac{c}{\pi}) (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i + \int\limits_{\Omega} (k_s\frac{DFG}{4(\omega_o \cdot n) (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
 $$
 
 通过将积分分成两部分，我们可以单独关注漫反射和镜面反射;本教程的重点是漫反射积分。
@@ -45,7 +45,7 @@ $$
 仔细观察漫反射积分，我们发现漫反lambert项是一个常数项（颜色\(c\)，折射率\(k_D\)和\(π\)在积分上是常数），并且不依赖于任何积分变量。鉴于此，我们可以将常数项移出漫反射积分：
 
 $$
-L_o(p,\omega_o) = \int\limits_{\Omega} k_d\frac{c}{\pi} (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+L_o(p,\omega_o) = k_d\frac{c}{\pi} \int\limits_{\Omega} (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
 $$
 
 这给了我们一个仅取决于\(\omega_i\)的积分（假设\(p\)位于环境贴图的中心）。根据这些知识，我们就可以计算或预先计算一个新的立方体贴图，它通过<def>卷积</def>在每个采样方向（或纹素）\(\omega_o\)中存储漫反射积分的结果。
@@ -72,6 +72,40 @@ $$
 
 
 
+### 辐射(radiance)HDR文件格式
 
 
 
+
+![](../img/07/03/01/ibl_hdr_radiance.png)
+
+
+### HDR and stb_image.h
+
+
+
+
+### 从全景图(Equirectangular)到立方体贴图
+
+
+![](../img/07/03/01/ibl_equirectangular_projection.png)
+
+
+
+![](../img/07/03/01/ibl_hdr_environment_mapped.png)
+
+
+
+## 立方体贴图卷积
+
+
+
+
+$$
+L_o(p,\omega_o) = k_d\frac{c}{\pi} \int\limits_{\Omega} (\omega_i \cdot n)})L_i(p,\omega_i) n \cdot \omega_i  d\omega_i
+$$
+
+
+![](../img/07/03/01/ibl_hemisphere_sample_normal.png)
+
+![](../img/07/03/01/ibl_spherical_integrate.png)
