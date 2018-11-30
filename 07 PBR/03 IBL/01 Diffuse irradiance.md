@@ -88,7 +88,7 @@ $$
 
 ### HDR and stb_image.h
 
-加载辐射HDR图像(radiance HDR images)直接需要一些[文件格式](http://radsite.lbl.gov/radiance/refer/Notes/picture_format.html)的知识，这不是太困难，但仍然很繁琐。 幸运的是，流行的一个头文化库[stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h)支持将辐射HDR图像(radiance HDR images)直接加载为浮点值数组，完全符合我们的需要。 通过将stb_image添加到项目中，加载HDR图像现在非常简单如下：
+加载辐射HDR图像(radiance HDR images)直接需要一些[文件格式](http://radsite.lbl.gov/radiance/refer/Notes/picture_format.html)的知识，这不是太困难，但仍然很繁琐。 幸运的是，流行的一个头文化库[stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h)支持将辐射HDR图像(radiance HDR images)直接加载为浮点值数组，完全符合我们的需要。 通过将`stb_image`添加到项目中，加载HDR图像现在非常简单如下：
 
 ```c++
 #include "stb_image.h"
