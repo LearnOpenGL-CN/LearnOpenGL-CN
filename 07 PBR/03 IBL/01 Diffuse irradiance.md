@@ -117,7 +117,7 @@ else
 }  
 ```
 
-stb_image.h自动将HDR值映射到浮点值列表：默认情况下，每个通道32位，每种颜色3个通道。 这就是我们需要的将全景(equirectangular)HDR环境贴图存储到2D浮点纹理中。
+`stb_image.h`自动将HDR值映射到浮点值列表：默认情况下，每个通道32位，每种颜色3个通道。 这就是我们需要的将全景(equirectangular)HDR环境贴图存储到2D浮点纹理中。
 
 ### 从全景(Equirectangular)到立方体贴图
 
