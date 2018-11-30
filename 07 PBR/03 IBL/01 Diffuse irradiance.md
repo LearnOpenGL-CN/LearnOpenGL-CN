@@ -54,7 +54,7 @@ $$
 
 为了对环境贴图进行卷积，我们通过对半球\(\Omega\)上的大量方向\(\omega_i\)进行离散采样并对其辐射(radiance)进行平均来求解每个输出采样方向\(\omega_o\)的积分。 我们建立采样方向\(\omega_i\)的半球\(\Omega\)朝向我们正在卷积的输出采样方向\(\omega_o\)。
 
-![](../img/07/03/01/ibl_hemisphere_sample.png)
+![](../../img/07/03/01/ibl_hemisphere_sample.png)
 
 为每个采样方向(\omega_o\)存储积分结果的预先计算立方体贴图，可以被认为是场景所有间接漫射光的预先计算总和沿着方向(\omega_o\)对齐击中的一些表面。 这样的立方体贴图被称为<def>发光贴图</def>(irradiance map)，因为卷积立方体贴图有效地允许我们从任何方向(\omega_o\)直接采样场景（预先计算的）辐照度(irradiance)。
 
@@ -64,7 +64,7 @@ $$
       
 下面的示例是立方体贴图环境贴图及其生成的发光贴图（由[wave engine](https://www.indiedb.com/features/using-image-based-lighting-ibl)提供），为每个方向(\omega_o\)平均场景辐射(radiance)。
 
-![](../img/07/03/01/ibl_irradiance.png)
+![](../../img/07/03/01/ibl_irradiance.png)
 
 通过将卷积结果存储在每个立方体贴图纹理像素中（在(\omega_o\)的方向上）, 发光贴图显的有点像环境的平均颜色或照明显示。从该环境贴图中采样任何方向将为我们提供该特定方向的场景辐照度(irradiance)。
 
@@ -82,7 +82,7 @@ $$
 
 有很多辐射HDR环境地图可以从[sIBL archive](http://www.hdrlabs.com/sibl/archive.html)这样的来源免费获得，您可以在下面看到一个示例：
 
-![](../img/07/03/01/ibl_hdr_radiance.png)
+![](../../img/07/03/01/ibl_hdr_radiance.png)
 
 这可能与您期望的完全不同，因为图像显示失真，并且未显示我们之前看到的环境贴图的6个单独立方体贴图面中的任何一个。此环境贴图是从球体投影到平面上，以便我们可以更轻松地将环境存储到称为全景贴图(equirectangular map)的单一图像中。这点需要说明一下，因为大多数视觉分辨率存储在水平视图方向，而较少保留在底部和顶部方向。在大多数情况下，这是一个不错的折衷方案，因为几乎任何渲染器都可以在水平观察方向上找到大多数有用的光照和环境。
 
@@ -170,7 +170,7 @@ void main()
 
 如果用给定的HDR全景贴图(HDR equirectangular map)在场景的中心渲染立方体，您将得到如下所示的内容：
 
-![](../img/07/03/01/ibl_equirectangular_projection.png)
+![](../../img/07/03/01/ibl_equirectangular_projection.png)
 
 这表明我们有效地将全景图像(equirectangular image)映射到立方体形状，但还不足以帮助我们将源HDR图像转换为立方体贴图纹理。 为了实现这一点，我们必须渲染相同的立方体6次，查看立方体的每个单独的面,使用[帧缓冲](../04 Advanced OpenGL/05 Framebuffers.md)对象记录其可视结果：
 
@@ -296,7 +296,7 @@ void main()
 
 现在，在先前渲染的球体上渲染采样环境贴图应该如下所示：
 
-![](../img/07/03/01/ibl_hdr_environment_mapped.png)
+![](../../img/07/03/01/ibl_hdr_environment_mapped.png)
 
 好吧......我们花了很多时间设置到这里，但是我们成功地设法读取了HDR环境贴图，将其从全景(equirectangular)映射为立方体贴图，并将HDR立方体贴图渲染到场景中作为天空盒。 此外，我们设置了一个小型系统来渲染立方体贴图的所有6个面，我们在<def>卷积</def>环境贴图时将需要再次使用。 您可以在[此处](https://learnopengl.com/code_viewer_gh.php?code=src/6.pbr/2.1.1.ibl_irradiance_conversion/ibl_irradiance_conversion.cpp)找到整个转化过程的源代码。
 
@@ -320,7 +320,7 @@ vec3 irradiance = texture(irradianceMap, N);
 
 现在，为了生成发光贴图(irradiance map)，我们需要卷积将环境光照转换为立方体贴图。 假设对于每个片段，表面的半球沿着法向量\(N\)定向，对立方图进行卷积等于计算沿着\(N\)定向的半球\(\Omega\)中每个方向\(\omega_i\)的总平均辐射(radiance)。
 
-![](../img/07/03/01/ibl_hemisphere_sample_normal.png)
+![](../../img/07/03/01/ibl_hemisphere_sample_normal.png)
 
 值得庆幸的是，本教程中所有繁琐的设置并非一无所获，因为我们现在可以直接获取转换后的立方体贴图，在片段着色器中对其进行卷积，并使用向所有6个面部方向渲染的帧缓冲区将其结果捕获到新的立方体贴图中。 由于我们已经设置了将全景(equirectangular)环境贴图转换为立方体贴图，我们可以采用完全相同的方法，但使用不同的片段着色器：
 
@@ -352,7 +352,7 @@ void main()
 
 反射率方程的积分\(\int\)围绕相当难以处理的立体角\(d\omega\)旋转。 我们将在其等效球面坐标\(\theta\)和\(\phi\)上积分，而不是在立体角\(d\omega\)上积分。
 
-![](../img/07/03/01/ibl_spherical_integrate.png)
+![](../../img/07/03/01/ibl_spherical_integrate.png)
 
 我们使用\(0\)到\(2\pi\)之间的极方位角\(\phi\)围绕半球环进行采样，并使用\(0\)到\(\frac{1}{2}\pi\)之间的天顶角\(\theta\)来对半球的增加环进行采样。 这将为我们提供新的反射积分：
 
@@ -450,7 +450,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 现在，在这个例程之后，我们应该有一个预先计算的辐照度图，我们可以直接用于基于漫反射图像的光照。 为了查看我们是否成功地对环境贴图进行了卷积，让我们将环境贴图替换为辐照度贴图作为天空盒的环境采样器：
 
-![](../img/07/03/01/ibl_irradiance_map_background.png)
+![](../../img/07/03/01/ibl_irradiance_map_background.png)
 
 如果它看起来像环境贴图的模糊版本，那么您已经成功地对环境贴图进行了卷积处理。
 
@@ -483,7 +483,7 @@ vec3 ambient    = (kD * diffuse) * ao;
 
 由于环境光来自半球内围绕法线N的所有方向，因此没有单个中间向量来确定菲涅耳响应。 为了模拟菲涅耳，我们从法线和视图矢量之间的角度计算菲涅耳。 然而，早些时候我们使用微表面中途矢量，受表面粗糙度的影响，作为菲涅耳方程的输入。 由于我们目前没有考虑任何粗糙度，因此表面的反射率总是会相对较高。 间接光遵循直射光的相同属性，因此我们期望较粗糙的表面在表面边缘上反射较弱。 由于我们没有考虑表面的粗糙度，间接的菲涅耳反射强度在粗糙的非金属表面上看起来（为了演示目的略微夸大）：
 
-![](../img/07/03/01/lighting_fresnel_no_roughness.png)
+![](../../img/07/03/01/lighting_fresnel_no_roughness.png)
 
 我们可以通过在[Sébastien Lagarde](https://seblagarde.wordpress.com/2011/08/17/hello-world/)描述的Fresnel-Schlick方程中注入粗糙度项来缓解这个问题：
 
@@ -508,7 +508,7 @@ vec3 ambient    = (kD * diffuse) * ao;
 
 如果我们从[光照](../07 PBR/02 Lighting.md)教程中获取初始场景，其中每个球体具有垂直增加的金属和水平增加的粗糙度值并添加基于漫反射光照的光照，它看起来有点像这样：
 
-![](../img/07/03/01/ibl_irradiance_result.png)
+![](../../img/07/03/01/ibl_irradiance_result.png)
 
 它仍然看起来有点奇怪，因为更多的金属球体需要某种形式的反射才能正确地开始看起来像金属表面（因为金属表面不会反射漫射光），此刻目前只是来自点光源（几乎没有）。 尽管如此，您已经可以告诉球体在环境中确实感觉到更多（特别是如果您在环境地图之间切换），因为表面响应会相应地响应环境的环境光照。
 
