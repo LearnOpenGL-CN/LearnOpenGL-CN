@@ -449,7 +449,7 @@ glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 当一个点比光的远平面还要远时，它的投影坐标的z坐标大于1.0。这种情况下，GL_CLAMP_TO_BORDER环绕方式不起作用，因为我们把坐标的z元素和深度贴图的值进行了对比；它总是为大于1.0的z返回true。
 
-解决这个问题也很简单，我们简单的强制把shadow的值设为0.0，不管投影向量的z坐标是否大于1.0：
+解决这个问题也很简单，只要投影向量的z坐标大于1.0，我们就把shadow的值强制设为0.0：
 
 ```c++
 float ShadowCalculation(vec4 fragPosLightSpace)

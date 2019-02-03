@@ -50,9 +50,6 @@ pages:
       - 泛光: '05 Advanced Lighting/07 Bloom.md'
       - 延迟着色法: '05 Advanced Lighting/08 Deferred Shading.md'
       - SSAO: '05 Advanced Lighting/09 SSAO.md'
-    - 特效:
-      - 雾: '08 Effects/01 Fog.md'
-      - 卡通着色: '08 Effects/02 Toon shading.md'
     - PBR:
       - 理论: '07 PBR/01 Theory.md'
       - 光照: '07 PBR/02 Lighting.md'

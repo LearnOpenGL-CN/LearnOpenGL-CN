@@ -301,7 +301,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float k)
 菲涅尔方程是一个相当复杂的方程式，不过幸运的是菲涅尔方程可以用<def>Fresnel-Schlick</def>近似法求得近似解：
 
 $$
-F_{Schlick}(n, v, F_0) = F_0 + (1 - F_0) ( 1 - (n \cdot v))^5
+F_{Schlick}(h, v, F_0) = F_0 + (1 - F_0) ( 1 - (h \cdot v))^5
 $$
 
 \(F_0\)表示平面的基础反射率，它是利用所谓**折射指数**(Indices of Refraction)或者说IOR计算得出的。然后正如你可以从球体表面看到的那样，我们越是朝球面掠角的方向上看（此时视线和表面法线的夹角接近90度）菲涅尔现象就越明显，反光就越强：
