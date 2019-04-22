@@ -145,7 +145,7 @@ unsigned int loadCubemap(vector<std::string> faces)
 之后，在调用这个函数之前，我们需要将合适的纹理路径按照立方体贴图枚举指定的顺序加载到一个vector中。
 
 ```c++
-vector<std::string> faces;
+vector<std::string> faces
 {
     "right.jpg",
     "left.jpg",
