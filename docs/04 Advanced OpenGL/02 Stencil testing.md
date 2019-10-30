@@ -125,7 +125,7 @@ void main()
 我们首先启用模板测试，并设置测试通过或失败时的行为：
 
 ```c++
-glEnable(GL_DEPTH_TEST);
+glEnable(GL_STENCIL_TEST);
 glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 ```
 
