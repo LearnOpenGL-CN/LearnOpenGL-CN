@@ -67,7 +67,7 @@ glBindVertexArray(vegetationVAO);
 glBindTexture(GL_TEXTURE_2D, grassTexture);  
 for(unsigned int i = 0; i < vegetation.size(); i++) 
 {
-    model = glm::mat4();
+    model = glm::mat4(1.0f);
     model = glm::translate(model, vegetation[i]);				
     shader.setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 6);
