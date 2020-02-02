@@ -91,9 +91,9 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 1. 首选渲染深度贴图
 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    ConfigureShaderAndMatrices();
-    RenderScene();
+glClear(GL_DEPTH_BUFFER_BIT);
+ConfigureShaderAndMatrices();
+RenderScene();
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 2. 像往常一样渲染场景，但这次使用深度贴图
 glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -172,8 +172,8 @@ glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(lightSp
  
 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    RenderScene(simpleDepthShader);
+glClear(GL_DEPTH_BUFFER_BIT);
+RenderScene(simpleDepthShader);
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 ```
 
