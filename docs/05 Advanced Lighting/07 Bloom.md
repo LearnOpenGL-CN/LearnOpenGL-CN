@@ -88,7 +88,7 @@ GLuint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 glDrawBuffers(2, attachments);
 ```
 
-当渲染到这个帧缓冲中的时候，一个着色器使用一个布局location修饰符，那么fragment就会用相应的颜色缓冲就会被用来渲染。这很棒，因为这样省去了我们为提取明亮区域的额外渲染步骤，因为我们现在可以直接从将被渲染的fragment提取出它们：
+当渲染到这个帧缓冲的时候，一个着色器使用一个布局location修饰符，fragment就会写入对应的颜色缓冲。这很棒，因为这样省去了我们为提取明亮区域的额外渲染步骤，因为我们现在可以直接从将被渲染的fragment提取出它们：
 
 ```c++
 #version 330 core
