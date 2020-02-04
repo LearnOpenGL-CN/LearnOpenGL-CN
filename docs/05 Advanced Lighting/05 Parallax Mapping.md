@@ -182,7 +182,9 @@ if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 
 
 ## 陡峭视差映射
 
-陡峭视差映射(Steep Parallax Mapping)是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。它能得到更好的结果，它将总深度范围分布到同一个深度/高度的多个层中。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到了一个采样得到的低于当前层的深度值的深度值。看看下面的图片：
+陡峭视差映射(Steep Parallax Mapping)是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。即使在陡峭的高度变化的情况下，它也能得到更好的结果，原因在于该技术通过增加采样的数量提高了精确性。
+
+陡峭视差映射的基本思想是将总深度范围划分为同一个深度/高度的多个层。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到一个采样低于当前层的深度值。看看下面的图片：
 
 ![](../img/05/05/parallax_mapping_steep_parallax_mapping_diagram.png)
 
