@@ -329,7 +329,7 @@ float ShadowCalculation(vec3 fragPos)
 
 在这里，我们得到了fragment的位置与光的位置之间的不同的向量，使用这个向量作为一个方向向量去对立方体贴图进行采样。方向向量不需要是单位向量，所以无需对它进行标准化。最后的closestDepth是光源和它最接近的可见fragment之间的标准化的深度值。
 
-closestDepth值现在在0到1的范围内了，所以我们先将其转换会0到far_plane的范围，这需要把他乘以far_plane：
+closestDepth值现在在0到1的范围内了，所以我们先将其转换回0到far_plane的范围，这需要把他乘以far_plane：
 
 ```c++
 closestDepth *= far_plane;
