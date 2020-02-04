@@ -152,7 +152,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 
 有一个地方需要注意，就是viewDir.xy除以viewDir.z那里。因为viewDir向量是经过了标准化的，viewDir.z会在0.0到1.0之间的某处。当viewDir大致平行于表面时，它的z元素接近于0.0，除法会返回比viewDir垂直于表面的时候更大的\(\color{brown}{\bar{P}}\)向量。所以，从本质上，相比正朝向表面，当带有角度地看向平面时，我们会更大程度地缩放\(\color{brown}{\bar{P}}\)的大小，从而增加纹理坐标的偏移；这样做在视角上会获得更大的真实度。
 
-有些人更喜欢在等式中不使用viewDir.z，因为普通的视差贴图会在角上产生不想要的结果；这个技术叫做有偏移量限制的视差贴图（Parallax Mapping with Offset Limiting）。选择哪一个技术是个人偏好问题，但我倾向于普通的视差贴图。
+有些人更喜欢不在等式中使用viewDir.z，因为普通的视差贴图会在角度上产生不尽如人意的结果；这个技术叫做有偏移量限制的视差贴图（Parallax Mapping with Offset Limiting）。选择哪一个技术是个人偏好问题，但我倾向于普通的视差贴图。
 
 最后的纹理坐标随后被用来进行采样（diffuse和法线）贴图，下图所展示的位移效果中height_scale等于1：
 
