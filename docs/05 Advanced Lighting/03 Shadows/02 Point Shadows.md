@@ -88,9 +88,9 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 1. first render to depth cubemap
 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    ConfigureShaderAndMatrices();
-    RenderScene();
+glClear(GL_DEPTH_BUFFER_BIT);
+ConfigureShaderAndMatrices();
+RenderScene();
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 2. then render scene as normal with shadow mapping (using depth cubemap)
 glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
