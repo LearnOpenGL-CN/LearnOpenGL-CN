@@ -1,7 +1,7 @@
 language: python
 
 python:
-  - 3.7
+  - 3.4
 
 install:
   - pip install PyYAML==5.1.2
