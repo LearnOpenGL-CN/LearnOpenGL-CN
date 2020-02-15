@@ -188,7 +188,7 @@ for (GLuint i = 0; i < 16; i++)
 }
 ```
 
-由于采样核心实验者正z方向在切线空间内旋转，我们设定z分量为0.0，从而围绕z轴旋转。
+由于采样核心是沿着正z方向在切线空间内旋转，我们设定z分量为0.0，从而围绕z轴旋转。
 
 我们接下来创建一个包含随机旋转向量的4x4纹理；记得设定它的封装方法为`GL_REPEAT`，从而保证它合适地平铺在屏幕上。
 
@@ -336,7 +336,7 @@ float sampleDepth = -texture(gPositionDepth, offset.xy).w;
 occlusion += (sampleDepth >= sample.z ? 1.0 : 0.0);
 ```
 
-这并没有完全结束，因为仍然还有一个小问题需要考虑。当检测一个靠近表面边缘的片段时，它将会考虑测试表面之下的表面的深度值；这些值将会(不正确地)音响遮蔽因子。我们可以通过引入一个范围检测从而解决这个问题，正如下图所示([John Chapman](http://john-chapman-graphics.blogspot.com/)的佛像)：
+这并没有完全结束，因为仍然还有一个小问题需要考虑。当检测一个靠近表面边缘的片段时，它将会考虑测试表面之下的表面的深度值；这些值将会(不正确地)影响遮蔽因子。我们可以通过引入一个范围检测从而解决这个问题，正如下图所示([John Chapman](http://john-chapman-graphics.blogspot.com/)的佛像)：
 
 ![](../img/05/09/ssao_range_check.png)
 
