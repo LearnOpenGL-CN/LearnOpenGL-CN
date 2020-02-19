@@ -88,9 +88,9 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 1. first render to depth cubemap
 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    ConfigureShaderAndMatrices();
-    RenderScene();
+glClear(GL_DEPTH_BUFFER_BIT);
+ConfigureShaderAndMatrices();
+RenderScene();
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 // 2. then render scene as normal with shadow mapping (using depth cubemap)
 glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -329,7 +329,7 @@ float ShadowCalculation(vec3 fragPos)
 
 在这里，我们得到了fragment的位置与光的位置之间的不同的向量，使用这个向量作为一个方向向量去对立方体贴图进行采样。方向向量不需要是单位向量，所以无需对它进行标准化。最后的closestDepth是光源和它最接近的可见fragment之间的标准化的深度值。
 
-closestDepth值现在在0到1的范围内了，所以我们先将其转换会0到far_plane的范围，这需要把他乘以far_plane：
+closestDepth值现在在0到1的范围内了，所以我们先将其转换回0到far_plane的范围，这需要把他乘以far_plane：
 
 ```c++
 closestDepth *= far_plane;
@@ -428,7 +428,7 @@ shadow /= (samples * samples * samples);
 
 然而，samples设置为4.0，每个fragment我们会得到总共64个样本，这太多了！
 
-大多数这些样本都是多余的，它们在原始方向向量近处采样，不如在采样方向向量的垂直方向进行采样更有意义。可是，没有（简单的）方式能够指出哪一个子方向是多余的，这就难了。有个技巧可以使用，用一个偏移量方向数组，它们差不多都是分开的，每一个指向完全不同的方向，剔除彼此接近的那些子方向。下面就是一个有着20个偏移方向的数组：
+大多数这些采样都是多余的，与其在原始方向向量附近处采样，不如在采样方向向量的垂直方向进行采样更有意义。可是，没有（简单的）方式能够指出哪一个子方向是多余的，这就难了。有个技巧可以使用，用一个偏移量方向数组，它们差不多都是分开的，每一个指向完全不同的方向，剔除彼此接近的那些子方向。下面就是一个有着20个偏移方向的数组：
 
 ```c++
 vec3 sampleOffsetDirections[20] = vec3[]

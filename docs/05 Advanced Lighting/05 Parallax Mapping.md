@@ -135,7 +135,7 @@ void main()
 }
 ```
 
-我们定义了一个叫做ParallaxMapping的函数，它把fragment的纹理坐标作和切线空间中的fragment到观察者的方向向量为输入。这个函数返回经位移的纹理坐标。然后我们使用这些经位移的纹理坐标进行diffuse和法线贴图的采样。最后fragment的diffuse颜色和法线向量就正确的对应于表面的经位移的位置上了。
+我们定义了一个叫做ParallaxMapping的函数，它把fragment的纹理坐标和切线空间中的fragment到观察者的方向向量为输入。这个函数返回经位移的纹理坐标。然后我们使用这些经位移的纹理坐标进行diffuse和法线贴图的采样。最后fragment的diffuse颜色和法线向量就正确的对应于表面的经位移的位置上了。
 
 我们来看看ParallaxMapping函数的内部：
 
@@ -148,11 +148,11 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 }
 ```
 
-这个相对简单的函数是我们所讨论过的内容的直接表述。我们用本来的纹理坐标texCoords从高度贴图中来采样出当前fragment高度\(\color{green}{H(A)}\)。然后计算出\(\color{brown}{\bar{P}}\)，x和y元素在切线空间中，viewDir向量除以它的z元素，用fragment的高度对它进行缩放。我们同时引入额一个height_scale的uniform，来进行一些额外的控制，因为视差效果如果没有一个缩放参数通常会过于强烈。然后我们用\(\color{brown}{\bar{P}}\)减去纹理坐标来获得最终的经过位移纹理坐标。
+这个相对简单的函数是我们所讨论过的内容的直接表述。我们用本来的纹理坐标texCoords从高度贴图中来采样，得到当前fragment的高度\(\color{green}{H(A)}\)。然后计算出\(\color{brown}{\bar{P}}\)，x和y元素在切线空间中，viewDir向量除以它的z元素，用fragment的高度对它进行缩放。我们同时引入额一个height_scale的uniform，来进行一些额外的控制，因为视差效果如果没有一个缩放参数通常会过于强烈。然后我们用\(\color{brown}{\bar{P}}\)减去纹理坐标来获得最终的经过位移纹理坐标。
 
-有一个地方需要注意，就是viewDir.xy除以viewDir.z那里。因为viewDir向量是经过了标准化的，viewDir.z会在0.0到1.0之间的某处。当viewDir大致平行于表面时，它的z元素接近于0.0，除法会返回比viewDir垂直于表面的时候更大的\(\color{brown}{\bar{P}}\)向量。所以基本上我们增加了\(\color{brown}{\bar{P}}\)的大小，当以一个角度朝向一个表面相比朝向顶部时它对纹理坐标会进行更大程度的缩放；这回在角上获得更大的真实度。
+有一个地方需要注意，就是viewDir.xy除以viewDir.z那里。因为viewDir向量是经过了标准化的，viewDir.z会在0.0到1.0之间的某处。当viewDir大致平行于表面时，它的z元素接近于0.0，除法会返回比viewDir垂直于表面的时候更大的\(\color{brown}{\bar{P}}\)向量。所以，从本质上，相比正朝向表面，当带有角度地看向平面时，我们会更大程度地缩放\(\color{brown}{\bar{P}}\)的大小，从而增加纹理坐标的偏移；这样做在视角上会获得更大的真实度。
 
-有些人更喜欢在等式中不使用viewDir.z，因为普通的视差贴图会在角上产生不想要的结果；这个技术叫做有偏移量限制的视差贴图（Parallax Mapping with Offset Limiting）。选择哪一个技术是个人偏好问题，但我倾向于普通的视差贴图。
+有些人更喜欢不在等式中使用viewDir.z，因为普通的视差贴图会在角度上产生不尽如人意的结果；这个技术叫做有偏移量限制的视差贴图（Parallax Mapping with Offset Limiting）。选择哪一个技术是个人偏好问题，但我倾向于普通的视差贴图。
 
 最后的纹理坐标随后被用来进行采样（diffuse和法线）贴图，下图所展示的位移效果中height_scale等于1：
 
@@ -182,7 +182,9 @@ if(texCoords.x > 1.0 || texCoords.y > 1.0 || texCoords.x < 0.0 || texCoords.y < 
 
 ## 陡峭视差映射
 
-陡峭视差映射(Steep Parallax Mapping)是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。它能得到更好的结果，它将总深度范围分布到同一个深度/高度的多个层中。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到了一个采样得到的低于当前层的深度值的深度值。看看下面的图片：
+陡峭视差映射(Steep Parallax Mapping)是视差映射的扩展，原则是一样的，但不是使用一个样本而是多个样本来确定向量\(\color{brown}{\bar{P}}\)到\(\color{blue}B\)。即使在陡峭的高度变化的情况下，它也能得到更好的结果，原因在于该技术通过增加采样的数量提高了精确性。
+
+陡峭视差映射的基本思想是将总深度范围划分为同一个深度/高度的多个层。从每个层中我们沿着\(\color{brown}{\bar{P}}\)方向移动采样纹理坐标，直到我们找到一个采样低于当前层的深度值。看看下面的图片：
 
 ![](../img/05/05/parallax_mapping_steep_parallax_mapping_diagram.png)
 

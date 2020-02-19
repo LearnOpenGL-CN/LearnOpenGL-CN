@@ -4,6 +4,7 @@ python:
   - 3.4
 
 install:
+  - pip install PyYAML==5.1.2
   - pip install mkdocs==0.16.3
   - python setup.py install
 
@@ -17,6 +18,6 @@ after_success: |
     git init
     git add .
     git -c user.name=$GITHUB_MEOWJ_NAME -c user.email=$GITHUB_MEOWJ_EMAIL commit -m "Auto Deployment"
-    git push -f -q https://Meow-J:$GITHUB_API_KEY@github.com/LearnOpenGL-CN/learnopengl-cn.github.io master
+    git push -f -q https://Krasjet:$GITHUB_API_KEY@github.com/LearnOpenGL-CN/learnopengl-cn.github.io master
     cd "$TRAVIS_BUILD_DIR"
   fi
