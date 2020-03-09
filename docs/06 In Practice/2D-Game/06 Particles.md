@@ -97,7 +97,7 @@ for (GLuint i = 0; i < nr_new_particles; ++i)
     int unusedParticle = FirstUnusedParticle();
     RespawnParticle(particles[unusedParticle], object, offset);
 }
-// Uupdate all particles
+// Update all particles
 for (GLuint i = 0; i < nr_particles; ++i)
 {
     Particle &p = particles[i];
