@@ -277,7 +277,7 @@ $$
 \begin{equation} I = \frac{\theta - \gamma}{\epsilon} \end{equation}
 $$
 
-这里\(\epsilon\)是内部（\(\phi\)）和外部圆锥（\(\gamma\)）（\epsilon =  \phi - \gamma）的差。结果\(I\)的值是聚光在当前片段的亮度。
+这里\(\epsilon\)是内部（\(\phi\)）和外部圆锥（\(\gamma\)）（\(\epsilon\) =  \(\phi\) - \(\gamma\)）的差。结果\(I\)的值是聚光在当前片段的亮度。
 
 很难用图画描述出这个公式是怎样工作的，所以我们尝试使用一个例子：
 
