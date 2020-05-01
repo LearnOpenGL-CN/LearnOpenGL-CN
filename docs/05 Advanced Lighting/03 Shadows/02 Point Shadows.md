@@ -202,7 +202,7 @@ void main()
     lightDistance = lightDistance / far_plane;
     
     // Write this as modified depth
-    gl_FragDepth = gl_FragCoord.z;
+    gl_FragDepth = lightDistance;
 }
 ``` 
 
