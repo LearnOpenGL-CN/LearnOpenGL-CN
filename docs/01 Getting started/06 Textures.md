@@ -333,7 +333,7 @@ glBindTexture(GL_TEXTURE_2D, texture);
 !!! Important
 
 	OpenGL至少保证有16个纹理单元供你使用，也就是说你可以激活从<var>GL_TEXTURE0</var>到<var>GL_TEXTRUE15</var>。它们都是按顺序定义的，所以我们也可以通过<var>GL_TEXTURE0 + 8</var>的方式获得<var>GL_TEXTURE8</var>，这在当我们需要循环一些纹理单元的时候会很有用。
-        
+
 我们仍然需要编辑片段着色器来接收另一个采样器。这应该相对来说非常直接了：
 
 ```c++
@@ -368,7 +368,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 我们还要通过使用<fun>glUniform1i</fun>设置每个采样器的方式告诉OpenGL每个着色器采样器属于哪个纹理单元。我们只需要设置一次即可，所以这个会放在渲染循环的前面：
 
 ```c++
-ourShader.use(); // 别忘记在激活着色器前先设置uniform！
+ourShader.use(); // 不要忘记在设置uniform变量之前激活着色器程序！
 glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); // 手动设置
 ourShader.setInt("texture2", 1); // 或者使用着色器类设置
   
