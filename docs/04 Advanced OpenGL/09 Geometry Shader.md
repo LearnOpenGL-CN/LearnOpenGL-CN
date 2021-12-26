@@ -364,7 +364,7 @@ vec4 explode(vec4 position, vec3 normal)
 
 函数本身应该不是非常复杂。<fun>sin</fun>函数接收一个<var>time</var>参数，它根据时间返回一个-1.0到1.0之间的值。因为我们不想让物体**向内爆炸**(Implode)，我们将sin值变换到了[0, 1]的范围内。最终的结果会乘以<var>normal</var>向量，并且最终的<var>direction</var>向量会被加到位置向量上。
 
-当使用我们的[模型加载器](../03 Model Loading/01 Assimp.md)绘制一个模型时，<def>爆破</def>(Explode)效果的完整片段着色器是这样的：
+当使用我们的[模型加载器](../03 Model Loading/01 Assimp.md)绘制一个模型时，<def>爆破</def>(Explode)效果的完整几何着色器是这样的：
 
 ```c++
 #version 330 core
