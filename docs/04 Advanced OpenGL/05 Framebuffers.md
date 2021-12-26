@@ -138,7 +138,7 @@ glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
 ```
 
-创建一个渲染缓冲对象和纹理对象类似，不同的是这个对象是专门被设计作为图像使用的，而不是纹理那样的通用数据缓冲(General Purpose Data Buffer)。这里我们选择<var>GL_DEPTH24_STENCIL8</var>作为内部格式，它封装了24位的深度和8位的模板缓冲。
+创建一个渲染缓冲对象和纹理对象类似，不同的是这个对象是专门被设计作为帧缓冲区附件使用的，而不是纹理那样的通用数据缓冲(General Purpose Data Buffer)。这里我们选择<var>GL_DEPTH24_STENCIL8</var>作为内部格式，它封装了24位的深度和8位的模板缓冲。
 
 最后一件事就是附加这个渲染缓冲对象：
 
