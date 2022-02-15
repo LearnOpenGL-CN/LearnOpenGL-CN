@@ -221,4 +221,4 @@ void Game::Render()
 
 你可以在[这里](http://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_rendering-sprites)找到更新后的游戏类源代码。
 
-现在我们已经让渲染系统正常工作了，我们可以在[下一节]()教程中用它来构建游戏的关卡。
+现在我们已经让渲染系统正常工作了，我们可以在[下一节](04 Levels.md)教程中用它来构建游戏的关卡。
