@@ -1,0 +1,25 @@
+name: deploy
+on:
+  push:
+    branches: ['new-theme']
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up python 3.4
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.4
+    - name: install dependencies
+      shell: bash
+      run: |
+        pip install PyYAML==5.1.2
+        pip install mkdocs==0.16.3
+        python setup.py install
+    - name: build site
+      shell: bash
+      run: mkdocs build --clean
+    - name: check
+      shell: bash
+      run: tree
