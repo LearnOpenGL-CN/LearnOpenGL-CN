@@ -26,6 +26,6 @@ jobs:
         cd site
         git init
         git add .
-        git -c "user.name=$GH_NAME" -c "user.email=$GH_EMAIL" commit -m "Auto Deployment"
+        git -c user.name=$GH_NAME -c user.email=$GH_EMAIL commit -m "Auto Deployment"
         git push -f -q "https://learnopengl-bot:$API_TOKEN@github.com/LearnOpenGL-CN/learnopengl-cn.github.io" master
 
