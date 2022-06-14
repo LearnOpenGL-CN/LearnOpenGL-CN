@@ -420,7 +420,7 @@ normalDisplayShader.use();
 DrawScene();
 ```
 
-这次在几何着色器中，我们会使用模型提供的顶点法线，而不是自己生成，为了适配（观察和模型矩阵的）缩放和旋转，我们在将法线变换到裁剪空间坐标之前，先使用法线矩阵变换一次（几何着色器接受的位置向量是剪裁空间坐标，所以我们应该将法向量变换到相同的空间中）。这可以在顶点着色器中完成：
+这次在几何着色器中，我们会使用模型提供的顶点法线，而不是自己生成，为了适配（观察和模型矩阵的）缩放和旋转，我们在将法线变换到观察空间坐标之前，先使用法线矩阵变换一次（几何着色器接受的位置向量是观察空间坐标，所以我们应该将法向量变换到相同的空间中）。这可以在顶点着色器中完成：
 
 ```c++
 #version 330 core
@@ -431,19 +431,18 @@ out VS_OUT {
     vec3 normal;
 } vs_out;
 
-uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 1.0); 
+    gl_Position = view * model * vec4(aPos, 1.0); 
     mat3 normalMatrix = mat3(transpose(inverse(view * model)));
-    vs_out.normal = normalize(vec3(projection * vec4(normalMatrix * aNormal, 0.0)));
+    vs_out.normal = normalize(vec3(vec4(normalMatrix * aNormal, 0.0)));
 }
 ```
 
-变换后的裁剪空间法向量会以接口块的形式传递到下个着色器阶段。接下来，几何着色器会接收每一个顶点（包括一个位置向量和一个法向量），并在每个位置向量处绘制一个法线向量：
+变换后的观察空间法向量会以接口块的形式传递到下个着色器阶段。接下来，几何着色器会接收每一个顶点（包括一个位置向量和一个法向量），并在每个位置向量处绘制一个法线向量：
 
 ```c++
 #version 330 core
@@ -455,12 +454,15 @@ in VS_OUT {
 } gs_in[];
 
 const float MAGNITUDE = 0.4;
+  
+uniform mat4 projection;
 
 void GenerateLine(int index)
 {
-    gl_Position = gl_in[index].gl_Position;
+    gl_Position = projection * gl_in[index].gl_Position;
     EmitVertex();
-    gl_Position = gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE;
+    gl_Position = projection * (gl_in[index].gl_Position + 
+                                vec4(gs_in[index].normal, 0.0) * MAGNITUDE);
     EmitVertex();
     EndPrimitive();
 }
