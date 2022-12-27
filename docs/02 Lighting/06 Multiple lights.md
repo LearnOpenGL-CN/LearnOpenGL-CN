@@ -52,7 +52,7 @@ struct DirLight {
 uniform DirLight dirLight;
 ```
 
-接下来我们可以将<var>dirLight</var>传入一个有着一下原型的函数。
+接下来我们可以将<var>dirLight</var>传入一个有着以下原型的函数。
 
 ```c++
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
