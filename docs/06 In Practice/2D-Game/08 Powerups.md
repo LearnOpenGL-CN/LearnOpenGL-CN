@@ -209,7 +209,7 @@ if (!Ball->Stuck && std::get<0>(result))
 
 在这里我们将小球的Stuck属性设置为它自己的Sticky属性，若**Stikcy**效果被激活，那么小球则会在与挡板接触时粘在上面，玩家不得不再次按下空格键才能释放它。
 
-在同样的<fun>DoCollisions</fun>函数中还有个为了实现**Pass-through**效果的类似小改动。当小球的<var>PassThrough</var>属性被设置为true时，我们不对非实习砖块做碰撞处理操作。
+在同样的<fun>DoCollisions</fun>函数中还有个为了实现**Pass-through**效果的类似小改动。当小球的<var>PassThrough</var>属性被设置为true时，我们不对非实心砖块做碰撞处理操作。
 
 ```c++
 Direction dir = std::get<1>(collision);
