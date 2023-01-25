@@ -1,4 +1,4 @@
-pages:
+nav:
   - 主页: 'index.md'
   - 目录:
     - 简介: 'intro.md'
