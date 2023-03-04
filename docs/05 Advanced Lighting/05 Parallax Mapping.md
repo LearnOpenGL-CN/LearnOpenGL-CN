@@ -154,7 +154,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 
 有些人更喜欢不在等式中使用viewDir.z，因为普通的视差贴图会在角度上产生不尽如人意的结果；这个技术叫做有偏移量限制的视差贴图（Parallax Mapping with Offset Limiting）。选择哪一个技术是个人偏好问题，但我倾向于普通的视差贴图。
 
-最后的纹理坐标随后被用来进行采样（diffuse和法线）贴图，下图所展示的位移效果中height_scale等于1：
+最后的纹理坐标随后被用来进行采样（diffuse和法线）贴图，下图所展示的位移效果中height_scale等于0.1：
 
 ![](../img/05/05/parallax_mapping.png)
 
@@ -205,7 +205,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
     vec2 P = viewDir.xy * height_scale; 
-    float deltaTexCoords = P / numLayers;
+    vec2 deltaTexCoords = P / numLayers;
   
     [...]     
 }
@@ -230,7 +230,7 @@ while(currentLayerDepth < currentDepthMapValue)
     currentLayerDepth += layerDepth;  
 }
  
-return texCoords - currentTexCoords;
+return currentTexCoords;
 
 ```
 
