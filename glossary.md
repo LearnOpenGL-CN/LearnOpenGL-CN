@@ -118,6 +118,7 @@
 - Channel：通道
 - Sampler：采样器
 - Texture Unit：纹理单元
+- Texture Wrapping：纹理环绕
 
 ## 01-07
 
