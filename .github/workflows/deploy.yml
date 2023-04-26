@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: set up python 3.4
+    - name: set up python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.4
+        python-version: 3.7
     - name: install dependencies
       shell: bash
       run: |
