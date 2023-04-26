@@ -12,7 +12,7 @@
             </button>
 
             <!-- Main title -->
-            <a class="navbar-brand" href="{{ homepage_url }}">{{ site_name }}</a>
+            <a class="navbar-brand" href="{{ nav.homepage.url|url }}">{{ config.site_name }}</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -31,7 +31,7 @@
                 </li>
             {% else %}
                 <li {% if nav_item.active %}class="active"{% endif %}>
-                    <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                    <a href="{{ nav_item.url|url }}">{{ nav_item.title }}</a>
                 </li>
             {% endif %}
             {% endfor %}
@@ -44,25 +44,25 @@
                         <i class="fa fa-search"></i> 搜索
                     </a>
                 </li>
-                <li {% if not previous_page %}class="disabled"{% endif %}>
-                    <a rel="next" {% if previous_page %}href="{{ previous_page.url }}"{% endif %}>
+                <li {% if not page.previous_page %}class="disabled"{% endif %}>
+                    <a rel="next" {% if page.previous_page %}href="{{ page.previous_page.url|url }}"{% endif %}>
                         <i class="fa fa-arrow-left"></i> 上一节
                     </a>
                 </li>
-                <li {% if not next_page %}class="disabled"{% endif %}>
-                    <a rel="prev" {% if next_page %}href="{{ next_page.url }}"{% endif %}>
+                <li {% if not page.next_page %}class="disabled"{% endif %}>
+                    <a rel="prev" {% if page.next_page %}href="{{ page.next_page.url|url }}"{% endif %}>
                         下一节 <i class="fa fa-arrow-right"></i>
                     </a>
                 </li>
-                {% if repo_url %}
+                {% if config.repo_url %}
                 <li>
-                    <a href="{{ repo_url }}">
-                        {% if repo_name == 'GitHub' %}
+                    <a href="{{ config.repo_url }}">
+                        {% if config.repo_name == 'GitHub' %}
                             <i class="fa fa-github"></i>
-                        {% elif repo_name == 'Bitbucket' %}
+                        {% elif config.repo_name == 'Bitbucket' %}
                             <i class="fa fa-bitbucket"></i>
                         {% endif %}
-                        {{ repo_name }}
+                        {{ config.repo_name }}
                     </a>
                 </li>
                 {% endif %}

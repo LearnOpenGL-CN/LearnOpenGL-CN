@@ -61,11 +61,10 @@ learnopengl.com系列教程的中文翻译，目前正在校对及翻译中。
 
 ## 构建
 
-首先请安装Python，2和3都可以，之后初始化环境：
+首先请安装Python 3.7+，之后初始化环境：
 
 ```bash
-$ pip install mkdocs
-$ python setup.py install
+$ pip install mkdocs==1.4.2 python-markdown-math==0.8
 ```
 
 初始化以后，每次构建只需要输入以下指令即可，构建后的文件在`site`文件夹内：
