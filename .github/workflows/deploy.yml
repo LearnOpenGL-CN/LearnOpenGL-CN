@@ -26,6 +26,7 @@ jobs:
         API_TOKEN: ${{ secrets.API_TOKEN }}
       run: |
         cd site
+        touch .nojekyll
         git init
         git add .
         git -c user.name=$GH_NAME -c user.email=$GH_EMAIL commit -m "Auto Deployment"
