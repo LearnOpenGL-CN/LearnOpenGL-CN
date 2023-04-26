@@ -4,7 +4,7 @@ on:
     branches: ['new-theme']
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: set up python 3.4
