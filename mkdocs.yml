@@ -25,6 +25,7 @@ nav:
       - Assimp: '03 Model Loading/01 Assimp.md'
       - 网格: '03 Model Loading/02 Mesh.md'
       - 模型: '03 Model Loading/03 Model.md'
+      - 骨骼动画: '03 Model Loading/04 Skeletal Animation.md'
     - 高级OpenGL:
       - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
       - 模板测试: '04 Advanced OpenGL/02 Stencil testing.md'
