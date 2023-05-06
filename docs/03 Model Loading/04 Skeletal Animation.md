@@ -4,7 +4,7 @@
       ---|---
 作者     | Ankit Singh Kushwah
 翻译     | [orbitgw](https://github.com/orbitgw/)
-校对     | 暂未校对
+校对     | [orbitgw](https://github.com/orbitgw/)
 
 3D动画可以让我们的游戏栩栩如生。3D世界中的物体，比如人类和动物，当它们做某些事情移动四肢时，比如走路、跑步和攻击，会使我们感到更生动。本篇教程是关于你们一直在等待的骨骼动画。我们将首先彻底理解这个概念，然后了解使用Assimp制作3D模型动画所需的数据。我建议您完成本教程的[模型加载](./01%20Assimp.md)部分，因为本教程代码将从那里继续。你仍然可以理解这个概念，并以自己的方式实现它。所以让我们开始吧。
 
@@ -31,7 +31,7 @@ $$
 ![bones](../img/03/04/bones.png)
 ![skin and bones](../img/03/04/merged.png)
 
-这些骨头通常是以分层的方式添加给人类和动物等角色的，原因很明显。我们想要四肢之间的父子关系( parent-child relationship)。例如，如果我们移动右肩，那么我们的右二头肌、前臂、手和手指也应该移动。这就是层次结构的样子：
+这些骨头通常是以分层的方式添加给人类和动物等角色的，原因很明显。我们想要四肢之间的父子关系(parent-child relationship)。例如，如果我们移动右肩，那么我们的右二头肌、前臂、手和手指也应该移动。这就是层次结构的样子：
 
 ![parent_child](../img/03/04/parent_child.png)
 
@@ -49,7 +49,7 @@ $$
 ![assimp1](../img/03/04/assimp1.jpeg)
 
 
-就像[模型加载](./01%20Assimp.md)部分一样，我们将从aiScene指针开始，该指针包含指向根节点的指针，然后看看我们这里有什么，一个动画数组。这个aiAnimation数组包含一般信息，比如动画的持续时间，这里表示为mDuration，然后我们有一个mTicksPerSecond变量，它控制我们应该在帧之间插值的速度。如果您还记得上一节中的动画有关键帧。类似地，aiAnimation包含一个名为Channels的aiNodeAnim数组。此数组包含将要参与动画的所有骨骼及其关键帧。一个aiNodeAnim包含骨骼的名称，你会发现在这里插入三种类型的关键点，平移、旋转和缩放。
+就像[模型加载](./01%20Assimp.md)部分一样，我们将从`aiScene`指针开始，该指针包含指向根节点的指针，然后看看我们这里有什么，一个动画数组。这个`aiAnimation`数组包含一般信息，比如动画的持续时间，这里表示为`mDuration`，然后我们有一个`mTicksPerSecond`变量，它控制我们应该在帧之间插值的速度。如果您还记得上一节中的动画有关键帧。类似地，`aiAnimation`包含一个名为`Channels`的`aiNodeAnim`数组。此数组包含将要参与动画的所有骨骼及其关键帧。一个`aiNodeAnim`包含骨骼的名称，你会发现在这里插入三种类型的关键点，平移、旋转和缩放。
 
 好吧，还有最后一件事我们需要理解，并且很乐意去做的一件事就是写代码。
 
@@ -61,7 +61,7 @@ $$
 
 ![assimp2](../img/03/04/assimp2.jpeg)
  
-我们再次从aiScene指针开始，该指针包含所有aiMeshe的数组。每个aiMesh对象都有一个aiBone数组，其中包含诸如此aiBone将对网格上的顶点集产生多大影响之类的信息。aiBone包含骨骼的名称，这是一个aiVertexWeight数组，基本上告诉此aiBone对网格上的顶点有多大影响。现在我们有了aiBone的另一个成员，它是offsetMatrix。这是一个4x4矩阵，用于将顶点从模型空间转换到骨骼空间。你可以在下面的图片中看到这一点：
+我们再次从`aiScene`指针开始，该指针包含所有`aiMeshes`的数组。每个aiMesh对象都有一个`aiBone`数组，其中包含诸如此`aiBone`将对网格上的顶点集产生多大影响之类的信息。`aiBone`包含骨骼的名称，这是一个`aiVertexWeight`数组，基本上告诉此`aiBone`对网格上的顶点有多大影响。现在我们有了`aiBone`的另一个成员，它是`offsetMatrix`。这是一个4x4矩阵，用于将顶点从模型空间转换到骨骼空间。你可以在下面的图片中看到这一点：
 
 ![mesh_space](../img/03/04/mesh_space.png)
 ![bone_space](../img/03/04/bone_space.png)
@@ -114,7 +114,7 @@ void main()
 ```
 
 
-片段着色器与[这篇教程](./03%20Model.md)中的保持相同。从顶部开始，您可以看到两个新的属性布局声明。第一个骨骼ID，第二个是重量。我们还有一个统一的数组finalBonesMatrix，它存储所有骨骼的变换。boneIds包含用于读取最终BonesMatrix数组并将这些变换应用于pos顶点的索引，其各自的权重存储在权重数组中。这发生在上面循环的内部。现在，让我们先在Mesh类中添加对骨骼重量的支持：
+片段着色器与[这篇教程](./03%20Model.md)中的保持相同。从顶部开始，您可以看到两个新的属性布局声明。第一个骨骼ID，第二个是重量。我们还有一个统一的数组`finalBonesMatrix`，它存储所有骨骼的变换。`boneIds`包含用于读取最终`BonesMatrix`数组并将这些变换应用于pos顶点的索引，其各自的权重存储在权重数组中。这发生在上面循环的内部。现在，让我们先在Mesh类中添加对骨骼重量的支持：
 
 
 ```c++
@@ -140,7 +140,7 @@ struct Vertex {
   
 };
 ```
-我们为顶点添加了两个新属性，就像我们在顶点着色器中看到的那样。现在，让我们将它们加载到GPU缓冲区中，就像我们的 Mesh::setupMesh 函数中的其他属性一样：
+我们为顶点添加了两个新属性，就像我们在顶点着色器中看到的那样。现在，让我们将它们加载到GPU缓冲区中，就像我们的`Mesh::setupMesh`函数中的其他属性一样：
 ```c++
 class Mesh
 {
@@ -164,7 +164,7 @@ class Mesh
     ...
 }
 ```
-就像以前一样，只是现在我们为boneID和weights添加了3个和4个布局位置ID。这里需要注意的一件重要的事情是我们如何传递boneID的数据。我们使用的是glVertexAttribIPointer，并将GL_INT作为第三个参数传递。
+就像以前一样，只是现在我们为`boneID`和`weights`添加了3个和4个布局位置ID。这里需要注意的一件重要的事情是我们如何传递`boneID`的数据。我们使用的是`glVertexAttribIPointer`，并将`GL_INT`作为第三个参数传递。
 
 现在我们可以从assimp数据结构中提取骨骼重量信息。让我们在Model类中进行一些更改：
 ```c++
@@ -178,7 +178,7 @@ struct BoneInfo
 
 };
 ```
-此BoneInfo将存储我们的偏移矩阵，以及一个唯一的id，该id将用作索引，将其存储在我们之前在着色器中看到的最终BoneMatrices数组中。现在我们将在Model…中添加骨量提取支持：
+此`BoneInfo`将存储我们的偏移矩阵，以及一个唯一的id，该id将用作索引，将其存储在我们之前在着色器中看到的最终`BoneMatrices`数组中。现在我们将在Model中添加骨量提取支持：
 
 ```c++
 class Model 
@@ -282,11 +282,11 @@ private:
     ...
 };
 ```
-我们首先声明一个映射m_BoneInfoMap和一个计数器m_BoneCounter，一旦我们读取到一个新的骨骼，它就会增加。我们在前面的图表中看到，每个aiMesh都包含与aiMesh关联的所有aiBone。骨量提取的整个过程都是从processMesh函数开始的。对于每个循环迭代，我们通过调用函数SetVertexBoneDataToDefault将m_BoneID和m_Weights设置为其默认值。就在processMesh函数结束之前，我们调用ExtractBoneWeightData。在ExtractBoneWeightData中，我们为每个aiBone运行for循环，并检查该骨骼是否已存在于m_BoneInfoMap中。如果我们找不到它，那么它被认为是一块新骨头，我们创建一个带有id的新BoneInfo，并将其关联的mOffsetMatrix存储到它。然后我们将这个新BoneIInfo存储在m_BoneInfoMap中，然后我们递增m_BoneCounter计数器，为下一块骨头创建一个id。如果我们在m_BoneInfoMap中找到骨骼名称，那么这意味着该骨骼会影响超出其范围的网格顶点。所以我们取它的Id，进一步了解它会影响哪些顶点。
+我们首先声明一个映射`m_BoneInfoMap`和一个计数器`m_BoneCounter`，一旦我们读取到一个新的骨骼，它就会增加。我们在前面的图表中看到，每个`aiMesh`都包含与`aiMesh`关联的所有`aiBone`。骨量提取的整个过程都是从`processMesh`函数开始的。对于每个循环迭代，我们通过调用函数`SetVertexBoneDataToDefault`将`m_BoneID`和`m_Weights`设置为其默认值。就在`processMesh`函数结束之前，我们调用`ExtractBoneWeightData`。在`ExtractBoneWeightData`中，我们为每个aiBone运行for循环，并检查该骨骼是否已存在于`m_BoneInfoMap`中。如果我们找不到它，那么它被认为是一块新骨头，我们创建一个带有id的新`BoneInfo`，并将其关联的`mOffsetMatrix`存储到它。然后我们将这个新`BoneIInfo`存储在`m_BoneInfoMap`中，然后我们递增`m_BoneCounter`计数器，为下一块骨头创建一个id。如果我们在`m_BoneInfoMap`中找到骨骼名称，那么这意味着该骨骼会影响超出其范围的网格顶点。所以我们取它的Id，进一步了解它会影响哪些顶点。
 
-需要注意的一点是，我们正在调用AssimpGLMHelpers::ConvertMatrixToGLMFormat。Assimp以与GLM不同的格式存储其矩阵数据，因此此函数仅为我们提供GLM格式的矩阵。
+需要注意的一点是，我们正在调用`AssimpGLMHelpers::ConvertMatrixToGLMFormat`。Assimp以与GLM不同的格式存储其矩阵数据，因此此函数仅为我们提供GLM格式的矩阵。
 
-我们已经提取了骨骼的offsetMatrix，现在我们将简单地迭代其aiVertexWeightarray，提取将受此骨骼影响的所有顶点索引及其各自的权重，并调用SetVertexBoneData以使用提取的信息填充Vertex.boneIds和Vertex.weights。
+我们已经提取了骨骼的`offsetMatrix`，现在我们将简单地迭代其`aiVertexWeightarray`，提取将受此骨骼影响的所有顶点索引及其各自的权重，并调用`SetVertexBoneData`以使用提取的信息填充`Vertex.boneIds`和`Vertex.weights`。
 
 呜！到这里你应当休息一下。。。
 
@@ -502,7 +502,7 @@ private:
 	
 };
 ```
-我们首先为我们的键类型创建3个结构。每个结构都有一个值和一个时间戳。时间戳告诉我们在动画的哪个点需要插值到它的值。Bone有一个构造函数，它从aiNodeAnim读取密钥并将密钥及其时间戳存储到mPositionKeys、mRotationKeys和mScalingKeys。主要插值过程从“更新”（float animationTime）开始，该过程在每帧调用一次。此函数调用所有键类型的相应插值函数，并组合所有最终插值结果，并将其存储到4x4矩阵m_LocalTransform中。平移和缩放关键点的插值函数相似，但对于旋转，我们使用Slerp在四元数之间进行插值。Lerp和Slerp都有3个论点。第一个参数取最后一个键，第二个参数取下一个键和第三个参数取范围为0-1的值，我们在这里称之为比例因子。让我们看看如何在函数GetScaleFactor中计算这个比例因子。。。
+我们首先为我们的键类型创建3个结构。每个结构都有一个值和一个时间戳。时间戳告诉我们在动画的哪个点需要插值到它的值。Bone有一个构造函数，它从`aiNodeAnim`读取密钥并将密钥及其时间戳存储到`mPositionKeys`、`mRotationKeys`和`mScalingKeys`。主要插值过程从更新(float animationTime)开始，该过程在每帧调用一次。此函数调用所有键类型的相应插值函数，并组合所有最终插值结果，并将其存储到4x4矩阵`m_LocalTransform`中。平移和缩放关键点的插值函数相似，但对于旋转，我们使用Slerp在四元数之间进行插值。Lerp和Slerp都有3个论点。第一个参数取最后一个键，第二个参数取下一个键和第三个参数取范围为0-1的值，我们在这里称之为比例因子。让我们看看如何在函数`GetScaleFactor`中计算这个比例因子：
 
 ![](../img/03/04/scale_factor.png)
 
@@ -615,9 +615,9 @@ private:
     std::map<std::string, BoneInfo> m_BoneInfoMap;
 };
 ```
-在这里，动画对象的创建从构造函数开始。这需要两个论点。首先，动画文件的路径&第二个参数是该动画的模型。稍后您将看到我们为什么需要此模型参考。然后，我们创建一个Assimp::Importer来读取动画文件，然后进行断言检查，如果找不到动画，该检查将引发错误。然后我们读取一般的动画数据，比如这个动画有多长，即mDuration和由mTicksPerSecond表示的动画速度。然后我们调用ReadHeirarchyData，它复制Assimp的aiNode继承权并创建AssimpNodeData的继承权。
+在这里，动画对象的创建从构造函数开始。这需要两个论点。首先，动画文件的路径&第二个参数是该动画的模型。稍后您将看到我们为什么需要此模型参考。然后，我们创建一个`Assimp::Importer`来读取动画文件，然后进行断言检查，如果找不到动画，该检查将引发错误。然后我们读取一般的动画数据，比如这个动画有多长，即`mDuration`和由`mTicksPerSecond`表示的动画速度。然后我们调用`ReadHeirarchyData`，它复制Assimp的`aiNode`继承权并创建`AssimpNodeData`的继承权。
 
-然后我们调用一个名为ReadMissingBones的函数。我不得不编写这个函数，因为有时当我单独加载FBX模型时，它缺少一些骨骼，而我在动画文件中找到了这些缺失的骨骼。此函数读取丢失的骨骼信息，并将其信息存储在模型的m_BoneInfoMap中，并在m_BoneIInfoMap中本地保存m_BoneIinfoMap的引用。
+然后我们调用一个名为`ReadMissingBones`的函数。我不得不编写这个函数，因为有时当我单独加载FBX模型时，它缺少一些骨骼，而我在动画文件中找到了这些缺失的骨骼。此函数读取丢失的骨骼信息，并将其信息存储在模型的`m_BoneInfoMap`中，并在`m_BoneIInfoMap`中本地保存`m_BoneIinfoMap`的引用。
 
 我们已经准备好了动画。现在让我们看看我们的最后阶段，Animator类：
 
@@ -692,9 +692,9 @@ private:
     float m_DeltaTime;	
 };
 ```
-Animator构造函数将播放动画，然后继续将动画时间m_CurrentTime重置为0。它还初始化m_FinalBoneMatrices，这是一个std::vector\<glm::mat4\>。这里的主要注意点是UpdateAnimation(float deltaTime)函数。它以m_TicksPerSecond的速率推进m_CurrentTime，然后调用CalculateBoneTransform函数。我们将在开始时传递两个参数，第一个是m_CurrentAnimation的m_RootNode，第二个是作为parentTransform传递的身份矩阵。然后，通过在animation的m_Bones数组中查找m_RootNodes骨骼来检查该骨骼是否参与该动画。如果找到骨骼，则调用bone.Update()函数，该函数对所有骨骼进行插值，并将局部骨骼变换矩阵返回到nodeTransform。但这是局部空间矩阵，如果在着色器中传递，将围绕原点移动骨骼。因此，我们将这个nodeTransform与parentTransform相乘，并将结果存储在globalTransformation中。这就足够了，但顶点仍在默认模型空间中。我们在m_BoneInfoMap中找到偏移矩阵，然后将其与globalTransfromMatrix相乘。我们还将获得id索引，该索引将用于写入该骨骼到m_FinalBoneMatrices的最终转换。
+`Animator`构造函数将播放动画，然后继续将动画时间`m_CurrentTime`重置为0。它还初始化`m_FinalBoneMatrices`，这是一个`std::vector\<glm::mat4\>`。这里的主要注意点是`UpdateAnimation(float deltaTime)`函数。它以`m_TicksPerSecond`的速率推进`m_CurrentTime`，然后调用`CalculateBoneTransform`函数。我们将在开始时传递两个参数，第一个是`m_CurrentAnimation`的`m_RootNode`，第二个是作为`parentTransform`传递的身份矩阵。然后，通过在`animation`的`m_Bones`数组中查找`m_RootNodes`骨骼来检查该骨骼是否参与该动画。如果找到骨骼，则调用`bone.Update()`函数，该函数对所有骨骼进行插值，并将局部骨骼变换矩阵返回到`nodeTransform`。但这是局部空间矩阵，如果在着色器中传递，将围绕原点移动骨骼。因此，我们将这个`nodeTransform`与parentTransform相乘，并将结果存储在`globalTransformation`中。这就足够了，但顶点仍在默认模型空间中。我们在`m_BoneInfoMap`中找到偏移矩阵，然后将其与`globalTransfromMatrix`相乘。我们还将获得id索引，该索引将用于写入该骨骼到`m_FinalBoneMatrices`的最终转换。
 
-最后我们为该节点的每个子节点调用CalculateBoneTransform，并将globalTransformation作为parentTransform传递。当没有子节点需要进一步处理时，我们会跳出这个递归循环。
+最后我们为该节点的每个子节点调用`CalculateBoneTransform`，并将`globalTransformation`作为`parentTransform`传递。当没有子节点需要进一步处理时，我们会跳出这个递归循环。
 
 ## 让我们动起来
 我们辛勤工作的成果终于来了！以下是我们将如何在main.cpp中播放动画：
@@ -765,7 +765,7 @@ int main()
     glfwTerminate();
     return 0;
 ```
-我们从加载模型开始，该模型将为着色器设置骨骼重量数据，然后通过为其提供路径来创建动画。然后，我们通过将创建的Animation传递给它来创建Animator对象。在渲染循环中，我们更新Animator，进行最终的骨骼变换并将其提供给着色器。这是我们一直在等待的输出:
+我们从加载模型开始，该模型将为着色器设置骨骼重量数据，然后通过为其提供路径来创建动画。然后，我们通过将创建的`Animation`传递给它来创建`Animator`对象。在渲染循环中，我们更新`Animator`，进行最终的骨骼变换并将其提供给着色器。这是我们一直在等待的输出:
 
 ![output](../img/03/04/output.gif)
 
