@@ -288,7 +288,7 @@ private:
 
 我们已经提取了骨骼的`offsetMatrix`，现在我们将简单地迭代其`aiVertexWeightarray`，提取将受此骨骼影响的所有顶点索引及其各自的权重，并调用`SetVertexBoneData`以使用提取的信息填充`Vertex.boneIds`和`Vertex.weights`。
 
-呜！到这里你应当休息一下。。。
+呜！到这里你应当休息一下。
 
 ## 骨骼、动画和动画制作类
 这是类的视图：
