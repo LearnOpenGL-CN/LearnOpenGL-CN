@@ -509,7 +509,9 @@ private:
 在代码中：
 
 **float midWayLength = animationTime - lastTimeStamp;**
+
 **float framesDiff = nextTimeStamp - lastTimeStamp;**
+
 **scaleFactor = midWayLength / framesDiff;**
 
 现在让我们继续转到**Animation**类：
