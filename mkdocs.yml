@@ -25,7 +25,6 @@ nav:
       - Assimp: '03 Model Loading/01 Assimp.md'
       - 网格: '03 Model Loading/02 Mesh.md'
       - 模型: '03 Model Loading/03 Model.md'
-      - 骨骼动画: '03 Model Loading/04 Skeletal Animation.md'
     - 高级OpenGL:
       - 深度测试: '04 Advanced OpenGL/01 Depth testing.md'
       - 模板测试: '04 Advanced OpenGL/02 Stencil testing.md'
@@ -75,6 +74,9 @@ nav:
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
         - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
+    - Guest Articles:
+      - 2020:
+        - 骨骼动画: '03 Model Loading/04 Skeletal Animation.md'
     - 历史存档: 'legacy.md'
   - 代码仓库: 'code_repo.md'
 
