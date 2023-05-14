@@ -27,26 +27,26 @@ $$
 
 动画的整个过程始于添加第一个组件，即blender或Maya等软件中的蒙皮(Skin)。蒙皮只不过是网格(Mesh)，它为模型添加了视觉方面，告诉观察者它的外观。但是，如果你想移动任何网格，那么就像现实世界一样，你需要添加骨骼。你可以看到下面的图片来了解它在blender等软件中的外观。
 
-![skin](../img/08/01/skin.png)
-![bones](../img/08/01/bones.png)
-![skin and bones](../img/08/01/merged.png)
+![skin](../../../img/08/01/skin.png)
+![bones](../../../img/08/01/bones.png)
+![skin and bones](../../../img/08/01/merged.png)
 
 这些骨头通常是以分层的方式添加给人类和动物等角色的，原因很明显。我们想要四肢之间的父子关系(parent-child relationship)。例如，如果我们移动右肩，那么我们的右二头肌、前臂、手和手指也应该移动。这就是层次结构的样子：
 
-![parent_child](../img/08/01/parent_child.png)
+![parent_child](../../../img/08/01/parent_child.png)
 
 在上图中，如果你抓住髋骨(hip bone)并移动它，所有的肢体都会受到它的移动的影响。
 
 此时，我们已经准备好为动画创建关键帧了。关键帧是动画中不同时间点的姿势。我们将在这些关键帧之间进行插值，以便在代码中从一个姿势平滑地过渡到另一个姿势。下面您可以看到如何为简单的4帧跳跃动画创建姿势：
 
-![poses](../img/08/01/poses.gif)
-![interpolating](../img/08/01/interpolating.gif)
+![poses](../../../img/08/01/poses.gif)
+![interpolating](../../../img/08/01/interpolating.gif)
 
 
 ## Assimp如何保存动画数据
 我们马上就会到代码部分，但首先我们需要了解assimp是如何保存导入的动画数据的。看下图：
 
-![assimp1](../img/08/01/assimp1.jpeg)
+![assimp1](../../../img/08/01/assimp1.jpeg)
 
 
 就像[模型加载](../03/01%20Assimp.md)部分一样，我们将从`aiScene`指针开始，该指针包含指向根节点的指针，然后看看我们这里有什么，一个动画数组。这个`aiAnimation`数组包含一般信息，比如动画的持续时间，这里表示为`mDuration`，然后我们有一个`mTicksPerSecond`变量，它控制我们应该在帧之间插值的速度。如果您还记得上一节中的动画有关键帧。类似地，`aiAnimation`包含一个名为`Channels`的`aiNodeAnim`数组。此数组包含将要参与动画的所有骨骼及其关键帧。一个`aiNodeAnim`包含骨骼的名称，你会发现在这里插入三种类型的关键点，平移、旋转和缩放。
@@ -59,12 +59,12 @@ $$
 
 当我们弯曲前臂时，我们会看到我们的二头肌弹出。我们也可以说前臂骨骼的变形正在影响我们肱二头肌上的顶点。类似地，可能有多个骨骼影响网格中的单个顶点。对于像固体金属机器人这样的角色，所有前臂顶点都只会受到前臂骨骼的影响，但对于像人类、动物等角色，可能有多达4块骨骼可以影响一个顶点。让我们看看assimp是如何存储这些信息的：
 
-![assimp2](../img/08/01/assimp2.jpeg)
+![assimp2](../../../img/08/01/assimp2.jpeg)
  
 我们再次从`aiScene`指针开始，该指针包含所有`aiMeshes`的数组。每个aiMesh对象都有一个`aiBone`数组，其中包含诸如此`aiBone`将对网格上的顶点集产生多大影响之类的信息。`aiBone`包含骨骼的名称，这是一个`aiVertexWeight`数组，基本上告诉此`aiBone`对网格上的顶点有多大影响。现在我们有了`aiBone`的另一个成员，它是`offsetMatrix`。这是一个4x4矩阵，用于将顶点从模型空间转换到骨骼空间。你可以在下面的图片中看到这一点：
 
-![mesh_space](../img/08/01/mesh_space.png)
-![bone_space](../img/08/01/bone_space.png)
+![mesh_space](../../../img/08/01/mesh_space.png)
+![bone_space](../../../img/08/01/bone_space.png)
 
 当顶点位于骨骼空间中时，它们将按照预期相对于骨骼进行变换。您很快就会在代码中看到这一点。
 
@@ -293,7 +293,7 @@ private:
 ## 骨骼、动画和动画制作类
 这是类的视图：
 
-![bird_eye_view](../img/08/01/bird_eye_view.png)
+![bird_eye_view](../../../img/08/01/bird_eye_view.png)
 
 
 让我们提醒自己我们正在努力实现什么。对于每个渲染帧，我们希望平滑地插值继承中的所有骨骼，并获得它们的最终变换矩阵，这些矩阵将提供给着色器统一的finalBonesMatrix。以下是每个类的内容：
@@ -504,7 +504,7 @@ private:
 ```
 我们首先为我们的键类型创建3个结构。每个结构都有一个值和一个时间戳。时间戳告诉我们在动画的哪个点需要插值到它的值。Bone有一个构造函数，它从`aiNodeAnim`读取密钥并将密钥及其时间戳存储到`mPositionKeys`、`mRotationKeys`和`mScalingKeys`。主要插值过程从更新(float animationTime)开始，该过程在每帧调用一次。此函数调用所有键类型的相应插值函数，并组合所有最终插值结果，并将其存储到4x4矩阵`m_LocalTransform`中。平移和缩放关键点的插值函数相似，但对于旋转，我们使用Slerp在四元数之间进行插值。Lerp和Slerp都有3个论点。第一个参数取最后一个键，第二个参数取下一个键和第三个参数取范围为0-1的值，我们在这里称之为比例因子。让我们看看如何在函数`GetScaleFactor`中计算这个比例因子：
 
-![](../img/08/01/scale_factor.png)
+![](../../../img/08/01/scale_factor.png)
 
 在代码中：
 
@@ -769,7 +769,7 @@ int main()
 ```
 我们从加载模型开始，该模型将为着色器设置骨骼重量数据，然后通过为其提供路径来创建动画。然后，我们通过将创建的`Animation`传递给它来创建`Animator`对象。在渲染循环中，我们更新`Animator`，进行最终的骨骼变换并将其提供给着色器。这是我们一直在等待的输出:
 
-![output](../img/08/01/output.gif)
+![output](../../../img/08/01/output.gif)
 
 从[此处](https://learnopengl.com/Model-Loading/Assimp)下载使用的模型。请注意，动画和网格是在单个DAE(collada)文件中烘焙的。你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/8.guest/2020/skeletal_animation/skeletal_animation.cpp)找到这个演示的完整源代码。
 
