@@ -74,6 +74,9 @@ nav:
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
         - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
+    - Guest Articles:
+      - 2020:
+        - 骨骼动画: '08 Guest Articles/2020/01 Skeletal Animation.md'
     - 历史存档: 'legacy.md'
   - 代码仓库: 'code_repo.md'
 
