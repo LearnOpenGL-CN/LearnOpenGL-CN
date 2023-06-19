@@ -332,7 +332,6 @@ vec3 LTC_Evaluate(vec3 N, vec3 V, vec3 P, mat3 Minv, vec3 points[4], bool twoSid
 - 使用箭头键移动光源。
 - 使用B启用/禁用双面照明。
 - 使用WASD键移动相机，通过鼠标旋转相机。还支持使用鼠标滚轮进行缩放。
-- 
 
 作者还增加了地面贴图让场景看起来更真实。如果编译成功你大概率可以看到如下结果：
 
