@@ -82,7 +82,7 @@ if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 glViewport(0, 0, 800, 600);
 ```
 
-<fun>glViewport</fun>函数前两个参数控制窗口左下角的位置。第三个和第四个参数控制渲染窗口的宽度和高度（像素）。
+<fun>glViewport</fun>函数前两个参数控制窗口左上角的位置。第三个和第四个参数控制渲染窗口的宽度和高度（像素）。
 
 我们实际上也可以将视口的维度设置为比GLFW的维度小，这样子之后所有的OpenGL渲染将会在一个更小的窗口中显示，这样子的话我们也可以将一些其它元素显示在OpenGL视口之外。
 
