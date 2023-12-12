@@ -92,7 +92,7 @@ float vertices[] = {
 
 	与通常的屏幕坐标不同，y轴正方向为向上，(0, 0)坐标是这个图像的中心，而不是左上角。最终你希望所有(变换过的)坐标都在这个坐标空间中，否则它们就不可见了。
 
-        通过使用由<fun>glViewport</fun>函数提供的数据，进行<def>视口变换</def>(Viewport Transform)，<def>标准化设备坐标</def>(Normalized Device Coordinates)会变换为<def>屏幕空间坐标</def>(Screen-space Coordinates)。所得的屏幕空间坐标又会被变换为片段输入到片段着色器中。
+	通过使用由<fun>glViewport</fun>函数提供的数据，进行<def>视口变换</def>(Viewport Transform)，<def>标准化设备坐标</def>(Normalized Device Coordinates)会变换为<def>屏幕空间坐标</def>(Screen-space Coordinates)。所得的屏幕空间坐标又会被变换为片段输入到片段着色器中。
 
 定义这样的顶点数据以后，我们会把它作为输入发送给图形渲染管线的第一个处理阶段：顶点着色器。它会在GPU上创建内存用于储存我们的顶点数据，还要配置OpenGL如何解释这些内存，并且指定其如何发送给显卡。顶点着色器接着会处理我们在内存中指定数量的顶点。
 
