@@ -1,4 +1,4 @@
-pages:
+nav:
   - 主页: 'index.md'
   - 目录:
     - 简介: 'intro.md'
@@ -74,6 +74,11 @@ pages:
         - 音效: '06 In Practice/2D-Game/09 Audio.md'
         - 渲染文本: '06 In Practice/2D-Game/10 Render Text.md'
         - 结语: '06 In Practice/2D-Game/11 Final thoughts.md'
+    - Guest Articles:
+      - 2020:
+        - 骨骼动画: '08 Guest Articles/2020/01 Skeletal Animation.md'
+      - 2022:
+        - 区域光: '08 Guest Articles/2022/03 Area Lights.md'
     - 历史存档: 'legacy.md'
   - 代码仓库: 'code_repo.md'
 
@@ -100,4 +105,6 @@ extra_css:
 
 docs_dir: 'docs'
 
-theme_dir: 'yeti'
+theme:
+    name: null
+    custom_dir: 'yeti'

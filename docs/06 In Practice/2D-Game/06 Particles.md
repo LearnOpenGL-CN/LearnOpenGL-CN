@@ -233,7 +233,7 @@ void Game::Render()
 }
 ```
 
-注意到，我们是在渲染球体之前且在渲染其他物体之后渲染粒子的，这样，粒子就会在所有其他物体面前，但报纸在球体之后，你可以在[这里](http://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_particles)找到更新的`game`类的源码。
+注意到，我们是在渲染球体之前且在渲染其他物体之后渲染粒子的，这样，粒子就会在所有其他物体面前，但在球体之后，你可以在[这里](http://learnopengl.com/code_viewer.php?code=in-practice/breakout/game_particles)找到更新的`game`类的源码。
 
 如果你现在编译并运行你的程序，你可能会看到在球体之后有一条小尾巴。就像这个教程开始的那样，给了这个游戏更加现代化的面貌。这个系统还可以很容易的扩展到更高级效果的主体上，就用这个粒子生成器自由的去实验吧，看看你是否可以创建出你自己的特效。
 

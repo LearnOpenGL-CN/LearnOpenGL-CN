@@ -68,7 +68,6 @@ void main()
 
 ![](../img/05/04/normal_mapping_correct.png)
 
-你可以在这里找到这个简单demo的源代码及其顶点和像素着色器。
 
 然而有个问题限制了刚才讲的那种法线贴图的使用。我们使用的那个法线贴图里面的所有法线向量都是指向正z方向的。上面的例子能用，是因为那个平面的表面法线也是指向正z方向的。可是，如果我们在表面法线指向正y方向的平面上使用同一个法线贴图会发生什么？
 
@@ -84,7 +83,7 @@ void main()
 
 ## 切线空间
 
-法线贴图中的法线向量定义在切线空间中，在切线空间中，法线永远指着正z方向。切线空间是位于三角形表面之上的空间：法线相对于单个三角形的本地参考框架。它就像法线贴图向量的本地空间；它们都被定义为指向正z方向，无论最终变换到什么方向。使用一个特定的矩阵我们就能将本地/切线空间中的法线向量转成世界或视图空间下，使它们转向到最终的贴图表面的方向。
+法线贴图中的法线向量定义在切线空间中，在切线空间中，法线永远指着正z方向。切线空间是位于三角形表面之上的空间：法线相对于单个三角形的局部坐标系。它就像法线贴图向量的局部空间；它们都被定义为指向正z方向，无论最终变换到什么方向。使用一个特定的矩阵我们就能将本地/切线空间中的法线向量转成世界或视图空间下，使它们转向到最终的贴图表面的方向。
 
 我们可以说，上个部分那个朝向正y的法线贴图错误的贴到了表面上。法线贴图被定义在切线空间中，所以一种解决问题的方式是计算出一种矩阵，把法线从切线空间变换到一个不同的空间，这样它们就能和表面法线方向对齐了：法线向量都会指向正y方向。切线空间的一大好处是我们可以为任何类型的表面计算出一个这样的矩阵，由此我们可以把切线空间的z方向和表面的法线方向对齐。
 
@@ -338,7 +337,7 @@ void main()
 ```c++
 glm::mat4 model;
 model = glm::rotate(model, (GLfloat)glfwGetTime() * -10, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-glUniformMatrix4fv(modelLoc 1, GL_FALSE, glm::value_ptr(model));
+glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 RenderQuad();
 ```
 
@@ -373,9 +372,7 @@ vertex.Tangent = vector;
 然后，你还必须更新模型加载器，用以从带纹理模型中加载法线贴图。wavefront的模型格式（.obj）导出的法线贴图有点不一样，Assimp的aiTextureType_NORMAL并不会加载它的法线贴图，而aiTextureType_HEIGHT却能，所以我们经常这样加载它们：
 
 ```c++
-vector<Texture> specularMaps = this->loadMaterialTextures(
-    material, aiTextureType_HEIGHT, "texture_normal"
-);
+vector normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
 ```
  
 

@@ -83,7 +83,7 @@
 - Stride：步长
 - Offset：偏移量
 - VAO：顶点数组对象，Vertex Array Object
-- Element Buffer Object，Index Buffer Object：EBO，IBO，索引缓冲对象
+- Element Buffer Object：元素缓冲对象（EBO） 或 Index Buffer Object：索引缓冲对象(IBO)
 - Wireframe Mode：线框模式
 - Stage：阶段
 
@@ -118,6 +118,7 @@
 - Channel：通道
 - Sampler：采样器
 - Texture Unit：纹理单元
+- Texture Wrapping：纹理环绕
 
 ## 01-07
 

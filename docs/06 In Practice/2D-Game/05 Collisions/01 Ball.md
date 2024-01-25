@@ -20,17 +20,17 @@
 class BallObject : public GameObject
 {
     public:
-        // 球的状态	
+        // 球的状态
         GLfloat   Radius;
         GLboolean Stuck;
-  
+
 
         BallObject();
         BallObject(glm::vec2 pos, GLfloat radius, glm::vec2 velocity, Texture2D sprite);
 
         glm::vec2 Move(GLfloat dt, GLuint window_width);
         void      Reset(glm::vec2 position, glm::vec2 velocity);
-}; 
+};
 ```
 
 <fun>BallObject</fun>的构造函数不但初始化了其自身的值，而且实际上也潜在地初始化了<fun>GameObject</fun>。<fun>BallObject</fun>类拥有一个<fun>Move</fun>函数，该函数用于根据球的速度来移动球，并检查它是否碰到了场景的任何边界，如果碰到的话就会反转球的速度：
@@ -41,7 +41,7 @@ glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width)
 {
     // 如果没有被固定在挡板上
     if (!this->Stuck)
-    { 
+    {
         // 移动球
         this->Position += this->Velocity * dt;
         // 检查是否在窗口边界以外，如果是的话反转速度并恢复到正确的位置
@@ -60,10 +60,10 @@ glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width)
             this->Velocity.y = -this->Velocity.y;
             this->Position.y = 0.0f;
         }
-      
+
     }
     return this->Position;
-}  
+}
 ```
 
 除了反转球的速度之外，我们还需要把球沿着边界重新放置回来。只有在没有被固定时球才能够移动。
@@ -77,16 +77,16 @@ glm::vec2 BallObject::Move(GLfloat dt, GLuint window_width)
 - BallObject: [header](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/ball_object_collisions.h), [code](https://learnopengl.com/code_viewer.php?code=in-practice/breakout/ball_object_collisions)
 
 
-首先我们在游戏中添加球。与玩家挡板相似，我们创建一个球对象并且定义两个用来初始化球的常量。对于球的纹理，我们会使用在LearnOpenGL Breakout游戏中完美适用的一张图片：[球纹理](../../../../img/06/Breakout/05/01/awesomeface.png)。
+首先我们在游戏中添加球。与玩家挡板相似，我们创建一个球对象并且定义两个用来初始化球的常量。对于球的纹理，我们会使用在LearnOpenGL Breakout游戏中完美适用的一张图片：[球纹理](../../../img/06/Breakout/05/01/awesomeface.png)。
 
 ```c++
 // 初始化球的速度
 const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 // 球的半径
 const GLfloat BALL_RADIUS = 12.5f;
-  
-BallObject     *Ball; 
-  
+
+BallObject     *Ball;
+
 void Game::Init()
 {
     [...]
@@ -101,7 +101,7 @@ void Game::Init()
 void Game::Update(GLfloat dt)
 {
     Ball->Move(dt, this->Width);
-}  
+}
 ```
 
 除此之外，由于球初始是固定在挡板上的，我们必须让玩家能够从固定的位置重新移动它。我们选择使用空格键来从挡板释放球。这意味着我们必须稍微修改<fun>ProcessInput</fun>函数：
@@ -149,7 +149,7 @@ void Game::Render()
         [...]
         Ball->Draw(*Renderer);
     }
-}  
+}
 ```
 
 结果就是球会跟随着挡板，并且当我们按下空格键时球开始自由运动。球会在左侧、右侧和顶部边界合理地反弹，但看起来不会撞击任何的砖块，就像我们可以在下边的视频中看到的那样：
