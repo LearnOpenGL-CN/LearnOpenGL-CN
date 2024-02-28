@@ -127,7 +127,7 @@ while(!glfwWindowShouldClose(window))
 }
 ```
 
-- <fun>glfwWindowShouldClose</fun>函数在我们每次循环的开始前检查一次GLFW是否被要求退出，如果是的话该函数返回`true`然后渲染循环便结束了，之后为我们就可以关闭应用程序了。
+- <fun>glfwWindowShouldClose</fun>函数在我们每次循环的开始前检查一次GLFW是否被要求退出，如果是的话，该函数返回`true`，渲染循环将停止运行，之后我们就可以关闭应用程序。
 - <fun>glfwPollEvents</fun>函数检查有没有触发什么事件（比如键盘输入、鼠标移动等）、更新窗口状态，并调用对应的回调函数（可以通过回调方法手动设置）。
 - <fun>glfwSwapBuffers</fun>函数会交换颜色缓冲（它是一个储存着GLFW窗口每一个像素颜色值的大缓冲），它在这一迭代中被用来绘制，并且将会作为输出显示在屏幕上。
 
@@ -166,7 +166,7 @@ void processInput(GLFWwindow *window)
 }
 ```
 
-这里我们检查用户是否按下了返回键(Esc)（如果没有按下，<fun>glfwGetKey</fun>将会返回<var>GLFW_RELEASE</var>。如果用户的确按下了返回键，我们将通过<fun>glfwSetwindowShouldClose</fun>使用把`WindowShouldClose`属性设置为 `true`的方法关闭GLFW。下一次while循环的条件检测将会失败，程序将会关闭。
+这里我们检查用户是否按下了返回键(Esc)（如果没有按下，<fun>glfwGetKey</fun>将会返回<var>GLFW_RELEASE</var>。如果用户的确按下了返回键，我们将通过使用<fun>glfwSetwindowShouldClose</fun>把`WindowShouldClose`属性设置为 `true`来关闭GLFW。下一次while循环的条件检测将会失败，程序将关闭。
 
 我们接下来在渲染循环的每一个迭代中调用<fun>processInput</fun>：
 
