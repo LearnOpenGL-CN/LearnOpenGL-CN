@@ -126,8 +126,8 @@ $$
 \begin{equation}\bar{C}_{result} = \bar{\color{green}C}_{source} * \color{green}F_{source} + \bar{\color{red}C}_{destination} * \color{red}F_{destination}\end{equation}
 $$
 
-- \(\bar{\color{green}C}_{source}\)：源颜色向量。这是源自纹理的颜色向量。
-- \(\bar{\color{red}C}_{destination}\)：目标颜色向量。这是当前储存在颜色缓冲中的颜色向量。
+- \(\bar{\color{green}C}_{source}\)：源颜色向量。片元着色器的输出颜色。
+- \(\bar{\color{red}C}_{destination}\)：目标颜色向量。当前储存在颜色缓冲中的颜色。
 - \(\color{green}F_{source}\)：源因子值。指定了alpha值对源颜色的影响。
 - \(\color{red}F_{destination}\)：目标因子值。指定了alpha值对目标颜色的影响。
 
