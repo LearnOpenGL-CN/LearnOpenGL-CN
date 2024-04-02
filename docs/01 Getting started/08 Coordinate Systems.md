@@ -217,7 +217,7 @@ void main()
 我们还应该将矩阵传入着色器（这通常在每次的渲染迭代中进行，因为变换矩阵会经常变动）：
 
 ```c++
-int modelLoc = glGetUniformLocation(ourShader.ID, "model"));
+int modelLoc = glGetUniformLocation(ourShader.ID, "model");
 glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 ... // 观察矩阵和投影矩阵与之类似
 ```
