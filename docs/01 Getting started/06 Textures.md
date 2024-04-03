@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/), Krasjet, Geequlim, [BLumia](https://github.com/blumia/)
-校对     | 暂未校对
+校对     | AoZhang
 
 !!! note "译注"
 
@@ -110,7 +110,7 @@ OpenGL使用一种叫做<def>多级渐远纹理</def>(Mipmap)的概念来解决�
 
 ![](../img/01/06/mipmaps.png)
 
-手工为每个纹理图像创建一系列多级渐远纹理很麻烦，幸好OpenGL有一个<fun>glGenerateMipmaps</fun>函数，在创建完一个纹理后调用它OpenGL就会承担接下来的所有工作了。后面的教程中你会看到该如何使用它。
+手工为每个纹理图像创建一系列多级渐远纹理很麻烦，幸好OpenGL有一个<fun>glGenerateMipmap</fun>函数，在创建完一个纹理后调用它OpenGL就会承担接下来的所有工作了。后面的教程中你会看到该如何使用它。
 
 在渲染中切换多级渐远纹理级别(Level)时，OpenGL在两个不同级别的多级渐远纹理层之间会产生不真实的生硬边界。就像普通的纹理过滤一样，切换多级渐远纹理级别时你也可以在两个不同多级渐远纹理级别之间使用<var>NEAREST</var>和<var>LINEAR</var>过滤。为了指定不同多级渐远纹理级别之间的过滤方式，你可以使用下面四个选项中的一个代替原有的过滤方式：
 
