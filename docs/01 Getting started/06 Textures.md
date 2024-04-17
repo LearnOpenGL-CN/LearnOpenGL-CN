@@ -365,7 +365,7 @@ glBindVertexArray(0);
 
 ![](../img/01/06/textures_combined2.png)
 
-如果你看到了一个开心的箱子，你就做对了。你可以对比一下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点着](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)着色器。
+如果你看到了一个开心的箱子，你就做对了。你可以对比一下[源代码](http://learnopengl.com/code_viewer.php?code=getting-started/textures_combined)，以及[顶点](http://learnopengl.com/code_viewer.php?type=vertex&code=getting-started/texture)和[片段](http://learnopengl.com/code_viewer.php?type=fragment&code=getting-started/texture)着色器。
 
 ## 练习
 
