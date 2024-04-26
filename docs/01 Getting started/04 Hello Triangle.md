@@ -4,7 +4,7 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | [Django](http://bullteacher.com/), Krasjet, Geequlim
-校对     | Kang Lin <kl222@126.com>
+校对     | Kang Lin <kl222@126.com>, [AoZhang](https://github.com/SuperAoao)
 
 !!! note "译注"
 
@@ -46,7 +46,7 @@
 
 顶点着色器阶段的输出可以选择性地传递给<def>几何着色器</def>(Geometry Shader)。几何着色器将一组顶点作为输入，这些顶点形成图元，并且能够通过发出新的顶点来形成新的(或其他)图元来生成其他形状。在这个例子中，它从给定的形状中生成第二个三角形。
 
-<def>图元装配</def>(Primitive Assembly)阶段将顶点着色器（或几何着色器）输出的所有顶点作为输入（如果是<var>GL_POINTS</var>，那么就是一个顶点），并将所有的点装配成指定图元的形状；本节例子中是一个三角形。
+<def>图元装配</def>(Primitive Assembly)阶段将顶点着色器（或几何着色器）输出的所有顶点作为输入（如果是<var>GL_POINTS</var>，那么就是一个顶点），并将所有的点装配成指定图元的形状；本节例子中是两个三角形。
 
 图元装配阶段的输出会被传入<def>光栅化阶段</def>(Rasterization Stage)，这里它会把图元映射为最终屏幕上相应的像素，生成供片段着色器(Fragment Shader)使用的片段(Fragment)。在片段着色器运行之前会执行<def>裁切</def>(Clipping)。裁切会丢弃超出你的视图以外的所有像素，用来提升执行效率。
 
@@ -97,7 +97,7 @@ float vertices[] = {
 
 我们通过<def>顶点缓冲对象</def>(Vertex Buffer Objects, VBO)管理这个内存，它会在GPU内存（通常被称为显存）中储存大量顶点。使用这些缓冲对象的好处是我们可以一次性的发送一大批数据到显卡上，而不是每个顶点发送一次。从CPU把数据发送到显卡相对较慢，所以只要可能我们都要尝试尽量一次性发送尽可能多的数据。当数据发送至显卡的内存中后，顶点着色器几乎能立即访问顶点，这是个非常快的过程。
 
-顶点缓冲对象是我们在[OpenGL](01 OpenGL.md)教程中第一个出现的OpenGL对象。就像OpenGL中的其它对象一样，这个缓冲有一个独一无二的ID，所以我们可以使用<fun>glGenBuffers</fun>函数和一个缓冲ID生成一个VBO对象：
+顶点缓冲对象是我们在[OpenGL](01 OpenGL.md)教程中第一个出现的OpenGL对象。就像OpenGL中的其它对象一样，这个缓冲有一个独一无二的ID，所以我们可以使用<fun>glGenBuffers</fun>函数生成一个带有缓冲ID的VBO对象：
 
 ```c++
 unsigned int VBO;
