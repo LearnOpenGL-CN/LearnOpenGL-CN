@@ -4,9 +4,9 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | Krasjet
-校对     | 暂未校对
+校对     | [AoZhang](https://github.com/SuperAoao)
 
-现在是时候接触Assimp并创建实际的加载和转换代码了。这个教程的目标是创建另一个类来完整地表示一个模型，或者说是包含多个网格，甚至是多个物体的模型。一个包含木制阳台、塔楼、甚至游泳池的房子可能仍会被加载为一个模型。我们会使用Assimp来加载模型，并将它转换(Translate)至多个在[上一节](02 Mesh.md)中创建的<var>Mesh</var>对象。
+现在是时候接触Assimp并创建实际的加载和转换代码了。这个教程的目标是创建另一个类来完整地表示一个模型，或者说是包含多个网格，多个纹理的模型。一个包含木制阳台、塔楼、甚至游泳池的房子可能仍会被加载为一个模型。我们会使用Assimp来加载模型，并将它转换(Translate)至多个在[上一节](02 Mesh.md)中创建的<var>Mesh</var>对象。
 
 
 事不宜迟，我会先把<fun>Model</fun>类的结构给你：
@@ -34,12 +34,12 @@ class Model
 };
 ```
 
-<fun>Model</fun>类包含了一个<fun>Mesh</fun>对象的vector（译注：这里指的是C++中的vector模板类，之后遇到均不译），构造器需要我们给它一个文件路径。在构造器中，它会直接通过<fun>loadModel</fun>来加载文件。私有函数将会处理Assimp导入过程中的一部分，我们很快就会介绍它们。我们还将储存文件路径的目录，在之后加载纹理的时候还会用到它。
+<fun>Model</fun>类包含了一个<fun>Mesh</fun>对象的vector（译注：这里指的是C++中的vector模板类，之后遇到均不译），构造函数需要我们给它一个文件路径。在构造函数中，它会直接通过<fun>loadModel</fun>来加载文件。私有函数将会处理Assimp导入过程中的一部分，我们很快就会介绍它们。我们还将储存文件路径的目录，在之后加载纹理的时候还会用到它。
 
 <fun>Draw</fun>函数没有什么特别之处，基本上就是遍历了所有网格，并调用它们各自的<fun>Draw</fun>函数。
 
 ```c++
-void Draw(Shader shader)
+void Draw(Shader &shader)
 {
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
@@ -48,7 +48,7 @@ void Draw(Shader shader)
 
 ## 导入3D模型到OpenGL
 
-要想导入一个模型，并将它转换到我们自己的数据结构中的话，首先我们需要包含Assimp对应的头文件，这样编译器就不会抱怨我们了。
+要想导入一个模型，并将它转换到我们自己的数据结构中的话，首先我们需要包含Assimp对应的头文件：
 
 ```c++
 #include <assimp/Importer.hpp>
@@ -56,7 +56,7 @@ void Draw(Shader shader)
 #include <assimp/postprocess.h>
 ```
 
-首先需要调用的函数是<fun>loadModel</fun>，它会从构造器中直接调用。在<fun>loadModel</fun>中，我们使用Assimp来加载模型至Assimp的一个叫做<u>scene</u>的数据结构中。你可能还记得在模型加载章节的[第一节](01 Assimp.md)教程中，这是Assimp数据接口的根对象。一旦我们有了这个场景对象，我们就能访问到加载后的模型中所有所需的数据了。
+首先需要调用的函数是<fun>loadModel</fun>，它会从构造函数中直接调用。在<fun>loadModel</fun>中，我们使用Assimp来加载模型至Assimp的一个叫做<u>scene</u>的数据结构中。你可能还记得在模型加载章节的[第一节](01 Assimp.md)教程中，这是Assimp数据接口的根对象。一旦我们有了这个场景对象，我们就能访问到加载后的模型中所有所需的数据了。
 
 Assimp很棒的一点在于，它抽象掉了加载不同文件格式的所有技术细节，只需要一行代码就能完成所有的工作：
 
@@ -267,9 +267,9 @@ vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string
 
 # 重大优化
 
-这还没有完全结束，因为我们还想做出一个重大的（但不是完全必须的）优化。大多数场景都会在多个网格中重用部分纹理。还是想想一个房子，它的墙壁有着花岗岩的纹理。这个纹理也可以被应用到地板、天花板、楼梯、桌子，甚至是附近的一口井上。加载纹理并不是一个开销不大的操作，在我们当前的实现中，即便同样的纹理已经被加载过很多遍了，对每个网格仍会加载并生成一个新的纹理。这很快就会变成模型加载实现的性能瓶颈。
+这还没有完全结束，因为我们还想做出一个重大的（但不是完全必须的）优化。大多数场景都会在多个网格中重用部分纹理。还是想想一个房子，它的墙壁有着花岗岩的纹理。这个纹理也可以被应用到地板、天花板、楼梯、桌子，甚至是附近的一口井上。加载纹理并不是一个低开销的操作，在我们当前的实现中，即便同样的纹理已经被加载过很多遍了，对每个网格仍会加载并生成一个新的纹理。这很快就会变成模型加载实现的性能瓶颈。
 
-所以我们会对模型的代码进行调整，将所有加载过的纹理全局储存，每当我们想加载一个纹理的时候，首先去检查它有没有被加载过。如果有的话，我们会直接使用那个纹理，并跳过整个加载流程，来为我们省下很多处理能力。为了能够比较纹理，我们还需要储存它们的路径：
+所以我们会对模型的代码进行微调，将所有加载过的纹理全局储存，每当我们想加载一个纹理的时候，首先去检查它有没有被加载过。如果有的话，我们会直接使用那个纹理，并跳过整个加载流程，来为我们省下很多处理能力。为了能够比较纹理，我们还需要储存它们的路径：
 
 ```c++
 struct Texture {
@@ -339,10 +339,14 @@ vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string
 
 ![](../img/03/03/model_diffuse.png)
 
-你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/3.model_loading/1.model_loading/model_loading.cpp)找到完整的源码。
+你可以在[这里](https://learnopengl.com/code_viewer_gh.php?code=src/3.model_loading/1.model_loading/model_loading.cpp)找到完整的源码。注意我们通过stb_image.h来垂直翻转纹理，如果你在我们加载模型之前没有这样做会导致纹理看起来完全混乱。
 
 我们可以变得更有创造力一点，根据我们之前在[光照](../02 Lighting/05 Light casters.md)教程中学过的知识，引入两个点光源到渲染方程中，结合镜面光贴图，我们能得到很惊人的效果。
 
 ![](../img/03/03/model_lighting.png)
 
 甚至我都必须要承认这个可能是比一直使用的箱子要好看多了。使用Assimp，你能够加载互联网上的无数模型。有很多资源网站都提供了多种格式的免费3D模型供你下载。但还是要注意，有些模型会不能正常地载入，纹理的路径会出现问题，或者Assimp并不支持它的格式。
+
+## 延伸阅读
+
+- [如何将Wavefront(.obj)模型纹理加载到OpenGL](https://www.youtube.com/watch?v=4DQquG_o-Ac):由Matthew Early制作的如何在Blender中设置3D模型的视频教程，让它们可以直接在当前的模型加载器下正确工作(因为我们选择的纹理设置并不总能做到开箱即用)。
