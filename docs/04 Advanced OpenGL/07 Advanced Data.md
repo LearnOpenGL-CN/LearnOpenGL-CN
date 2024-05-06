@@ -4,13 +4,13 @@
       ---|---
 作者     | JoeyDeVries
 翻译     | Krasjet
-校对     | 暂未校对
+校对     | [AoZhang](https://github.com/SuperAoao)
 
-我们在OpenGL中大量使用缓冲来储存数据已经有很长时间了。操作缓冲其实还有更有意思的方式，而且使用纹理将大量数据传入着色器也有更有趣的方法。这一节中，我们将讨论一些更有意思的缓冲函数，以及我们该如何使用纹理对象来储存大量的数据（纹理的部分还没有完成）。
+大多数章节中我们已经在OpenGL中大量使用缓冲区在GPU中存储数据。这一章我们将简要讨论一些管理缓冲区的可选方式。
 
-OpenGL中的缓冲只是一个管理特定内存块的对象，没有其它更多的功能了。在我们将它绑定到一个<def>缓冲目标</def>(Buffer Target)时，我们才赋予了其意义。当我们绑定一个缓冲到<var>GL_ARRAY_BUFFER</var>时，它就是一个顶点数组缓冲，但我们也可以很容易地将其绑定到<var>GL_ELEMENT_ARRAY_BUFFER</var>。OpenGL内部会为每个目标储存一个缓冲，并且会根据目标的不同，以不同的方式处理缓冲。
+OpenGL中的缓冲区从核心上讲只是一个管理特定内存块的对象，除此之外没有其它更多的功能了。在我们将它绑定到一个<def>缓冲目标</def>(Buffer Target)时，我们才赋予了其意义。当我们绑定一个缓冲到<var>GL_ARRAY_BUFFER</var>时，它就是一个顶点数组缓冲，但我们也可以很容易地将其绑定到<var>GL_ELEMENT_ARRAY_BUFFER</var>。OpenGL内部会为每个目标储存一个缓冲区的索引，并且会根据目标的不同，以不同的方式处理缓冲。
 
-到目前为止，我们一直是调用<fun>glBufferData</fun>函数来填充缓冲对象所管理的内存，这个函数会分配一块内存，并将数据添加到这块内存中。如果我们将它的`data`参数设置为`NULL`，那么这个函数将只会分配内存，但不进行填充。这在我们需要**预留**(Reserve)特定大小的内存，之后回到这个缓冲一点一点填充的时候会很有用。
+到目前为止，我们一直是调用<fun>glBufferData</fun>函数来填充缓冲区对象所管理的内存，这个函数会分配一块GPU内存，并将数据添加到这块内存中。如果我们将它的`data`参数设置为`NULL`，那么这个函数将只会分配内存，但不进行填充。这在我们需要**预留**(Reserve)特定大小的内存，之后再回到这个缓冲区填充的时候会很有用。
 
 除了使用一次函数调用填充整个缓冲之外，我们也可以使用<fun>glBufferSubData</fun>，填充缓冲的特定区域。这个函数需要一个缓冲目标、一个偏移量、数据的大小和数据本身作为它的参数。这个函数不同的地方在于，我们可以提供一个偏移量，指定从**何处**开始填充这个缓冲。这能够让我们插入或者更新缓冲内存的某一部分。要注意的是，缓冲需要有足够的已分配内存，所以对一个缓冲调用<fun>glBufferSubData</fun>之前必须要先调用<fun>glBufferData</fun>。
 
@@ -18,7 +18,7 @@ OpenGL中的缓冲只是一个管理特定内存块的对象，没有其它更�
 glBufferSubData(GL_ARRAY_BUFFER, 24, sizeof(data), &data); // 范围： [24, 24 + sizeof(data)]
 ```
 
-将数据导入缓冲的另外一种方法是，请求缓冲内存的指针，直接将数据复制到缓冲当中。通过调用<fun>glMapBuffer</fun>函数，OpenGL会返回当前绑定缓冲的内存指针，供我们操作：
+将数据导入缓冲的另外一种方法是，请求缓冲区内存的指针，直接将数据复制到缓冲区当中。通过调用<fun>glMapBuffer</fun>函数，OpenGL会返回当前绑定缓冲区的内存指针，供我们操作：
 
 ```c++
 float data[] = {
@@ -38,13 +38,13 @@ glUnmapBuffer(GL_ARRAY_BUFFER);
 
 如果要直接映射数据到缓冲，而不事先将其存储到临时内存中，<fun>glMapBuffer</fun>这个函数会很有用。比如说，你可以从文件中读取数据，并直接将它们复制到缓冲内存中。
 
-## 分批顶点属性
+## 批处理顶点属性
 
-通过使用<fun>glVertexAttribPointer</fun>，我们能够指定顶点数组缓冲内容的属性布局。在顶点数组缓冲中，我们对属性进行了<def>交错</def>(Interleave)处理，也就是说，我们将每一个顶点的位置、法线和/或纹理坐标紧密放置在一起。既然我们现在已经对缓冲有了更多的了解，我们可以采取另一种方式。
+通过使用<fun>glVertexAttribPointer</fun>，我们能够指定顶点数组缓冲区内容的属性布局。在顶点数组缓冲中，我们对属性进行了<def>交错</def>(Interleave)处理，也就是说，我们将每一个顶点的位置、法线和/或纹理坐标紧密放置在一起。既然我们现在已经对缓冲区有了更多的了解，我们可以采取另一种方式。
 
 我们可以做的是，将每一种属性类型的向量数据打包(Batch)为一个大的区块，而不是对它们进行交错储存。与交错布局123123123123不同，我们将采用分批(Batched)的方式111122223333。
 
-当从文件中加载顶点数据的时候，你通常获取到的是一个位置数组、一个法线数组和/或一个纹理坐标数组。我们需要花点力气才能将这些数组转化为一个大的交错数据数组。使用分批的方式会是更简单的解决方案，我们可以很容易使用<fun>glBufferSubData</fun>函数实现：
+当从文件中加载顶点数据的时候，你通常获取到的是一个位置数组、一个法线数组和/或一个纹理坐标数组。我们需要花点力气才能将这些数组转化为一个大的交错数据数组。使用批处理的方式会是更简单的解决方案，我们可以很容易使用<fun>glBufferSubData</fun>函数实现：
 
 ```c++
 float positions[] = { ... };
@@ -69,37 +69,36 @@ glVertexAttribPointer(
 
 注意`stride`参数等于顶点属性的大小，因为下一个顶点属性向量能在3个（或2个）分量之后找到。
 
-这给了我们设置顶点属性的另一种方法。使用哪种方法都不会对OpenGL有什么立刻的好处，它只是设置顶点属性的一种更整洁的方式。具体使用的方法将完全取决于你的喜好与程序类型。
+这给我们提供了另一种设置和指定顶点属性的方法。使用哪种方式都是可行的，它主要是一种更有条理的设置顶点属性的方式。然而，交错方法仍然是推荐的方法，因为每个顶点着色器运行的顶点属性在内存中紧密对齐。
 
-## 复制缓冲
+## 复制缓冲区
 
-当你的缓冲已经填充好数据之后，你可能会想与其它的缓冲共享其中的数据，或者想要将缓冲的内容复制到另一个缓冲当中。<fun>glCopyBufferSubData</fun>能够让我们相对容易地从一个缓冲中复制数据到另一个缓冲中。这个函数的原型如下：
+当你的缓冲区已经填充好数据之后，你可能会想与其它的缓冲区共享其中的数据，或者想要将缓冲区的内容复制到另一个缓冲区当中。<fun>glCopyBufferSubData</fun>能够让我们相对容易地从一个缓冲区中复制数据到另一个缓冲区中。这个函数的原型如下：
 
 ```c++
 void glCopyBufferSubData(GLenum readtarget, GLenum writetarget, GLintptr readoffset,
                          GLintptr writeoffset, GLsizeiptr size);
 ```
 
-`readtarget`和`writetarget`参数需要填入复制源和复制目标的缓冲目标。比如说，我们可以将<var>VERTEX_ARRAY_BUFFER</var>缓冲复制到<var>VERTEX_ELEMENT_ARRAY_BUFFER</var>缓冲，分别将这些缓冲目标设置为读和写的目标。当前绑定到这些缓冲目标的缓冲将会被影响到。
+`readtarget`和`writetarget`参数需要填入复制源和复制目标的缓冲区目标。比如说，我们可以将<var>VERTEX_ARRAY_BUFFER</var>缓冲区数据复制到<var>VERTEX_ELEMENT_ARRAY_BUFFER</var>缓冲区，只要分别将这些缓冲区目标设置为读和写的目标。那么当前绑定到这些缓冲区目标的缓冲区将会受到读写操作的影响。
 
-但如果我们想读写数据的两个不同缓冲都为顶点数组缓冲该怎么办呢？我们不能同时将两个缓冲绑定到同一个缓冲目标上。正是出于这个原因，OpenGL提供给我们另外两个缓冲目标，叫做<var>GL_COPY_READ_BUFFER</var>和<var>GL_COPY_WRITE_BUFFER</var>。我们接下来就可以将需要的缓冲绑定到这两个缓冲目标上，并将这两个目标作为`readtarget`和`writetarget`参数。
+但如果我们想读写数据的两个不同缓冲区都是顶点数组缓冲区该怎么办呢？我们不能同时将两个缓冲区绑定到同一个缓冲目标上。正是出于这个原因，OpenGL提供给我们另外两个缓冲目标，叫做<var>GL_COPY_READ_BUFFER</var>和<var>GL_COPY_WRITE_BUFFER</var>。我们接下来就可以将需要的缓冲区绑定到这两个缓冲目标上，并将这两个目标作为`readtarget`和`writetarget`参数。
 
-接下来<fun>glCopyBufferSubData</fun>会从`readtarget`中读取`size`大小的数据，并将其写入`writetarget`缓冲的`writeoffset`偏移量处。下面这个例子展示了如何复制两个顶点数组缓冲：
+接下来<fun>glCopyBufferSubData</fun>会从`readtarget`中读取`size`大小的数据，并将其写入`writetarget`缓冲的`writeoffset`偏移量处。下面这个例子展示了如何复制两个顶点数组缓冲区：
 
 ```c++
-float vertexData[] = { ... };
 glBindBuffer(GL_COPY_READ_BUFFER, vbo1);
 glBindBuffer(GL_COPY_WRITE_BUFFER, vbo2);
-glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(vertexData));
+glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, 8 * sizeof(float));
 ```
 
-我们也可以只将`writetarget`缓冲绑定为新的缓冲目标类型之一：
+我们也可以通过只将写目标缓冲区绑定到一个新的缓冲区目标类型来实现这一点：
 
 ```c++
 float vertexData[] = { ... };
 glBindBuffer(GL_ARRAY_BUFFER, vbo1);
 glBindBuffer(GL_COPY_WRITE_BUFFER, vbo2);
-glCopyBufferSubData(GL_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(vertexData));
+glCopyBufferSubData(GL_ARRAY_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, 8 * sizeof(float));  
 ```
 
-有了这些关于如何操作缓冲的额外知识，我们已经能够以更有意思的方式使用它们了。当你越深入OpenGL时，这些新的缓冲方法将会变得更加有用。在[下一节](08 Advanced GLSL.md)中，在我们讨论<def>Uniform缓冲对象</def>(Uniform Buffer Object)时，我们将会充分利用<fun>glBufferSubData</fun>。
+有了这些关于如何操作缓冲的额外知识，我们已经能够以更有意思的方式使用它们了。当你更深入OpenGL时，这些新的缓冲区方法将会变得更加有用。在[下一节](08 Advanced GLSL.md)中，在我们讨论<def>Uniform缓冲区对象</def>(Uniform Buffer Object)时，我们将会充分利用<fun>glBufferSubData</fun>。
