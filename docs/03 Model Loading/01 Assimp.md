@@ -40,7 +40,7 @@
 
 ## 构建Assimp
 
-你可以在Assimp的[下载页面](http://assimp.org/index.php/downloads)中选择相应的版本。在写作时使用的Assimp最高版本为3.1.1。我们建议你自己编译Assimp库，因为它们的预编译库在大部分系统上都是不能运行的。如果你忘记如何使用CMake自己编译一个库的话，可以复习[创建窗口](../01 Getting started/02 Creating a window.md)小节。
+你可以在Assimp的[下载页面](https://kimkulling.itch.io/the-asset-importer-lib)中选择相应的版本。在写作时使用的Assimp最高版本为3.1.1。我们建议你自己编译Assimp库，因为它们的预编译库在大部分系统上都是不能运行的。如果你忘记如何使用CMake自己编译一个库的话，可以复习[创建窗口](../01 Getting started/02 Creating a window.md)小节。
 
 构建Assimp时可能会出现一些问题，所以我会将它们的解决方案列在这里，便于大家排除错误：
 
