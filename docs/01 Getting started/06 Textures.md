@@ -353,6 +353,17 @@ void main()
 
 我们现在需要载入并创建另一个纹理；你应该对这些步骤很熟悉了。记得创建另一个纹理对象，载入图片，使用<fun>glTexImage2D</fun>生成最终纹理。对于第二个纹理我们使用一张[你学习OpenGL时的面部表情](../img/01/06/awesomeface.png)图片。
 
+```c++
+unsigned char *data = stbi_load("awesomeface.png", &width, &height, &nrChannels, 0);
+if (data)
+{
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+```
+
+注意，我们现在要读取一张包含alpha（透明度）通道的.png图片，这意味着我们现在需要使用GL_RGBA参数，指定该图片数据包含了alpha通道；否则OpenGL将无法正确解析图片数据。
+
 为了使用第二个纹理（以及第一个），我们必须改变一点渲染流程，先绑定两个纹理到对应的纹理单元，然后定义哪个uniform采样器对应哪个纹理单元：
 
 ```c++
