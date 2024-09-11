@@ -76,7 +76,7 @@ if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 
 ## 视口
 
-在我们开始渲染之前还有一件重要的事情要做，我们必须告诉OpenGL渲染窗口的尺寸大小，即视口(Viewport)，这样OpenGL才只能知道怎样根据窗口大小显示数据和坐标。我们可以通过调用<fun>glViewport</fun>函数来设置窗口的**维度**(Dimension)：
+在我们开始渲染之前还有一件重要的事情要做，我们必须告诉OpenGL渲染窗口的尺寸大小，即视口(Viewport)，这样OpenGL才只能知道怎样根据窗口大小显示数据和坐标。我们可以通过调用<fun>glViewport</fun>函数来设置视口的**尺寸**(Dimension)：
 
 ```c++
 glViewport(0, 0, 800, 600);
