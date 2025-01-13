@@ -40,7 +40,7 @@
 
 ## 构建Assimp
 
-你可以在Assimp的[下载页面](http://assimp.org/index.php/downloads)中选择相应的版本。在写作时使用的Assimp最高版本为3.1.1。我们建议你自己编译Assimp库，因为它们的预编译库在大部分系统上都是不能运行的。如果你忘记如何使用CMake自己编译一个库的话，可以复习[创建窗口](../01 Getting started/02 Creating a window.md)小节。
+你可以在Assimp的[GitHub页面](https://github.com/assimp/assimp/blob/master/Build.md)中选择相应的版本。本文使用的Assimp最高版本为3.1.1。我们建议你自己编译Assimp库，因为它们的预编译库并不一定能适用于所有系统。如果你忘记如何使用CMake自己编译一个库的话，可以复习[创建窗口](../01 Getting started/02 Creating a window.md)小节。
 
 构建Assimp时可能会出现一些问题，所以我会将它们的解决方案列在这里，便于大家排除错误：
 
@@ -54,18 +54,16 @@ and try again. If the library is already installed, set the missing variables
 manually in cmake.
 ```
 
-这个问题的解决方案是安装DirectX SDK，如果你之前没安装过的话。你可以从[这里](http://www.microsoft.com/en-us/download/details.aspx?id=6812)下载SDK。
+如果你之前没安装过的话，那么这个问题的解决方案是安装DirectX SDK。你可以从[这里](http://www.microsoft.com/en-us/download/details.aspx?id=6812)下载SDK。
 
-- 安装DirectX SDK时，可能遇到一个错误码为`s1023`的错误。这种情况下，请在安装SDK之前根据[这个](http://blogs.msdn.com/b/chuckw/archive/2011/12/09/known-issue-directx-sdk-june-2010-setup-and-the-s1023-error.aspx)先卸载C++ Redistributable package(s)。
-- 一旦配置完成，你就可以生成解决方案文件了，打开解决方案文件并编译Assimp库（可以编译为Debug版本也可以编译为Release版本，只要能工作就行）。
-- 使用默认配置构建的Assimp是一个动态库(Dynamic Library)，所以我们需要包含所生成的**assimp.dll**文件以及程序的二进制文件。你可以简单地将DLL复制到我们程序可执行文件的同一目录中。
-- Assimp编译之后，生成的库和DLL文件位于**code/Debug**或者**code/Release**文件夹中。
-- 接着把编译好的LIB文件和DLL文件拷贝到工程的相应目录下，并在解决方案中链接它们。并且记得把Assimp的头文件也复制到你的**include**目录中（头文件可以在从Assimp中下载的**include**目录里找到）。
+- 安装DirectX SDK时，可能遇到一个错误码为`s1023`的错误。这种情况下，请在安装SDK之前先卸载C++ Redistributable package(s)。
+
+一旦配置完成，你就可以生成解决方案文件了，打开解决方案文件并编译Assimp库（可以编译为Debug版本也可以编译为Release版本，只要能工作就行）。因为所有的LearnOpenGL代码都是64位项目，所以请确保在64位下编译这个库。
+
+使用默认配置构建的Assimp是一个动态库(Dynamic Library)，所以所生成的**assimp.dll**文件（文件名可能带有后缀）需要随我们的程序可执行文件一并包含，你可以简单地将DLL复制到我们程序可执行文件的同一目录中。
+
+Assimp编译之后，生成的库和DLL文件位于**code/Debug**或者**code/Release**文件夹中。接着把编译好的LIB文件和DLL文件拷贝到工程的相应目录下，然后在解决方案中链接它们。并且记得把Assimp的头文件也复制到你的**include**目录中（头文件可以在下载的Assimp文件中的**include**目录里找到）。
 
 如果你仍遇到了未报告的错误，欢迎在评论区中寻求帮助。
-
-!!! Important
-
-	如果你想让Assimp使用多线程来获得更高的性能，你可以使用Boost库来编译Assimp。你可以在它们的[安装页面](http://assimp.org/lib_html/install.html)找到完整的安装介绍。
 
 现在，你应该已经编译完Assimp库并将它链接到你的程序中了。下一步：[导入](02 Mesh.md)漂亮的3D物体！
