@@ -42,7 +42,7 @@ class Mesh {
         vector<Texture> textures;
         /*  函数  */
         Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
-        void Draw(Shader shader);
+        void Draw(Shader &shader);
     private:
         /*  渲染数据  */
         unsigned int VAO, VBO, EBO;
