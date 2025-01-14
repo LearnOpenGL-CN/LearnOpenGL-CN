@@ -329,7 +329,7 @@ vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string
 
 # 和箱子模型告别
 
-所以，让我们导入一个由真正的艺术家所创造的模型，替代我这个天才的作品（你要承认，这些箱子可能是你看过的最漂亮的立方体了），测试一下我们的实现吧。由于我不想让我占太多的功劳，我会偶尔让别的艺术家也加入我们，这次我们将会加载由Berk Gedik设计的[吉他生存背包](https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36)(Survival Guitar Backpack)。我稍微修改了材质和路径，这样便可与我们的模型加载代码兼容。这个模型被输出为一个.obj文件以及一个.mtl文件，.mtl文件包含了模型的漫反射、镜面光和法线贴图（这个会在后面学习到），你可以在[这里](https://learnopengl.com/data/models/backpack.zip)下载到稍微修改之后的模型，注意，我们不会用到它的一些额外的纹理类型，并且所有的纹理和模型文件应该位于同一个目录下，以供加载纹理。
+所以，让我们导入一个由真正的艺术家所创造的模型，替代我这个天才的作品（你要承认，这些箱子可能是你看过的最漂亮的立方体了），测试一下我们的实现吧。由于我不想让我占太多的功劳，我会偶尔让别的艺术家也加入我们，这次我们将会加载由Berk Gedik设计的[吉他生存背包](https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36)(Survival Guitar Backpack)。我稍微修改了材质和路径，这样便可与我们的模型加载代码兼容。这个模型被输出为一个.obj文件以及一个.mtl文件，.mtl文件包含了模型的漫反射、镜面光和法线贴图（这个会在后面学习到），你可以在[这里](../data/backpack.zip)下载到稍微修改之后的模型，注意，我们不会用到它的一些额外的纹理类型，并且所有的纹理和模型文件应该位于同一个目录下，以供加载纹理。
 
 !!! Important
 
