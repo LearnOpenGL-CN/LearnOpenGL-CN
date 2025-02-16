@@ -76,6 +76,8 @@ nav:
     - Guest Articles:
       - 2020:
         - 骨骼动画: '08 Guest Articles/2020/01 Skeletal Animation.md'
+      - 2021:
+        - CSM: '08 Guest Articles/2021/01 CSM.md'
       - 2022:
         - 区域光: '08 Guest Articles/2022/03 Area Lights.md'
     - 历史存档: 'legacy.md'
