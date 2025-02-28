@@ -1,4 +1,3 @@
-![image](https://github.com/user-attachments/assets/9822d953-9b98-4466-8cf7-99c57412cc7b)
 # HDR
 
 原文     | [HDR](http://learnopengl.com/#!Advanced-Lighting/HDR)
