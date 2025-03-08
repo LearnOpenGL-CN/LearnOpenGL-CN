@@ -375,7 +375,7 @@ $$
 
 $$
 L_o(p,\phi_o, \theta_o) = 
-        k_d\frac{c}{\pi} \frac{1}{n1 n2} \sum_{\phi = 0}^{n1} \sum_{\theta = 0}^{n2} L_i(p,\phi_i, \theta_i) \cos(\theta) \sin(\theta)  d\phi d\theta
+        k_d \frac{c\pi}{n1 n2} \sum_{\phi = 0}^{n1} \sum_{\theta = 0}^{n2} L_i(p,\phi_i, \theta_i) \cos(\theta) \sin(\theta)  d\phi d\theta
 $$
 
 当我们离散地对两个球坐标轴进行采样时，每个采样近似代表了半球上的一小块区域，如上图所示。注意，由于球的一般性质，当采样区域朝向中心顶部会聚时，天顶角 \(\theta\) 变高，半球的离散采样区域变小。为了平衡较小的区域贡献度，我们使用 \(sin\theta\) 来权衡区域贡献度，这就是多出来的 \(sin\) 的作用。
@@ -386,8 +386,8 @@ $$
 vec3 irradiance = vec3(0.0);  
 
 vec3 up    = vec3(0.0, 1.0, 0.0);
-vec3 right = cross(up, normal);
-up         = cross(normal, right);
+vec3 right = normalize(cross(up, normal));
+up         = normalize(cross(normal, right));
 
 float sampleDelta = 0.025;
 float nrSamples = 0.0; 
