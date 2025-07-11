@@ -14,7 +14,7 @@
 
 然而，实现阴影绝非易事，主要是因为目前的实时（光栅化图形）研究领域并没有开发出完美的阴影算法，虽然已经有许多优秀的阴影近似算法，但它们都有无法忽略的瑕疵。
 
-大多数电子游戏中使用的一种技术是<def>阴影映射</def>(shadow mapping)，效果不错，而且相对容易实现。阴影映射并不难以理解，性能开销不算太高，而且非常容易扩展成更高级的算法（比如[全向阴影贴图](https://learnopengl-cn.github.io/05%20Advanced%20Lighting/03%20Shadows/02%20Point%20Shadows/)和[级联阴影贴图](https://learnopengl-cn.github.io/08%20Guest%20Articles/2021/01%20CSM/)）。
+大多数电子游戏中使用的一种技术是<def>阴影映射</def>(shadow mapping)，效果不错，而且相对容易实现。阴影映射并不难以理解，性能开销不算太高，而且非常容易扩展成更高级的算法（比如[全向阴影贴图](02%20Point%20Shadows.md/)和[级联阴影贴图](../../08%20Guest%20Articles/2021/01%20CSM.md)）。
 
 ## 阴影映射
 
@@ -26,7 +26,7 @@
 
 我们希望得到射线首次击中物体时的交点，然后用这个最近的点和射线上其他点进行对比。随后我们将测试一下，如果一个测试点比最近点更远的话，那么这个点就在阴影中。然而，若从这类光源发射出成千上万条光线并逐一遍历，是一种极为低效的方法，实时渲染上基本不可取。不过，我们可以采取相似举措，不用投射出光的射线，而是使用我们非常熟悉的东西：深度缓冲。
 
-你可能记得在[深度测试](https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/01%20Depth%20testing/)教程中，在深度缓冲里的一个值对应于片段在摄像机视角下的深度值，其范围在0到1之间。如果我们从光源的视角来渲染场景，并把生成的深度值储存到纹理中会怎样？通过这种方式，我们就能从光源的视角采样最近的深度值。最终便可获得该方向上第一个可见片段的深度值。我们将所有的深度值存储到一个纹理中，称之为<def>深度贴图</def>(depth map)或是<def>阴影贴图</def>(shadow map)。
+你可能记得在[深度测试](../../04%20Advanced%20OpenGL/01%20Depth%20testing.md)教程中，在深度缓冲里的一个值对应于片段在摄像机视角下的深度值，其范围在0到1之间。如果我们从光源的视角来渲染场景，并把生成的深度值储存到纹理中会怎样？通过这种方式，我们就能从光源的视角采样最近的深度值。最终便可获得该方向上第一个可见片段的深度值。我们将所有的深度值存储到一个纹理中，称之为<def>深度贴图</def>(depth map)或是<def>阴影贴图</def>(shadow map)。
 
 ![](../../img/05/03/01/shadow_mapping_theory_spaces.png)
 
@@ -356,7 +356,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 ![](../../img/05/03/01/shadow_mapping_shadows.png)
 
-如果你做对了，你会看到地板和上有立方体的阴影（尽管还是有不少瑕疵）。你可以从这里找到demo程序的[源码](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.2.shadow_mapping_base/shadow_mapping_base.cpp)。
+如果你做对了，你会看到地板和上有立方体的阴影（尽管还是有不少瑕疵）。你可以从[这里](https://learnopengl.com/code_viewer_gh.php?code=src/5.advanced_lighting/3.1.2.shadow_mapping_base/shadow_mapping_base.cpp)找到demo程序的源码。
 
 ## 改进阴影映射
 
