@@ -1,10 +1,10 @@
 # 高级数据
 
-原文     | [Advanced Data](http://learnopengl.com/#!Advanced-OpenGL/Advanced-Data)
-      ---|---
-作者     | JoeyDeVries
-翻译     | Krasjet
-校对     | 暂未校对
+| 原文 | [Advanced Data](http://learnopengl.com/#!Advanced-OpenGL/Advanced-Data) |
+| ---- | ----------------------------------------------------------------------- |
+| 作者 | JoeyDeVries                                                             |
+| 翻译 | Krasjet                                                                 |
+| 校对 | 暂未校对                                                                |
 
 我们在OpenGL中大量使用缓冲来储存数据已经有很长时间了。这一节中，我们将讨论一些其他的操作缓冲的方法。
 
