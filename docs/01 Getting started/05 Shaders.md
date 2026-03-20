@@ -399,7 +399,7 @@ if(!success)
 {
     glGetShaderInfoLog(vertex, 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-};
+}
   
 // 片段着色器也类似
 [...]
